@@ -1,6 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, File, UploadFile
 
-from app.model.schema.documents import DocumentAdd
 from app.services.documents import DocumentsService
 from app.utils.database import SessionDep
 
@@ -8,9 +7,9 @@ router = APIRouter()
 
 
 @router.post("/")
-def submit_document(payload: DocumentAdd, session: SessionDep):
+async def submit_document(session: SessionDep, file: UploadFile = File(...)):
     service = DocumentsService(session)
-    return service.create(payload)
+    return await service.create(file=file)
 
 
 @router.get("/")
