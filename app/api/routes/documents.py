@@ -6,13 +6,13 @@ from app.utils.database import SessionDep
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("")
 async def submit_document(session: SessionDep, file: UploadFile = File(...)):
     service = DocumentsService(session)
     return await service.create(file=file)
 
 
-@router.get("/")
+@router.get("")
 def get_all(session: SessionDep):
     service = DocumentsService(session)
     return service.all()

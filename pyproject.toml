@@ -7,6 +7,12 @@ requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.19.2",
     "fastapi[standard]>=0.141.1",
+    "langchain-huggingface>=1.2.2",
+    "langchain-qdrant>=1.1.0",
+    "pypdf>=6.17.0",
+    "python-dotenv>=1.2.3",
+    "qdrant-client>=1.19.0",
+    "sentence-transformers>=6.0.1",
     "sqlmodel>=0.0.42",
     "uvicorn[standard]>=0.52.4",
 ]

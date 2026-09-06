@@ -15,3 +15,9 @@ class DocumentsRepository:
 
     def all(self):
         return self.session.exec(select(Documents)).all()
+
+    def update(self, document: Documents) -> Documents:
+        self.session.add(document)
+        self.session.commit()
+        self.session.refresh(document)
+        return document

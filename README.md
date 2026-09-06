@@ -193,7 +193,7 @@ Run the full eval set on every pull request — a change that improves faithfuln
 ```
 docs/     source documents used to build the golden eval set
 evals/    evals/golden.jsonl — hand-written questions + answers + page citations
-main.py   FastAPI entrypoint
+app/main.py   FastAPI entrypoint
 ```
 
 ## Build plan & status
@@ -211,7 +211,7 @@ main.py   FastAPI entrypoint
 
 ```bash
 uv sync
-uv run fastapi dev main.py
+uv run fastapi dev app/main.py
 ```
 
 ## Reading list

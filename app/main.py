@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from api.routes.welcome import router as welcome_router
-from api.routes.documents import router as documents_router
+from app.api.routes.welcome import router as welcome_router
+from app.api.routes.documents import router as documents_router
 
 app = FastAPI()
 
