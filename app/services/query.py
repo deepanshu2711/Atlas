@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlmodel import Session
 
-from app.model.schema.query import QueryPayload
 from app.repositories.documents import DocumentsRepository
+from app.schemas.query import QueryPayload
 
 
 class QueryService:

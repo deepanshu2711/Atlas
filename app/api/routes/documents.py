@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile
 
+from app.core.database import SessionDep
 from app.services.documents import DocumentsService
-from app.utils.database import SessionDep
 
 router = APIRouter()
 

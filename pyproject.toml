@@ -9,6 +9,7 @@ dependencies = [
     "fastapi[standard]>=0.141.1",
     "langchain-huggingface>=1.2.2",
     "langchain-qdrant>=1.1.0",
+    "pydantic-settings>=2.7.0",
     "pypdf>=6.17.0",
     "python-dotenv>=1.2.3",
     "qdrant-client>=1.19.0",

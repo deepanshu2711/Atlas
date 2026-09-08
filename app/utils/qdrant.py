@@ -1,14 +1,11 @@
-import os
-
-from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
-load_dotenv()
+from app.core.config import settings
 
 client = QdrantClient(
-    url=os.environ["QDRANT_URL"],
-    api_key=os.environ["QDRANT_API_KEY"],
+    url=settings.qdrant_url,
+    api_key=settings.qdrant_api_key,
 )
 
 COLLECTION_NAME = "documents"

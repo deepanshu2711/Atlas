@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 
-from app.utils.database import Documents
+from app.models.documents import Documents
 
 
 class DocumentsRepository:

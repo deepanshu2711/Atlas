@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.model.schema.query import QueryPayload
-from app.utils.database import SessionDep
+from app.core.database import SessionDep
+from app.schemas.query import QueryPayload
 
 router = APIRouter()
 

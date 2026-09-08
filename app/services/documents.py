@@ -3,8 +3,8 @@ from pathlib import Path
 from pypdf import PdfReader
 from fastapi import HTTPException, UploadFile
 from sqlmodel import Session
+from app.models.documents import Documents
 from app.repositories.documents import DocumentsRepository
-from app.utils.database import Documents
 from app.utils.store import vector_store
 
 
