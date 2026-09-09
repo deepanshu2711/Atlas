@@ -1,5 +1,5 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams
+from qdrant_client.models import Distance, PayloadSchemaType, VectorParams
 
 from app.core.config import settings
 
@@ -15,3 +15,9 @@ if not client.collection_exists(COLLECTION_NAME):
         collection_name=COLLECTION_NAME,
         vectors_config=VectorParams(size=384, distance=Distance.COSINE),
     )
+
+client.create_payload_index(
+    collection_name=COLLECTION_NAME,
+    field_name="metadata.doc_id",
+    field_schema=PayloadSchemaType.KEYWORD,
+)
