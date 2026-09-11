@@ -193,14 +193,53 @@ Run the full eval set on every pull request — a change that improves faithfuln
 ```
 docs/     source documents used to build the golden eval set
 evals/    evals/golden.jsonl — hand-written questions + answers + page citations
+          evals/run_eval.py — eval harness, evals/results/ — timestamped run reports
 app/main.py   FastAPI entrypoint
 ```
+
+## Evals
+
+`evals/run_eval.py` runs every question in `evals/golden.jsonl` through the real
+`QueryService.query()` pipeline (not a mock) and grades each answer with an
+LLM judge.
+
+**What it tests** — 40 questions over 3 real PDFs in `docs/`, split into 4 types:
+- `single_hop` (20) — one fact, one chunk.
+- `multi_hop` (10) — answer spans multiple pages/sections in one document.
+- `unanswerable` (5) — info isn't in the corpus; system should abstain, not hallucinate.
+- `table_lookup` (5) — answer lives in a table.
+
+**How to run**:
+```bash
+uv run python evals/run_eval.py
+```
+Requires a local Ollama server running (`ollama serve`) with `qwen2.5:3b` pulled, and
+a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is idempotent.
+
+**Methodology**:
+- `doc` filenames in `golden.jsonl` are resolved to the app's `document_id` UUID via
+  the `Documents` table before querying.
+- `unanswerable` questions are queried against **every** ingested document and must
+  abstain on all of them to pass — hallucinating on even one document fails the question.
+- `multi_hop` questions where `doc` is a list (the answer spans two different PDFs) are
+  structurally out of scope for the current single-document-scoped `QueryService` — these
+  are queried best-effort against only the first listed document and scored separately as
+  `multi_hop_cross_document`, so they don't distort the real single-document `multi_hop` number.
+- Grading is LLM-as-judge, using the same local `qwen2.5:3b` model that generates the
+  answers. Caveat: self-grading with a small model is a known weak point — spot-check
+  `judge_detail` in the JSON report if a score looks surprising.
+
+**Results log**:
+
+| Date | Overall | single_hop | multi_hop | multi_hop_cross_doc | table_lookup | unanswerable | Notes | Report |
+|---|---|---|---|---|---|---|---|---|
+| 2026-09-11 | 25% (10/40) | 25% (5/20) | 0% (0/5) | 0% (0/5) | 0% (0/5) | 100% (5/5) | Naive baseline: 512-char fixed chunks, dense top-3, no reranking | `evals/results/20260911T064416Z.json` |
 
 ## Build plan & status
 
 - [x] **0 — Golden set before code.** `evals/golden.jsonl`: 40 questions over 3 real PDFs in `docs/` — 20 single-hop, 10 multi-hop, 5 unanswerable, 5 table-lookup — each with a hand-written answer and source page.
 - [x] **1 — Skeleton service.** FastAPI + uvicorn scaffolded (`main.py`, `pyproject.toml`).
-- [ ] **2 — Deliberately naive baseline.** Text dump, fixed-size chunks, dense top-5, stuff-and-generate. Score it on the golden set and write the number here.
+- [x] **2 — Deliberately naive baseline.** Text dump, fixed-size chunks, dense top-3, stuff-and-generate. Scored 25% (10/40) on the golden set — see `## Evals` above.
 - [ ] **3 — Real parsing and chunking.** docling, typed blocks, heading paths, tables as atomic chunks, page + bbox. Citation viewer in Next.js.
 - [ ] **4 — Hybrid retrieval + reranking.** BM25, RRF, cross-encoder over 40 candidates. Ablation table.
 - [ ] **5 — Contextual chunks + entity graph.** Re-ingest with situating context; Kuzu graph retriever. Per-question-type score breakdown.
