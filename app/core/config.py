@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./database.db"
     qdrant_url: str
     qdrant_api_key: str
+    docling_ocr_enabled: bool = False
+    docling_table_structure_enabled: bool = False
 
     model_config = SettingsConfigDict(env_file=".env")
 

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 import uuid
@@ -5,19 +6,40 @@ from pathlib import Path
 from pypdf import PdfReader
 from fastapi import HTTPException, UploadFile
 from sqlmodel import Session
+from app.core.config import settings
 from app.core.logging import get_logger
 from app.models.documents import Documents
 from app.repositories.documents import DocumentsRepository
 from app.utils.store import vector_store, vector_store_v2
-from docling.document_converter import DocumentConverter
+from docling.datamodel.base_models import InputFormat
+from docling.datamodel.pipeline_options import PdfPipelineOptions
+from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
 
 
 RAW_DIR = Path("data/raw_pdfs")
 ALLOWED_CONTENT_TYPE = "application/pdf"
 CHUNK_SIZE = 1024 * 1024
+EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"
 
 logger = get_logger(__name__)
+
+# Built once at import time so Docling's layout/table/OCR models (and, on a
+# GPU box, their CUDA placement) are loaded a single time and reused across
+# every upload instead of being reinitialized from disk on each request.
+_pdf_pipeline_options = PdfPipelineOptions(
+    do_ocr=settings.docling_ocr_enabled,
+    do_table_structure=settings.docling_table_structure_enabled,
+)
+document_converter = DocumentConverter(
+    format_options={
+        InputFormat.PDF: PdfFormatOption(pipeline_options=_pdf_pipeline_options),
+    }
+)
+# Tokenizer matches the actual embedding model so the chunk-length limit
+# reflects what will really be embedded (HybridChunker defaults to a
+# different tokenizer otherwise).
+chunker = HybridChunker(tokenizer=EMBEDDING_MODEL_NAME)
 
 
 class DocumentsService:
@@ -53,7 +75,11 @@ class DocumentsService:
             raise
 
         try:
-            self.ingest_document_v2(doc_id=doc_id, file_path=str(dest))
+            # Docling conversion + embedding are CPU/GPU-bound blocking work;
+            # run them in a worker thread so they don't stall the event loop
+            # (and every other in-flight request) for the whole duration.
+            await asyncio.to_thread(
+                self.ingest_document_v2, doc_id=doc_id, file_path=str(dest))
             document.status = "ready"
         except Exception:
             logger.exception(
@@ -113,7 +139,7 @@ class DocumentsService:
         try:
             # docling emits PIPELINE_PROFILING debug logs naming the pages
             # in each processed batch, giving per-page conversion progress.
-            doc = DocumentConverter().convert(file_path).document
+            doc = document_converter.convert(file_path).document
         finally:
             docling_logger.setLevel(prev_docling_level)
         convert_elapsed = time.perf_counter() - convert_start
@@ -127,7 +153,6 @@ class DocumentsService:
         )
 
         chunk_start = time.perf_counter()
-        chunker = HybridChunker()
         chunks = list(chunker.chunk(doc))
         logger.info(
             "ingest_document_v2 doc_id=%s stage=chunk elapsed=%.2fs chunks=%d",
