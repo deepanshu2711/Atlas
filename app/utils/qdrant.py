@@ -9,6 +9,7 @@ client = QdrantClient(
 )
 
 COLLECTION_NAME = "documents"
+COLLECTION_NAME_v2 = "documents_v2"
 
 if not client.collection_exists(COLLECTION_NAME):
     client.create_collection(
@@ -18,6 +19,18 @@ if not client.collection_exists(COLLECTION_NAME):
 
 client.create_payload_index(
     collection_name=COLLECTION_NAME,
+    field_name="metadata.doc_id",
+    field_schema=PayloadSchemaType.KEYWORD,
+)
+
+if not client.collection_exists(COLLECTION_NAME_v2):
+    client.create_collection(
+        collection_name=COLLECTION_NAME_v2,
+        vectors_config=VectorParams(size=384, distance=Distance.COSINE),
+    )
+
+client.create_payload_index(
+    collection_name=COLLECTION_NAME_v2,
     field_name="metadata.doc_id",
     field_schema=PayloadSchemaType.KEYWORD,
 )

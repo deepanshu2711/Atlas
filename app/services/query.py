@@ -6,7 +6,7 @@ from sqlmodel import Session
 from app.repositories.documents import DocumentsRepository
 from app.schemas.query import QueryPayload
 from app.utils.llm_factory import llm
-from app.utils.store import vector_store
+from app.utils.store import vector_store, vector_store_v2
 
 _ANSWER_PROMPT = ChatPromptTemplate.from_messages([
     ("system",
@@ -36,7 +36,8 @@ class QueryService:
         if document is None:
             raise HTTPException(status_code=404, detail="Document not found")
 
-        docs = vector_store.similarity_search(query=payload.query, k=3, filter=Filter(
+        store = vector_store_v2 if payload.use_v2 else vector_store
+        docs = store.similarity_search(query=payload.query, k=3, filter=Filter(
             must=[
                 FieldCondition(
                     key="metadata.doc_id",
@@ -44,8 +45,6 @@ class QueryService:
                 )
             ]
         ))
-
-        # docs = vector_store.similarity_search(query=payload.query, k=3)
 
         if not docs:
             return {"answer": "I don't have enough information in this document to answer that.", "sources": []}

@@ -4,7 +4,7 @@ QueryService pipeline and scores answers with an LLM judge.
 Usage:
     uv run python evals/run_eval.py
 """
-from app.utils.qdrant import COLLECTION_NAME, client as qdrant_client
+from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
 from app.utils.llm_factory import llm
 from app.services.query import QueryService
 from app.services.documents import DocumentsService
@@ -61,24 +61,26 @@ def load_golden():
         return [json.loads(line) for line in f if line.strip()]
 
 
-def ensure_ingested(session: Session):
+def ensure_ingested(session: Session, use_v2: bool = False):
     """Make sure every doc referenced in docs/ has vectors in Qdrant.
     Ingestion is idempotent (deterministic chunk ids), so safe to re-run."""
+    collection = COLLECTION_NAME_v2 if use_v2 else COLLECTION_NAME
+    ingest_fn = DocumentsService.ingest_document_v2 if use_v2 else DocumentsService.ingest_document
+
     repo = DocumentsRepository(session)
     name_to_doc_id = {}
     for document in repo.all():
         count = qdrant_client.count(
-            collection_name=COLLECTION_NAME,
+            collection_name=collection,
             count_filter=Filter(must=[
                 FieldCondition(key="metadata.doc_id",
                                match=MatchValue(value=document.doc_id))
             ]),
         ).count
         if count == 0:
-            print(f"  re-ingesting {document.name} ({document.doc_id})...")
+            print(f"  re-ingesting {document.name} ({document.doc_id}) into {collection}...")
             try:
-                DocumentsService.ingest_document(
-                    document.doc_id, document.file_path)
+                ingest_fn(document.doc_id, document.file_path)
                 document.status = "ready"
             except Exception as exc:
                 document.status = "failed"
@@ -110,7 +112,7 @@ async def judge(question, gold_answer, qtype, model_answer, unanswerable: bool) 
     return verdict, text
 
 
-async def run_question(session: Session, item: dict, name_to_doc_id: dict) -> dict:
+async def run_question(session: Session, item: dict, name_to_doc_id: dict, use_v2: bool = False) -> dict:
     qtype = item["type"]
     unanswerable = qtype == "unanswerable"
     doc_field = item["doc"]
@@ -131,7 +133,7 @@ async def run_question(session: Session, item: dict, name_to_doc_id: dict) -> di
     answers = []
     for doc_id in target_doc_ids:
         service = QueryService(session)
-        result = await service.query(QueryPayload(query=item["question"], document_id=doc_id))
+        result = await service.query(QueryPayload(query=item["question"], document_id=doc_id, use_v2=use_v2))
         answers.append(result["answer"])
 
     if unanswerable:
@@ -160,12 +162,13 @@ async def run_question(session: Session, item: dict, name_to_doc_id: dict) -> di
 
 
 async def main():
+    use_v2 = "--v2" in sys.argv
     RESULTS_DIR.mkdir(exist_ok=True)
     golden = load_golden()
 
     with Session(engine) as session:
-        print("Checking ingestion status...")
-        name_to_doc_id = ensure_ingested(session)
+        print(f"Checking ingestion status ({'v2/docling' if use_v2 else 'v1/naive'})...")
+        name_to_doc_id = ensure_ingested(session, use_v2=use_v2)
         print(f"  {len(name_to_doc_id)} document(s) ready: {
               list(name_to_doc_id)}")
 
@@ -173,7 +176,7 @@ async def main():
         for i, item in enumerate(golden, 1):
             print(f"[{i}/{len(golden)}] {item['id']} ({item['type']})...")
             try:
-                result = await run_question(session, item, name_to_doc_id)
+                result = await run_question(session, item, name_to_doc_id, use_v2=use_v2)
             except Exception as exc:
                 result = {
                     "id": item["id"], "type": item["type"], "cross_document": False,
@@ -186,7 +189,8 @@ async def main():
 
     report = summarize(results)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out_path = RESULTS_DIR / f"{ts}.json"
+    suffix = "_v2" if use_v2 else ""
+    out_path = RESULTS_DIR / f"{ts}{suffix}.json"
     with open(out_path, "w") as f:
         json.dump(report, f, indent=2)
 
