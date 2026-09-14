@@ -1,12 +1,12 @@
-import asyncio
 import logging
 import time
 import uuid
 from pathlib import Path
 from pypdf import PdfReader
-from fastapi import HTTPException, UploadFile
+from fastapi import BackgroundTasks, HTTPException, UploadFile
 from sqlmodel import Session
 from app.core.config import settings
+from app.core.database import engine
 from app.core.logging import get_logger
 from app.models.documents import Documents
 from app.repositories.documents import DocumentsRepository
@@ -50,7 +50,9 @@ class DocumentsService:
     def all(self):
         return self.repository.all()
 
-    async def create(self, file: UploadFile) -> Documents:
+    async def create(
+        self, file: UploadFile, background_tasks: BackgroundTasks
+    ) -> Documents:
         self._validate_file(file=file)
 
         doc_id = str(uuid.uuid4())
@@ -74,19 +76,12 @@ class DocumentsService:
                 dest.unlink()
             raise
 
-        try:
-            # Docling conversion + embedding are CPU/GPU-bound blocking work;
-            # run them in a worker thread so they don't stall the event loop
-            # (and every other in-flight request) for the whole duration.
-            await asyncio.to_thread(
-                self.ingest_document_v2, doc_id=doc_id, file_path=str(dest))
-            document.status = "ready"
-        except Exception:
-            logger.exception(
-                "document_create doc_id=%s ingestion failed", doc_id)
-            document.status = "failed"
-        finally:
-            document = self.repository.update(document)
+        # Ingestion is minutes of CPU/GPU-bound work; return the pending
+        # document immediately and run it in the background instead of
+        # making the client wait. Starlette runs this sync callable in its
+        # worker threadpool, so it still won't block the event loop.
+        background_tasks.add_task(
+            self._ingest_and_update_status, doc_id=doc_id, file_path=str(dest))
 
         return document
 
@@ -127,6 +122,24 @@ class DocumentsService:
         vector_store.add_texts(texts=chunks, metadatas=metadatas, ids=ids)
 
         return len(chunks)
+
+    @staticmethod
+    def _ingest_and_update_status(doc_id: str, file_path: str) -> None:
+        # Runs after the response has been sent, so it can't reuse the
+        # request-scoped session (already closed by then) - open a fresh one.
+        with Session(engine) as session:
+            repository = DocumentsRepository(session)
+            document = repository.find_by_id(doc_id)
+            try:
+                DocumentsService.ingest_document_v2(
+                    doc_id=doc_id, file_path=file_path)
+                document.status = "ready"
+            except Exception:
+                logger.exception(
+                    "document_create doc_id=%s ingestion failed", doc_id)
+                document.status = "failed"
+            finally:
+                repository.update(document)
 
     @staticmethod
     def ingest_document_v2(doc_id: str, file_path: str) -> int:
