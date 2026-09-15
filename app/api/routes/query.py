@@ -4,7 +4,9 @@ from app.core.database import SessionDep
 from app.schemas.query import QueryPayload
 from app.services.query import QueryService
 
-router = APIRouter()
+router = APIRouter(
+    tags=["query"],
+)
 
 
 @router.post("")

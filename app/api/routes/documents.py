@@ -1,12 +1,14 @@
-from fastapi import APIRouter, BackgroundTasks, File, UploadFile
+from fastapi import APIRouter, BackgroundTasks, File, UploadFile, status
 
 from app.core.database import SessionDep
 from app.services.documents import DocumentsService
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Documents"],
+)
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def submit_document(
     session: SessionDep,
     background_tasks: BackgroundTasks,
