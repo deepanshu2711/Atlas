@@ -10,6 +10,7 @@ from app.core.database import engine
 from app.core.logging import get_logger
 from app.models.documents import Documents
 from app.repositories.documents import DocumentsRepository
+from app.services.bm25 import invalidate as invalidate_bm25
 from app.utils.store import vector_store, vector_store_v2
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.accelerator_options import AcceleratorOptions
@@ -125,6 +126,7 @@ class DocumentsService:
             for idx in range(len(chunks))
         ]
         vector_store.add_texts(texts=chunks, metadatas=metadatas, ids=ids)
+        invalidate_bm25(doc_id)
 
         return len(chunks)
 
@@ -208,6 +210,7 @@ class DocumentsService:
         upsert_start = time.perf_counter()
         vector_store_v2.add_texts(
             texts=texts, metadatas=metadatas, ids=ids)
+        invalidate_bm25(doc_id)
         logger.info(
             "ingest_document_v2 doc_id=%s stage=embed_upsert elapsed=%.2fs chunks=%d",
             doc_id, time.perf_counter() - upsert_start, len(chunks),

@@ -16,6 +16,7 @@ dependencies = [
     "pypdf>=6.17.0",
     "python-dotenv>=1.2.3",
     "qdrant-client>=1.19.0",
+    "rank-bm25>=0.2.2",
     "sentence-transformers>=6.0.1",
     "sqlmodel>=0.0.42",
     "uvicorn[standard]>=0.52.4",
