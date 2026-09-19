@@ -12,6 +12,7 @@ from app.models.documents import Documents
 from app.repositories.documents import DocumentsRepository
 from app.utils.store import vector_store, vector_store_v2
 from docling.datamodel.base_models import InputFormat
+from docling.datamodel.accelerator_options import AcceleratorOptions
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
@@ -30,6 +31,10 @@ logger = get_logger(__name__)
 _pdf_pipeline_options = PdfPipelineOptions(
     do_ocr=settings.docling_ocr_enabled,
     do_table_structure=settings.docling_table_structure_enabled,
+    accelerator_options=AcceleratorOptions(num_threads=4),
+    layout_batch_size=2,
+    table_batch_size=2,
+    ocr_batch_size=2,
 )
 document_converter = DocumentConverter(
     format_options={
