@@ -3,7 +3,7 @@ QueryService pipeline and scores answers with an LLM judge.
 
 Usage:
     uv run python evals/run_eval.py
-    uv run python evals/run_eval.py --v2 --retrieval-only   # no LLM; page recall@k / MRR
+    uv run python evals/run_eval.py --v2 --retrieval-only [--mode dense|bm25|hybrid]   # no LLM; page recall@k / MRR
 """
 from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
 from app.utils.llm_factory import llm
@@ -55,6 +55,11 @@ INSTRUCTIONS_UNANSWERABLE = (
     "specific answer anyway (HALLUCINATED)."
 )
 LABELS_UNANSWERABLE = "ABSTAINED or HALLUCINATED"
+
+
+def arg_value(flag: str) -> str | None:
+    """Value following `flag` on the command line, e.g. --mode hybrid."""
+    return sys.argv[sys.argv.index(flag) + 1] if flag in sys.argv else None
 
 
 def load_golden():
@@ -190,7 +195,7 @@ def score_retrieval(gold_pages: list[int], docs) -> dict:
     return out
 
 
-def run_retrieval_only(session: Session, golden: list[dict], name_to_doc_id: dict) -> dict:
+def run_retrieval_only(session: Session, golden: list[dict], name_to_doc_id: dict, mode=None) -> dict:
     per_question = []
     for item in golden:
         if item["type"] == "unanswerable":
@@ -198,7 +203,7 @@ def run_retrieval_only(session: Session, golden: list[dict], name_to_doc_id: dic
         doc_name = item["doc"][0] if isinstance(item["doc"], list) else item["doc"]
         payload = QueryPayload(query=item["question"],
                                document_id=name_to_doc_id[doc_name], use_v2=True)
-        docs = QueryService(session).retrieve(payload, k=max(RETRIEVAL_KS))
+        docs = QueryService(session).retrieve(payload, k=max(RETRIEVAL_KS), mode=mode)
         gold = gold_pages_for_queried_doc(item)
         per_question.append({
             "id": item["id"], "type": item["type"],
@@ -249,9 +254,9 @@ async def main():
               list(name_to_doc_id)}")
 
         if retrieval_only:
-            report = run_retrieval_only(session, golden, name_to_doc_id)
+            report = run_retrieval_only(session, golden, name_to_doc_id, mode=arg_value('--mode'))
             ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-            out_path = RESULTS_DIR / f"{ts}_retrieval.json"
+            out_path = RESULTS_DIR / f"{ts}_retrieval_{arg_value('--mode') or 'default'}.json"
             with open(out_path, "w") as f:
                 json.dump(report, f, indent=2)
             print_retrieval_summary(report)

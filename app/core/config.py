@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +10,8 @@ class Settings(BaseSettings):
     docling_ocr_enabled: bool = False
     docling_table_structure_enabled: bool = False
     qdrant_timeout_seconds: int = 180
+    retrieval_mode: Literal["dense", "bm25", "hybrid"] = "dense"
+    final_k: int = 3
 
     model_config = SettingsConfigDict(env_file=".env")
 
