@@ -211,7 +211,8 @@ LLM judge.
 
 **How to run**:
 ```bash
-uv run python evals/run_eval.py
+PYTHONPATH=. uv run python evals/run_eval.py          # v1 (naive chunking)
+PYTHONPATH=. uv run python evals/run_eval.py --v2     # v2 (Docling)
 ```
 Requires a local Ollama server running (`ollama serve`) with `qwen2.5:3b` pulled, and
 a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is idempotent.
@@ -234,6 +235,7 @@ a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is id
 | Date | Overall | single_hop | multi_hop | multi_hop_cross_doc | table_lookup | unanswerable | Notes | Report |
 |---|---|---|---|---|---|---|---|---|
 | 2026-09-11 | 25% (10/40) | 25% (5/20) | 0% (0/5) | 0% (0/5) | 0% (0/5) | 100% (5/5) | Naive baseline: 512-char fixed chunks, dense top-3, no reranking | `evals/results/20260911T064416Z.json` |
+| 2026-09-19 | 42.5% (17/40) | 55% (11/20) | 0% (0/5) | 20% (1/5) | 0% (0/5) | 100% (5/5) | v2: Docling parsing + HybridChunker (table structure and OCR off); run with `--v2` | `evals/results/20260919T123003Z_v2.json` |
 
 ## Build plan & status
 
