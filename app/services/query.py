@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from qdrant_client.models import FieldCondition, Filter, MatchValue
 from sqlmodel import Session
@@ -26,18 +27,16 @@ _ANSWER_PROMPT = ChatPromptTemplate.from_messages([
     ("human", "Question: {question}"),
 ])
 
+RETRIEVAL_K = 3
+
 
 class QueryService:
     def __init__(self, session: Session) -> None:
         self.document_repository = DocumentsRepository(session)
 
-    async def query(self, payload: QueryPayload):
-        document = self.document_repository.find_by_id(payload.document_id)
-        if document is None:
-            raise HTTPException(status_code=404, detail="Document not found")
-
+    def retrieve(self, payload: QueryPayload, k: int) -> list[Document]:
         store = vector_store_v2 if payload.use_v2 else vector_store
-        docs = store.similarity_search(query=payload.query, k=3, filter=Filter(
+        return store.similarity_search(query=payload.query, k=k, filter=Filter(
             must=[
                 FieldCondition(
                     key="metadata.doc_id",
@@ -45,6 +44,13 @@ class QueryService:
                 )
             ]
         ))
+
+    async def query(self, payload: QueryPayload):
+        document = self.document_repository.find_by_id(payload.document_id)
+        if document is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+
+        docs = self.retrieve(payload, k=RETRIEVAL_K)
 
         if not docs:
             return {"answer": "I don't have enough information in this document to answer that.", "sources": []}

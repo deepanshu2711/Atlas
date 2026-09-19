@@ -3,6 +3,7 @@ QueryService pipeline and scores answers with an LLM judge.
 
 Usage:
     uv run python evals/run_eval.py
+    uv run python evals/run_eval.py --v2 --retrieval-only   # no LLM; page recall@k / MRR
 """
 from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
 from app.utils.llm_factory import llm
@@ -161,8 +162,83 @@ async def run_question(session: Session, item: dict, name_to_doc_id: dict, use_v
     }
 
 
+RETRIEVAL_KS = (3, 8, 40)
+
+
+def gold_pages_for_queried_doc(item: dict) -> list[int]:
+    """Gold pages that live in the document QueryService is asked about.
+    Cross-document items only query the first doc, so only its page counts."""
+    pages = item["page"] if isinstance(item["page"], list) else [item["page"]]
+    if isinstance(item["doc"], list):
+        return pages[:1]
+    return pages
+
+
+def score_retrieval(gold_pages: list[int], docs) -> dict:
+    """Page-level metrics. A chunk is a hit for every gold page it spans."""
+    gold = set(gold_pages)
+    out = {}
+    for k in RETRIEVAL_KS:
+        covered = set()
+        for d in docs[:k]:
+            covered |= gold & set(d.metadata.get("pages", []))
+        out[f"recall@{k}"] = len(covered) / len(gold)
+        out[f"hit@{k}"] = 1.0 if covered else 0.0
+    out["mrr"] = next(
+        (1 / rank for rank, d in enumerate(docs, 1)
+         if gold & set(d.metadata.get("pages", []))), 0.0)
+    return out
+
+
+def run_retrieval_only(session: Session, golden: list[dict], name_to_doc_id: dict) -> dict:
+    per_question = []
+    for item in golden:
+        if item["type"] == "unanswerable":
+            continue
+        doc_name = item["doc"][0] if isinstance(item["doc"], list) else item["doc"]
+        payload = QueryPayload(query=item["question"],
+                               document_id=name_to_doc_id[doc_name], use_v2=True)
+        docs = QueryService(session).retrieve(payload, k=max(RETRIEVAL_KS))
+        gold = gold_pages_for_queried_doc(item)
+        per_question.append({
+            "id": item["id"], "type": item["type"],
+            "cross_document": isinstance(item["doc"], list),
+            "gold_pages": gold,
+            "retrieved_pages": [d.metadata.get("pages", []) for d in docs[:8]],
+            **score_retrieval(gold, docs),
+        })
+
+    metric_keys = [f"{m}@{k}" for k in RETRIEVAL_KS for m in ("recall", "hit")] + ["mrr"]
+
+    def mean(rows, key):
+        return round(sum(r[key] for r in rows) / len(rows), 3) if rows else None
+
+    by_type = {}
+    for r in per_question:
+        by_type.setdefault(r["type"] + ("_cross_document" if r["cross_document"] else ""), []).append(r)
+    return {
+        "overall": {"total": len(per_question), **{m: mean(per_question, m) for m in metric_keys}},
+        "by_type": {t: {"total": len(rows), **{m: mean(rows, m) for m in metric_keys}}
+                    for t, rows in by_type.items()},
+        "results": per_question,
+    }
+
+
+def print_retrieval_summary(report: dict):
+    print("\n" + "=" * 72)
+    print("RETRIEVAL SUMMARY (page-level)")
+    print("=" * 72)
+    cols = [f"R@{k}" for k in RETRIEVAL_KS] + [f"H@{k}" for k in RETRIEVAL_KS] + ["MRR"]
+    keys = [f"recall@{k}" for k in RETRIEVAL_KS] + [f"hit@{k}" for k in RETRIEVAL_KS] + ["mrr"]
+    print(f"{'':32s}{'n':>3s} " + " ".join(f"{c:>6s}" for c in cols))
+    rows = [("overall", report["overall"])] + sorted(report["by_type"].items())
+    for name, s in rows:
+        print(f"{name:32s}{s['total']:3d} " + " ".join(f"{s[k]:6.3f}" for k in keys))
+
+
 async def main():
-    use_v2 = "--v2" in sys.argv
+    retrieval_only = "--retrieval-only" in sys.argv
+    use_v2 = "--v2" in sys.argv or retrieval_only  # only v2 chunks carry page metadata
     RESULTS_DIR.mkdir(exist_ok=True)
     golden = load_golden()
 
@@ -171,6 +247,16 @@ async def main():
         name_to_doc_id = ensure_ingested(session, use_v2=use_v2)
         print(f"  {len(name_to_doc_id)} document(s) ready: {
               list(name_to_doc_id)}")
+
+        if retrieval_only:
+            report = run_retrieval_only(session, golden, name_to_doc_id)
+            ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            out_path = RESULTS_DIR / f"{ts}_retrieval.json"
+            with open(out_path, "w") as f:
+                json.dump(report, f, indent=2)
+            print_retrieval_summary(report)
+            print(f"\nFull report written to {out_path}")
+            return
 
         results = []
         for i, item in enumerate(golden, 1):
