@@ -236,6 +236,7 @@ a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is id
 |---|---|---|---|---|---|---|---|---|
 | 2026-09-11 | 25% (10/40) | 25% (5/20) | 0% (0/5) | 0% (0/5) | 0% (0/5) | 100% (5/5) | Naive baseline: 512-char fixed chunks, dense top-3, no reranking | `evals/results/20260911T064416Z.json` |
 | 2026-09-19 | 42.5% (17/40) | 55% (11/20) | 0% (0/5) | 20% (1/5) | 0% (0/5) | 100% (5/5) | v2: Docling parsing + HybridChunker (table structure and OCR off); run with `--v2` | `evals/results/20260919T123003Z_v2.json` |
+| 2026-09-20 | 55% (22/40) | 65% (13/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | v2 + hybrid retrieval (dense + BM25, RRF) + `bge-reranker-base` over 40 candidates, `final_k=8`, `num_ctx=8192`. 5 questions gained, none lost vs the 2026-09-19 run; retrieval, `final_k` and `num_ctx` changed together, so the gain is not attributed to one change | `evals/results/20260920T095920Z_v2_hybrid_rerank_k8.json` |
 
 **Retrieval results (retrieval-only, no LLM or judge)**:
 
@@ -265,7 +266,7 @@ gives the biggest gain: hybrid + rerank puts a gold page in the top 3 for every 
 lifts R@3 from 0.781 to 0.952 and MRR from 0.777 to 0.914. R@40 is unchanged because the reranker only reorders
 the 40 candidates. Cost: mean retrieval latency about 3.0 s/query on this CPU versus 0.52 s without rerank.
 Remaining recall misses are all `multi_hop` (R@3 0.667), where several pages are needed at once.
-End-to-end accuracy with rerank has not been measured yet; these numbers are retrieval only.
+End-to-end accuracy with rerank is in the results log above (22/40 vs 17/40); the table here is retrieval only.
 
 Context-size warning: with `final_k=8` the estimated prompt (chars / 3.5) exceeds the LLM's
 `num_ctx=4096` for 14 of 35 questions with dense retrieval and 21 of 35 with hybrid (median about

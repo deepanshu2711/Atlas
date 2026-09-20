@@ -1,0 +1,532 @@
+{
+  "overall": {
+    "total": 40,
+    "passed": 22,
+    "accuracy": 0.55
+  },
+  "by_type": {
+    "single_hop": {
+      "total": 20,
+      "passed": 13,
+      "accuracy": 0.65
+    },
+    "multi_hop": {
+      "total": 5,
+      "passed": 1,
+      "accuracy": 0.2
+    },
+    "multi_hop_cross_document": {
+      "total": 5,
+      "passed": 1,
+      "accuracy": 0.2
+    },
+    "unanswerable": {
+      "total": 5,
+      "passed": 5,
+      "accuracy": 1.0
+    },
+    "table_lookup": {
+      "total": 5,
+      "passed": 2,
+      "accuracy": 0.4
+    }
+  },
+  "results": [
+    {
+      "id": "q001",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What four primary considerations did NIST's Generative AI Public Working Group (GAI PWG) focus on?",
+      "gold_answer": "Governance, Content Provenance, Pre-Deployment Testing, and Incident Disclosure.",
+      "model_answer": [
+        "The four primary considerations that NIST's Generative AI Public Working Group (GAI PWG) focused on were Governance, Content Provenance, Pre-deployment Testing, and Incident Disclosure."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\nThe system's answer matches the gold answer exactly, with only a slight difference in spelling (\"Pre-Deployment Testing\" vs \"Pre-deployment Testing\")."
+    },
+    {
+      "id": "q002",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "According to the NIST GAI Profile, training a single transformer LLM can emit as much carbon as how many round-trip flights, and between which cities?",
+      "gold_answer": "As much carbon as 300 round-trip flights between San Francisco and New York.",
+      "model_answer": [
+        "Training a single transformer LLM can emit as much carbon as 300 round-trip flights between San Francisco and New York."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer matches the exact number and city pair provided in the gold answer, just using slightly different phrasing (\"San Francisco\" vs \"New York\")."
+    },
+    {
+      "id": "q003",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What two colloquial terms does the NIST GAI Profile give for 'confabulation'?",
+      "gold_answer": "'Hallucinations' or 'fabrications.'",
+      "model_answer": [
+        "The two colloquial terms given by the NIST GAI Profile for 'confabulation' are 'hallucinations' and 'fabrications'."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\nThe system's answer accurately reflects the gold answer by listing 'hallucinations' and 'fabrications' as colloquial terms for 'confabulation', which matches exactly with the gold answer."
+    },
+    {
+      "id": "q004",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "In the NIST GAI Profile's Action ID scheme, what do the four function prefixes GV, MP, MS, and MG stand for?",
+      "gold_answer": "GV = Govern; MP = Map; MS = Measure; MG = Manage.",
+      "model_answer": [
+        "GV stands for Govern, MP stands for Map, MS stands for Measure, and MG stands for Manage."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\nThe system's answer correctly identifies all four function prefixes as they are in the same order and meaning as stated in the gold answer, just using different wording for each prefix."
+    },
+    {
+      "id": "q005",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What is the official NIST publication number of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile,' and when was it published?",
+      "gold_answer": "NIST AI 600-1, published July 2024.",
+      "model_answer": [
+        "The official NIST publication number for the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile' is AI.600-1, and it was published in July 2024."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe NIST publication number provided in the system's answer is incorrect; it should be NIST AI 600-1 as per the gold answer, but the year of publication (July 2024) is correct."
+    },
+    {
+      "id": "q006",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What three types of structured public feedback does Appendix A.1.5 of the NIST GAI Profile describe?",
+      "gold_answer": "Participatory Engagement Methods, Field Testing, and AI Red-teaming.",
+      "model_answer": [
+        "Appendix A.1.5 of the NIST GAI Profile describes three types of structured public feedback:\n- Participatory Engagement Methods\n- Field Testing\n- AI Red-teaming"
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\nThe system's answer correctly lists the three types of structured public feedback described in Appendix A.1.5 of the NIST GAI Profile, which are Participatory Engagement Methods, Field Testing, and AI Red-teaming, matching exactly with the gold answer."
+    },
+    {
+      "id": "q007",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "According to a footnote in the NIST GAI Profile's MEASURE 2.11 discussion, what is a 'Winogender Schema' used to evaluate?",
+      "gold_answer": "A sample set of paired sentences that differ only by the gender of the pronouns used, employed to evaluate gender bias in natural language processing coreference resolution systems.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer lacks specificity and does not match the detailed explanation provided in the gold answer regarding the 'Winogender Schema'."
+    },
+    {
+      "id": "q008",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What five agents make up the Corrective RAG system described in the Agentic RAG survey?",
+      "gold_answer": "Context Retrieval Agent, Relevance Evaluation Agent, Query Refinement Agent, External Knowledge Retrieval Agent, and Response Synthesis Agent.",
+      "model_answer": [
+        "The Corrective RAG system described in the Agentic RAG survey is made up of five key agents:\n\n1. Context Retrieval Agent\n2. Relevance Evaluation Agent\n3. Query Refinement Agent\n4. External Knowledge Retrieval Agent\n5. Response Synthesis Agent"
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\nThe system's answer lists all five agents mentioned in the gold answer, maintaining the same order and entities, just using slightly different wording."
+    },
+    {
+      "id": "q009",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Which two keyword-based retrieval techniques does the Agentic RAG survey say Na\u00efve RAG relies on?",
+      "gold_answer": "TF-IDF and BM25.",
+      "model_answer": [
+        "Na\u00efve RAG relies on simple keyword-based retrieval techniques such as TF-IDF and BM25."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer correctly states that Na\u00efve RAG relies on simple keyword-based retrieval techniques such as TF-IDF and BM25, which is exactly what the gold answer claims."
+    },
+    {
+      "id": "q010",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What four components does the Agentic RAG survey say make up an AI agent?",
+      "gold_answer": "LLM (with defined Role and Task), Memory (short-term and long-term), Planning (Reflection & Self-Critique), and Tools.",
+      "model_answer": [
+        "The four components that the Agentic RAG survey says make up an AI agent are:\n- LLM (with defined Role and Task)\n- Memory (Short-Term and Long-Term)\n- Planning (Reflection & Self-Critique)\n- Tools Vector Search, Web Search, APIs, etc."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer includes \"Tools Vector Search, Web Search, APIs, etc.\" which are not explicitly mentioned in the gold answer and thus inconsistent."
+    },
+    {
+      "id": "q011",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What two primary innovations does GeAR (Graph-Enhanced Agent for Retrieval-Augmented Generation) use to advance RAG performance?",
+      "gold_answer": "Graph Expansion (enhancing base retrievers with graph-structured data) and an Agent Framework (an agent-based architecture that manages retrieval tasks dynamically).",
+      "model_answer": [
+        "GeAR uses two primary innovations to advance RAG performance:\n1. Graph Expansion: This involves integrating graph-based data into the retrieval process, allowing the system to consider relationships between entities during retrieval.\n2. Agent Framework: An agent-based architecture is employed to manage the retrieval process dynamically and autonomously based on query complexity."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately reflects the two primary innovations used by GeAR as stated in the gold answer, namely Graph Expansion and an Agent Framework, without altering any facts or adding new information not present in the gold answer. The system simply rephrased these points using slightly different wording but maintained their core meaning."
+    },
+    {
+      "id": "q012",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Which university is the Agentic RAG survey's first listed author, Aditi Singh, affiliated with?",
+      "gold_answer": "Cleveland State University.",
+      "model_answer": [
+        "Aditi Singh is affiliated with Cleveland State University."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer directly states that Aditi Singh is affiliated with Cleveland State University, which matches exactly with the gold answer."
+    },
+    {
+      "id": "q013",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Under Article 71 of the AI Act proposal, what is the maximum administrative fine for non-compliance with the prohibited AI practices in Article 5?",
+      "gold_answer": "Up to \u20ac30,000,000, or up to 6% of the company's total worldwide annual turnover for the preceding financial year, whichever is higher.",
+      "model_answer": [
+        "The maximum administrative fine for non-compliance with the prohibited AI practices in Article 5 under Article 71 of the AI Act proposal is up to 30,000,000 EUR or, if the offender is a company, up to 6% of its total worldwide annual turnover for the preceding financial year, whichever is higher."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer incorrectly states \"30,000,000 EUR\" instead of \"\u20ac30,000,000\". The rest of the information is correct and matches the gold answer."
+    },
+    {
+      "id": "q014",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Under Article 71 of the AI Act proposal, what is the maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities?",
+      "gold_answer": "Up to \u20ac10,000,000, or up to 2% of total worldwide annual turnover for the preceding financial year, whichever is higher.",
+      "model_answer": [
+        "The maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authority is up to 10,000,000 EUR. If the offender is a company, the fine can also be up to 2% of its total worldwide annual turnover for the preceding financial year, whichever is higher."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately reflects and matches the key numerical information provided in the gold answer, including both the monetary value (up to 10,000,000 EUR) and the percentage-based option (2% of total worldwide annual turnover for the preceding financial year). The wording is slightly different but conveys the same facts."
+    },
+    {
+      "id": "q015",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What four categories of AI practices does Article 5 of the AI Act proposal prohibit?",
+      "gold_answer": "(a) AI using subliminal techniques that materially distort behavior and cause or are likely to cause harm; (b) AI exploiting vulnerabilities of specific groups (due to age or physical/mental disability) to cause harm; (c) social scoring/evaluation of natural persons' trustworthiness by public authorities leading to detrimental treatment; and (d) 'real-time' remote biometric identification in publicly accessible spaces for law enforcement purposes, subject to narrow exceptions.",
+      "model_answer": [
+        "Article 5 of the AI Act proposal prohibits the following four categories of AI practices:\n\n1. The placing on the market, putting into service or use of an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behavior causing or likely to cause physical or psychological harm.\n2. The placing on the market, putting into service or use of an AI system that exploits any vulnerabilities of a specific group of persons due to their age, physical or mental disability, in order to materially distort the behavior of a person pertaining to that group in a manner that causes or is likely to cause physical or psychological harm.\n3. The placing on the market, putting into service or use of AI systems by public authorities or on their behalf for the evaluation or classification of the trustworthiness of natural persons over a certain period of time based on their social behavior or known or predicted personal or personality characteristics, with the social score leading to either or both of the following:\n   - Detrimental or unfavourable treatment of certain natural persons or whole groups thereof in social contexts which are unrelated to the contexts in which the data was originally generated or collected.\n   - Detrimental or unfavourable treatment of certain natural persons or whole groups thereof that is unjustified or disproportionate to their social behavior or its gravity.\n4. The use of 'real-time' remote biometric identification systems in publicly accessible spaces for the purpose of law enforcement, unless and in as far as such use is strictly necessary for one of the following objectives:"
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately reflects all four categories of AI practices prohibited by Article 5 of the AI Act proposal, maintaining the same core information as the gold answer but with slightly different wording for each category."
+    },
+    {
+      "id": "q016",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Under Article 6(1) of the AI Act proposal, what two conditions must both be satisfied for an AI system to be classified as high-risk via the product-safety route?",
+      "gold_answer": "(a) the AI system is intended to be used as a safety component of a product, or is itself a product, covered by the Union harmonisation legislation listed in Annex II; and (b) that product is required to undergo third-party conformity assessment under that legislation.",
+      "model_answer": [
+        "For an AI system to be classified as high-risk via the product-safety route under Article 6(1), both of the following conditions must be satisfied:\n\n1. The AI system is intended to be used as a safety component of a product, or it itself is a product.\n2. The product whose safety component is the AI system, or the AI system itself as a product, is required to undergo a third-party conformity assessment with a view to its placing on the market or putting into service pursuant to Union harmonisation legislation.\n\nSupporting detail: Article 6(1) of the AI Act proposal states that an AI system shall be considered high-risk if both conditions are fulfilled."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately rephrases and expands upon the two conditions provided in the gold answer, maintaining the essential information without altering the facts/entities/numbers."
+    },
+    {
+      "id": "q017",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "How does Article 3 of the AI Act proposal define a 'serious incident'?",
+      "gold_answer": "Any incident that directly or indirectly leads, might have led, or might lead to (a) the death of a person or serious damage to a person's health, property, or the environment, or (b) a serious and irreversible disruption of the management and operation of critical infrastructure.",
+      "model_answer": [
+        "A serious incident is defined as any incident that directly or indirectly leads, might have led or might lead to any of the following:\n- The death of a person or serious damage to a person's health,\n- Serious and irreversible disruption of the management and operation of critical infrastructure."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer omits the specific examples provided in the gold answer, stating only that it could lead to \"any of the following\" without specifying the exact scenarios mentioned (death of a person or serious damage to health, and serious disruption of critical infrastructure)."
+    },
+    {
+      "id": "q018",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "How many total contributions did the European Commission receive during its online public consultation on the White Paper on Artificial Intelligence?",
+      "gold_answer": "1,215 contributions.",
+      "model_answer": [
+        "The European Commission received a total of 1215 contributions during its online public consultation on the White Paper on Artificial Intelligence."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe number of contributions, 1215, in the system's answer matches exactly with the gold answer of 1,215 (which is simply a different way of writing the same number)."
+    },
+    {
+      "id": "q019",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Of the policy options assessed in the AI Act proposal's impact assessment, which one did the Commission prefer, and what did it entail?",
+      "gold_answer": "Option 3+: a horizontal EU regulatory framework following a proportionate risk-based approach, imposing mandatory requirements only on high-risk AI systems, plus the possibility for providers of non-high-risk AI systems to voluntarily adopt a code of conduct.",
+      "model_answer": [
+        "The preferred option by the Commission is Option 3+, a regulatory framework for high-risk AI systems only, with the possibility for all providers of non-high-risk AI systems to follow a code of conduct."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer incorrectly states that all providers of non-high-risk AI systems are allowed to follow a code of conduct, while the gold answer specifies that only non-high-risk AI systems can voluntarily adopt a code of conduct."
+    },
+    {
+      "id": "q020",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Per Article 85 of the AI Act proposal, how long after entry into force does the Regulation generally become applicable?",
+      "gold_answer": "24 months following entry into force, with earlier application for specific provisions (Title III Chapter 4 and Title VI apply after 3 months, and Article 71 applies after 12 months).",
+      "model_answer": [
+        "The Regulation becomes applicable three months following the entry into force."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer incorrectly states that the Regulation becomes applicable three months following the entry into force, whereas the gold answer specifies that specific provisions like Article 71 apply after 12 months and other parts become applicable within 24 months from the entry into force with earlier application for certain provisions."
+    },
+    {
+      "id": "q021",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "The NIST GAI Profile's Appendix A.1.5 describes four types of AI red-teaming based on participant composition. What are they, and which one is explicitly described as GAI performing red-teaming in combination with humans?",
+      "gold_answer": "General Public, Expert, Combination, and Human/AI. The 'Human/AI' type is described as 'Performed by GAI in combination with specialist or non-specialist human teams,' and is noted as potentially more cost-effective than human red-teamers alone.",
+      "model_answer": [
+        "The NIST GAI Profile's Appendix A.1.5 describes four types of AI red-teaming based on participant composition:\n- General Public: Performed by non-expert users who may have lived experiences and perspectives.\n- Expert: Performed by specialists with domain expertise.\n- Combination: Involves both expert participants and general public members, potentially for tasks like modifying or verifying prompts.\n- Human / AI: Described as GAI performing red-teaming in combination with specialist or non-specialist human teams.\n\nThe type explicitly described as GAI performing red-teaming in combination with humans is the \"Human/AI\" type."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately describes the four types of AI red-teaming as outlined in Appendix A.1.5 and correctly identifies \"Human/AI\" as GAI performing red-teaming in combination with specialist or non-specialist human teams, which matches exactly with the gold answer."
+    },
+    {
+      "id": "q022",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "Section 10.1 of the Agentic RAG survey cautions that 'Agentic RAG should not be viewed as a universal replacement for traditional RAG' due to added complexity and cost. Using Table 3's ratings, which architectures have the highest Engineering Complexity and Latency ratings, and how does this support the caution in Section 10.1?",
+      "gold_answer": "Hierarchical/Corrective RAG and Graph-Based/Document-Centric RAG both have 'High' Engineering Complexity; Hierarchical/Corrective RAG has 'High' Latency and Graph-Based/Document-Centric RAG has 'Moderate to high' Latency (Table 3). This supports Section 10.1's caution that agentic designs introduce coordination complexity, latency, and computational cost, so simple or well-scoped queries are better served by lower-overhead modular RAG pipelines.",
+      "model_answer": [
+        "The Architectural Control Structure of Hierarchical / Corrective RAG has the highest Engineering Complexity rating (High) according to Table 3. The Architectural Control Structure of Agentic Document Workflows (ADW) also has a High Engineering Complexity rating.\n\nFor Latency, the Architectural Control Structure of Agentic Document Workflows (ADW) has the highest Latency rating (High). \n\nThese high ratings support the caution in Section 10.1 that Agentic RAG should not be viewed as a universal replacement for traditional RAG due to added complexity and cost. The hierarchical control structure requires sophisticated orchestration mechanisms, which can introduce coordination complexity. Additionally, the ADW's high latency suggests increased computational overhead and resource requirements, indicating higher costs in terms of time and potentially hardware resources."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer incorrectly identifies Hierarchical/Corrective RAG as having the highest Engineering Complexity rating, while the gold answer states that Hierarchical/Corrective RAG has 'High' Latency and Graph-Based/Document-Centric RAG has 'Moderate to high' Latency."
+    },
+    {
+      "id": "q023",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "Article 71 of the AI Act proposal sets the highest tier of administrative fines (up to \u20ac30,000,000 or 6% of turnover) for violations of two specific articles. What does each of those two articles require?",
+      "gold_answer": "Article 5 lays down the list of prohibited AI practices (e.g., subliminal manipulation, exploiting vulnerabilities, social scoring, real-time remote biometric identification in public spaces for law enforcement). Article 10 sets data and data governance requirements for high-risk AI systems, requiring training, validation, and testing data sets to be relevant, representative, free of errors, and complete, among other governance practices.",
+      "model_answer": [
+        "Article 5 prohibits certain artificial intelligence practices. Article 10 requires compliance with requirements laid down in it.\n\nThe first article that sets the highest tier of administrative fines is Article 5, which prohibits specific AI practices deemed harmful or contrary to Union values. The second article requiring such high fines is Article 10, where non-compliance would subject an entity to a fine up to 6% of its total worldwide annual turnover or \u20ac30 million, whichever is higher. This article likely sets requirements for the design, development, and use of AI systems that are deemed essential to ensure safety and respect for fundamental rights."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer incorrectly identifies Article 5 as prohibiting specific AI practices, while the gold answer states that Article 5 lays down the list of prohibited AI practices. The system also misrepresents Article 10 by stating it requires compliance with requirements laid down in it, when the gold answer indicates that non-compliance would subject an entity to a fine up to 6% of its total worldwide annual turnover or \u20ac30 million, whichever is higher."
+    },
+    {
+      "id": "q024",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "GOVERN 1.3 (action GV-1.3-002) in the NIST GAI Profile recommends establishing minimum performance/assurance thresholds before deployment approval. Which specific purpose-built NIST testing environment does MEASURE 2.3 (action MS-2.3-004) recommend using to empirically evaluate GAI trustworthy characteristics?",
+      "gold_answer": "NIST Dioptra. MS-2.3-004 recommends utilizing a purpose-built testing environment such as NIST Dioptra to empirically evaluate GAI trustworthy characteristics, addressing risks including CBRN Information or Capabilities, Data Privacy, Confabulation, Information Integrity, Information Security, Dangerous/Violent/Hateful Content, and Harmful Bias and Homogenization.",
+      "model_answer": [
+        "MEASURE 2.3 (action MS-2.3-004) recommends utilizing a purpose-built testing environment such as NIST Dioptra to empirically evaluate GAI trustworthy characteristics, which is in line with GOVERN 1.3's recommendation for establishing minimum performance/assurance thresholds before deployment approval."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer does not mention MEASURE 2.3 and its recommendation, only GOVERN 1.3, which is inconsistent with the gold answer that specifically mentions MS-2.3-004 and NIST Dioptra."
+    },
+    {
+      "id": "q025",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "The Agentic RAG survey distinguishes 'agentic patterns' (Section 3) from 'agentic workflow patterns' (Section 4). Using Reflection (Section 3.1) and Evaluator-Optimizer (Section 4.5) as examples, what is the key structural difference between the two categories?",
+      "gold_answer": "Reflection is a pattern within a single agent's own iterative process: the agent critiques and refines its own output via self-feedback, optionally aided by external tools. Evaluator-Optimizer is a system-level workflow pattern describing how prompts, models, or agents are coordinated: it generates an initial output and iteratively refines it using feedback from a separate evaluation model, operating at the orchestration level rather than a single agent's internal self-critique.",
+      "model_answer": [
+        "Agentic Patterns provide structured methodologies for guiding agent behavior in Agentic Retrieval-Augmented Generation (RAG) systems, while agentic workflow patterns govern how multiple prompts, models, or agents are coordinated at a system level. Reflection and Evaluator-Optimizer are examples of agentic patterns rather than workflow patterns.\n\nReflection is an agentic pattern that enables iterative evaluation and refinement through self-feedback mechanisms for agents to improve their outputs in tasks like code generation, text production, and question answering.\n\nEvaluator-Optimizer (Section 4.5) is a workflow pattern used within the system to manage multiple prompts or models by orchestrating them into loops where one model evaluates another's output before optimizing it further. This does not describe how agents are coordinated across different systems but rather how internal processes operate within a single system, thus falling under agentic patterns.\n\nIn summary, Reflection is an example of an agentic pattern that focuses on improving individual agent outputs through iterative evaluation and refinement, whereas Evaluator-Optimizer (Section 4.5) is a workflow pattern used to manage the coordination of multiple models or prompts within a system."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's description of Evaluator-Optimizer as a workflow pattern is incorrect according to the gold answer, which states that it describes how prompts, models, or agents are coordinated at a system level and operates at the orchestration level rather than within a single agent's internal self-critique."
+    },
+    {
+      "id": "q026",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Both The AI Act and the NIST GAI Profile address AI systems that could manipulate or harm people, but they take different regulatory approaches. What does Article 5(a) of the AI Act do about subliminal manipulation, and how does this differ from how the NIST GAI Profile treats 'Dangerous, Violent, or Hateful Content' as a GAI risk?",
+      "gold_answer": "Article 5(a) of the AI Act legally prohibits placing on the market, putting into service, or using an AI system that deploys subliminal techniques beyond a person's consciousness to materially distort behavior in a way that causes or is likely to cause physical or psychological harm \u2014 an outright ban. By contrast, the NIST GAI Profile's 'Dangerous, Violent, or Hateful Content' risk (Section 2.3) is treated as a risk to be managed through suggested governance, mapping, measuring, and management actions (e.g., content filters, red-teaming) rather than a prohibited practice, since NIST's document is a voluntary risk-management framework, not a binding legal prohibition.",
+      "model_answer": [
+        "Article 5(a) of the AI Act prohibits placing on the market, putting into service or use an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behavior in a manner that causes or is likely to cause physical or psychological harm. \n\nThe NIST GAI Profile does not specifically address subliminal manipulation as a risk category. Instead, it focuses on 'Dangerous, Violent, or Hateful Content' which poses risks of harassment and discrimination. The approach differs because the AI Act directly addresses the specific issue of subliminal techniques that can manipulate people without their awareness, while the NIST GAI Profile categorizes content based on its potential to cause harm through explicit messages rather than covert ones."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately reflects that Article 5(a) of the AI Act prohibits subliminal manipulation, which aligns with the gold answer stating an outright ban. The system also correctly identifies the NIST GAI Profile's approach as focusing on 'Dangerous, Violent, or Hateful Content' and not addressing subliminal techniques directly, matching the gold answer's description of how this risk is managed through governance, mapping, measuring, and management actions rather than being prohibited."
+    },
+    {
+      "id": "q027",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "How does the Agentic RAG survey's Corrective RAG architecture aim to reduce hallucination/misinformation risk, and which specific NIST GAI Profile suggested action (by Action ID) recommends a similar mitigation for the 'Confabulation' risk?",
+      "gold_answer": "Corrective RAG uses a Relevance Evaluation Agent to flag irrelevant or ambiguous retrieved documents and an External Knowledge Retrieval Agent to fetch supplementary information when context is insufficient, before a Response Synthesis Agent generates the final answer \u2014 described as providing 'Factuality Assurance' by validating all retrieved and generated content. The NIST GAI Profile's action MS-2.5-003 recommends a similar mitigation for the 'Confabulation' risk: 'Review and verify sources and citations in GAI system outputs during pre-deployment risk measurement and ongoing monitoring activities.'",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer does not accurately reflect the gold answer, as the gold answer provides specific details about Corrective RAG's architecture and mentions an NIST GAI Profile action, which are not present in the system's response."
+    },
+    {
+      "id": "q028",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Article 10(3) of the AI Act requires training, validation, and testing data sets for high-risk AI systems to be 'relevant, representative, free of errors and complete.' Which NIST GAI Profile risk category most directly addresses the harm that can result when GAI training data lacks these qualities?",
+      "gold_answer": "'Harmful Bias and Homogenization' (NIST GAI Profile, Section 2.6), which describes how non-representative training data can cause performance disparities between subgroups or languages, amplify societal biases, and lead to discriminatory decision-making \u2014 the risk that Article 10's data-quality requirements are designed to mitigate.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer states it doesn't have enough information to answer, while the gold answer directly links this gap in information to 'Harmful Bias and Homogenization' (NIST GAI Profile, Section 2.6), indicating that the system's response is inconsistent with the gold answer as it fails to acknowledge the relevance of this specific risk category."
+    },
+    {
+      "id": "q029",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Section 12.5 of the Agentic RAG survey identifies 'Safety, Trust, and Governance in Autonomous RAG Systems' as an open challenge, noting that tracing responsibility is difficult in multi-agent settings. Which NIST GAI Profile risk category most directly corresponds to concerns about misconfigurations and poor interactions between humans and AI systems?",
+      "gold_answer": "'Human-AI Configuration' (NIST GAI Profile, Section 2.7), which covers risks of misconfigurations and poor interactions between a system and the humans interacting with it, including automation bias and over-reliance \u2014 closely related to the accountability and oversight gaps the Agentic RAG survey raises for autonomous multi-agent systems.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer states it doesn't have enough information to answer, while the gold answer specifically mentions 'Human-AI Configuration' (NIST GAI Profile, Section 2.7), which directly corresponds to concerns about misconfigurations and poor interactions between humans and AI systems. This indicates a mismatch in addressing the specific concern raised by the question."
+    },
+    {
+      "id": "q030",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Compare the AI Act's definition of 'AI system' (Article 3(1)) with the NIST GAI Profile's description of what 'Generative AI' covers (footnote 1). Based on these definitions, would a generative foundation model as NIST describes it generally qualify as an 'AI system' under the AI Act?",
+      "gold_answer": "The AI Act (Article 3(1)) defines an 'AI system' as software developed with one or more of the techniques/approaches listed in Annex I that, for human-defined objectives, generates outputs such as content, predictions, recommendations, or decisions influencing its environment. NIST's footnote 1 describes Generative AI as models that 'emulate the structure and characteristics of input data in order to generate derived synthetic content' such as images, video, audio, or text, generally referring to generative foundation models. Since GAI models generate outputs (synthetic content) toward human-defined objectives, they would generally fall within the AI Act's broad, technology-neutral 'AI system' definition \u2014 though fully confirming this would require checking Annex I's specific list of techniques, which is not included in this corpus.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer states \"I don't have enough information in this document to answer that\" which contradicts the gold answer, which provides detailed information about both definitions and their relationship."
+    },
+    {
+      "id": "q031",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "What specific percentage reduction in hallucination/confabulation rates does the NIST GAI Profile or the Agentic RAG survey report when comparing retrieval-augmented generation to non-RAG systems?",
+      "gold_answer": "Not stated in the corpus. Both documents discuss confabulation/hallucination and describe RAG-based mitigations (e.g., Corrective RAG's 'Factuality Assurance', NIST's MS-2.5-003 citation verification) qualitatively, but neither document provides a specific quantified percentage reduction in hallucination rates.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED"
+    },
+    {
+      "id": "q032",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "According to The AI Act document in this corpus, what specific monetary penalty applies to a company's failure to conduct a Fundamental Rights Impact Assessment?",
+      "gold_answer": "Not stated in the corpus. This document is the European Commission's original 2021 legislative proposal (COM(2021) 206 final); it does not contain a Fundamental Rights Impact Assessment requirement at all (that obligation was introduced in later versions of the AI Act), so no corresponding penalty appears in this text.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED"
+    },
+    {
+      "id": "q033",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "What maximum energy consumption threshold, in kWh, does the NIST GAI Profile recommend before a GAI training run must undergo mandatory environmental review?",
+      "gold_answer": "Not stated in the corpus. The NIST GAI Profile discusses environmental impacts of GAI qualitatively (e.g., comparing training a single transformer LLM's carbon emissions to 300 round-trip flights) and lists suggested actions like measuring and documenting environmental impacts, but it does not specify any numeric energy threshold or mandatory review trigger.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED"
+    },
+    {
+      "id": "q034",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "Which benchmark dataset does the Agentic RAG survey identify as achieving the highest accuracy score for evaluating multi-agent coordination overhead?",
+      "gold_answer": "Not stated in the corpus. The survey lists numerous benchmarks (e.g., BEIR, MS MARCO, TREC, MuSiQue, HotpotQA, RAGBench) in Section 11 and notes coordination overhead as an open challenge in Section 12.1, but it never ranks benchmarks by accuracy for measuring coordination overhead specifically.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED"
+    },
+    {
+      "id": "q035",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "What year-over-year percentage growth in global spending on Agentic RAG tools does the survey report for 2025?",
+      "gold_answer": "Not stated in the corpus. The Agentic RAG survey discusses applications, tools, and frameworks (Sections 7-8) but does not include any market-spending or financial growth statistics.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED"
+    },
+    {
+      "id": "q036",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "According to Table 1 ('Comparative Analysis of RAG Paradigms') in the Agentic RAG survey, what two strengths are listed for Na\u00efve RAG?",
+      "gold_answer": "Simple and easy to implement; Suitable for fact-based queries.",
+      "model_answer": [
+        "The two strengths listed for Na\u00efve RAG in Table 1 ('Comparative Analysis of RAG Paradigms') are:\n\n- Key Features: Simple and easy to implement\n- Strengths: Na\u00efve RAG"
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer includes \"Key Features\" instead of \"Strengths\", which is inconsistent with the gold answer that specifies \"Simple and easy to implement; Suitable for fact-based queries\"."
+    },
+    {
+      "id": "q037",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "According to Table 3 ('Taxonomy-Driven Comparison of Agentic RAG Architectures'), what is the Latency rating for Hierarchical/Corrective RAG, and how does it compare to Single-Agent RAG's Latency rating?",
+      "gold_answer": "Hierarchical/Corrective RAG has 'High' latency, while Single-Agent RAG has 'Low' latency.",
+      "model_answer": [
+        "The Latency rating for Hierarchical/Corrective RAG in Table 3 is High, while for Single-Agent RAG it is Low."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately reflects the information provided in the gold answer, stating that Hierarchical/Corrective RAG has 'High' latency and Single-Agent RAG has 'Low' latency, which matches exactly with the gold answer."
+    },
+    {
+      "id": "q038",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "According to Table 2 ('Comparative Analysis: Traditional RAG vs Agentic RAG vs Agentic Document Workflows'), how does 'Context Maintenance' differ between Traditional RAG and Agentic Document Workflows (ADW)?",
+      "gold_answer": "Traditional RAG's Context Maintenance is 'Limited', while ADW 'Maintains state across multi-step workflows.'",
+      "model_answer": [
+        "According to Table 2, Context Maintenance is limited in Traditional RAG but maintained across multi-step workflows by Agentic Document Workflows (ADW)."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately reflects the information provided in the gold answer, maintaining consistency regarding the comparison of Context Maintenance between Traditional RAG and Agentic Document Workflows (ADW) as stated in Table 2. The terms 'Limited' for Traditional RAG and 'Maintains state across multi-step workflows' for ADW are correctly mirrored without altering the core factual information."
+    },
+    {
+      "id": "q039",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "In the NIST GAI Profile's GOVERN 1.1 table, which GAI Risks are tagged to action GV-1.1-001 ('Align GAI development and use with applicable laws and regulations...')?",
+      "gold_answer": "Data Privacy; Harmful Bias and Homogenization; Intellectual Property.",
+      "model_answer": [
+        "The GAI Risk tagged to action GV-1.1-001 is Data Privacy; Harmful Bias and Homogenization; Intellectual Property."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe gold answer specifies \"Data Privacy; Harmful Bias and Homogenization; Intellectual Property\" while the system's answer lists them as separate items, which is not consistent with the structure of the gold answer where they are presented as a single entity tagged to action GV-1.1-001."
+    },
+    {
+      "id": "q040",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "In the NIST GAI Profile's MEASURE 2.3 table, what GAI Risks are tagged to action MS-2.3-001 ('Consider baseline model performance on suites of benchmarks when selecting a model for fine tuning or enhancement with retrieval-augmented generation')?",
+      "gold_answer": "Information Security; Confabulation.",
+      "model_answer": [
+        "The GAI Risk tagged to the suggested action MS-2.3-001 is Information Security."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe gold answer specifies \"Information Security; Confabulation\" while the system's answer only mentions \"Information Security\". Therefore, it does not match the gold answer exactly."
+    }
+  ],
+  "config": {
+    "mode": "hybrid",
+    "rerank": true,
+    "final_k": 8,
+    "num_ctx": 8192
+  }
+}

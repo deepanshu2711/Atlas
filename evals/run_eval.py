@@ -7,6 +7,7 @@ Usage:
 """
 from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
 from app.utils.llm_factory import llm
+from app.core.config import settings
 from app.services.query import QueryService
 from app.utils.reranker import get_reranker
 from app.services.documents import DocumentsService
@@ -292,6 +293,11 @@ async def main():
     report = summarize(results)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     suffix = "_v2" if use_v2 else ""
+    if use_v2:  # record which retrieval config produced this run
+        cfg = {"mode": settings.retrieval_mode, "rerank": settings.rerank_enabled,
+               "final_k": settings.final_k, "num_ctx": llm.num_ctx}
+        report["config"] = cfg
+        suffix += f"_{cfg['mode']}{'_rerank' if cfg['rerank'] else ''}_k{cfg['final_k']}"
     out_path = RESULTS_DIR / f"{ts}{suffix}.json"
     with open(out_path, "w") as f:
         json.dump(report, f, indent=2)
