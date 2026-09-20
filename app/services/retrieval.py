@@ -15,6 +15,25 @@ def dense_search(query: str, doc_id: str, k: int, use_v2: bool) -> list[Document
     return store.similarity_search(query=query, k=k, filter=doc_filter(doc_id))
 
 
+def _chunk_key(doc: Document) -> tuple[str, int]:
+    return doc.metadata["doc_id"], doc.metadata["chunk_index"]
+
+
+def rrf_fuse(rankings: list[list[Document]], rrf_k: int) -> list[Document]:
+    """Reciprocal Rank Fusion: each chunk scores sum(1 / (rrf_k + rank)) over
+    the rankings it appears in (rank starts at 1). Only ranks matter, so the
+    incomparable dense and BM25 scores never need to be normalised."""
+    scores: dict[tuple[str, int], float] = {}
+    docs: dict[tuple[str, int], Document] = {}
+    for ranking in rankings:
+        for rank, doc in enumerate(ranking, 1):
+            key = _chunk_key(doc)
+            scores[key] = scores.get(key, 0.0) + 1.0 / (rrf_k + rank)
+            docs.setdefault(key, doc)
+    # sorted() is stable, so equal scores keep first-seen order (dense first)
+    return [docs[key] for key in sorted(scores, key=scores.get, reverse=True)]
+
+
 def retrieve(
     query: str,
     doc_id: str,
@@ -34,4 +53,11 @@ def retrieve(
         return dense_search(query, doc_id, k, use_v2)
     if mode == "bm25":
         return bm25_search(query, doc_id, k, use_v2)
+    if mode == "hybrid":
+        n = settings.candidate_k
+        fused = rrf_fuse([
+            dense_search(query, doc_id, n, use_v2),
+            bm25_search(query, doc_id, n, use_v2),
+        ], settings.rrf_k)
+        return fused[:k]
     raise NotImplementedError(f"retrieval_mode={mode!r} is not implemented yet")

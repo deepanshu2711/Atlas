@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     qdrant_timeout_seconds: int = 180
     retrieval_mode: Literal["dense", "bm25", "hybrid"] = "dense"
     final_k: int = 3
+    candidate_k: int = 40
+    rrf_k: int = 60
 
     model_config = SettingsConfigDict(env_file=".env")
 
