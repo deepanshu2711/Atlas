@@ -237,6 +237,33 @@ a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is id
 | 2026-09-11 | 25% (10/40) | 25% (5/20) | 0% (0/5) | 0% (0/5) | 0% (0/5) | 100% (5/5) | Naive baseline: 512-char fixed chunks, dense top-3, no reranking | `evals/results/20260911T064416Z.json` |
 | 2026-09-19 | 42.5% (17/40) | 55% (11/20) | 0% (0/5) | 20% (1/5) | 0% (0/5) | 100% (5/5) | v2: Docling parsing + HybridChunker (table structure and OCR off); run with `--v2` | `evals/results/20260919T123003Z_v2.json` |
 
+**Retrieval results (retrieval-only, no LLM or judge)**:
+
+```bash
+PYTHONPATH=. uv run python evals/run_eval.py --retrieval-only --mode dense|bm25|hybrid
+```
+
+Page-level metrics over the 35 answerable questions: a chunk counts as a hit for every
+page it spans, and each question's gold pages come from the `page` field in `golden.jsonl`.
+`R@k` is the fraction of gold pages covered by the top k chunks, `H@k` is the fraction of
+questions with at least one gold page in the top k, and `MRR` is the mean reciprocal rank of
+the first chunk covering a gold page. The run always retrieves 40 chunks and reports @3/@8/@40;
+`final_k` (default 8) only controls how many chunks `QueryService.query` sends to the LLM.
+
+| Config | R@3 | R@8 | R@40 | H@3 | H@8 | MRR | Report |
+|---|---|---|---|---|---|---|---|
+| dense (baseline) | 0.795 | 0.910 | 0.981 | 0.829 | 0.943 | 0.755 | `evals/results/20260919T181044Z_retrieval_dense.json` |
+| BM25 | 0.824 | 0.881 | 0.990 | 0.857 | 0.914 | 0.800 | `evals/results/20260919T181929Z_retrieval_bm25.json` |
+| hybrid (dense + BM25, RRF k=60, 40 candidates each) | 0.781 | 0.938 | 0.981 | 0.829 | 0.971 | 0.777 | `evals/results/20260920T080459Z_retrieval_hybrid.json` |
+
+Caveats: with 35 questions one question moves an average by about 0.03, so small gaps are
+within noise. Hybrid helps at 8 chunks but not at 3. The cross-encoder rerank is not measured yet.
+
+Context-size warning: with `final_k=8` the estimated prompt (chars / 3.5) exceeds the LLM's
+`num_ctx=4096` for 14 of 35 questions with dense retrieval and 21 of 35 with hybrid (median about
+13-15k characters). Ollama truncates an over-long prompt, so end-to-end accuracy at `final_k=8`
+is not yet validated; raise `num_ctx` or lower `final_k` if answers degrade.
+
 ## Build plan & status
 
 - [x] **0 — Golden set before code.** `evals/golden.jsonl`: 40 questions over 3 real PDFs in `docs/` — 20 single-hop, 10 multi-hop, 5 unanswerable, 5 table-lookup — each with a hand-written answer and source page.

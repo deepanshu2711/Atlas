@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     docling_table_structure_enabled: bool = False
     qdrant_timeout_seconds: int = 180
     retrieval_mode: Literal["dense", "bm25", "hybrid"] = "dense"
-    final_k: int = 3
+    final_k: int = 8
     candidate_k: int = 40
     rrf_k: int = 60
 
