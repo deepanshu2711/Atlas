@@ -255,9 +255,17 @@ the first chunk covering a gold page. The run always retrieves 40 chunks and rep
 | dense (baseline) | 0.795 | 0.910 | 0.981 | 0.829 | 0.943 | 0.755 | `evals/results/20260919T181044Z_retrieval_dense.json` |
 | BM25 | 0.824 | 0.881 | 0.990 | 0.857 | 0.914 | 0.800 | `evals/results/20260919T181929Z_retrieval_bm25.json` |
 | hybrid (dense + BM25, RRF k=60, 40 candidates each) | 0.781 | 0.938 | 0.981 | 0.829 | 0.971 | 0.777 | `evals/results/20260920T080459Z_retrieval_hybrid.json` |
+| dense + rerank (`bge-reranker-base`, 40 candidates) | 0.895 | 0.938 | 0.981 | 0.943 | 0.971 | 0.878 | `evals/results/20260920T092400Z_retrieval_dense_rerank.json` |
+| **hybrid + rerank** (`bge-reranker-base`, 40 candidates) | **0.952** | **0.967** | 0.981 | **1.000** | **1.000** | **0.914** | `evals/results/20260920T092053Z_retrieval_hybrid_rerank.json` |
 
 Caveats: with 35 questions one question moves an average by about 0.03, so small gaps are
-within noise. Hybrid helps at 8 chunks but not at 3. The cross-encoder rerank is not measured yet.
+within noise. Hybrid helps at 8 chunks but not at 3. The cross-encoder rerank
+(`--rerank`, model set by `RERANKER_MODEL`, default `BAAI/bge-reranker-base`, off unless `RERANK_ENABLED=true`)
+gives the biggest gain: hybrid + rerank puts a gold page in the top 3 for every question (H@3 1.000) and
+lifts R@3 from 0.781 to 0.952 and MRR from 0.777 to 0.914. R@40 is unchanged because the reranker only reorders
+the 40 candidates. Cost: mean retrieval latency about 3.0 s/query on this CPU versus 0.52 s without rerank.
+Remaining recall misses are all `multi_hop` (R@3 0.667), where several pages are needed at once.
+End-to-end accuracy with rerank has not been measured yet; these numbers are retrieval only.
 
 Context-size warning: with `final_k=8` the estimated prompt (chars / 3.5) exceeds the LLM's
 `num_ctx=4096` for 14 of 35 questions with dense retrieval and 21 of 35 with hybrid (median about

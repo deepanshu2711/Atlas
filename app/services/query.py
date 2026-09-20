@@ -32,9 +32,11 @@ class QueryService:
         self.document_repository = DocumentsRepository(session)
 
     def retrieve(self, payload: QueryPayload, k: int | None = None,
-                 mode: RetrievalMode | None = None) -> list[Document]:
+                 mode: RetrievalMode | None = None,
+                 use_rerank: bool | None = None) -> list[Document]:
         return retrieve(payload.query, payload.document_id,
-                        use_v2=payload.use_v2, k=k, mode=mode)
+                        use_v2=payload.use_v2, k=k, mode=mode,
+                        use_rerank=use_rerank)
 
     async def query(self, payload: QueryPayload):
         document = self.document_repository.find_by_id(payload.document_id)

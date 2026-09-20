@@ -3,11 +3,12 @@ QueryService pipeline and scores answers with an LLM judge.
 
 Usage:
     uv run python evals/run_eval.py
-    uv run python evals/run_eval.py --v2 --retrieval-only [--mode dense|bm25|hybrid]   # no LLM; page recall@k / MRR
+    uv run python evals/run_eval.py --v2 --retrieval-only [--mode dense|bm25|hybrid] [--rerank]   # no LLM; page recall@k / MRR
 """
 from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
 from app.utils.llm_factory import llm
 from app.services.query import QueryService
+from app.utils.reranker import get_reranker
 from app.services.documents import DocumentsService
 from app.schemas.query import QueryPayload
 from app.repositories.documents import DocumentsRepository
@@ -15,6 +16,7 @@ from app.core.database import engine
 import asyncio
 import json
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -195,15 +197,21 @@ def score_retrieval(gold_pages: list[int], docs) -> dict:
     return out
 
 
-def run_retrieval_only(session: Session, golden: list[dict], name_to_doc_id: dict, mode=None) -> dict:
+def run_retrieval_only(session: Session, golden: list[dict], name_to_doc_id: dict, mode=None, use_rerank=False) -> dict:
     per_question = []
+    latencies = []
+    if use_rerank:
+        get_reranker()  # load the model up front so it isn't counted as query latency
     for item in golden:
         if item["type"] == "unanswerable":
             continue
         doc_name = item["doc"][0] if isinstance(item["doc"], list) else item["doc"]
         payload = QueryPayload(query=item["question"],
                                document_id=name_to_doc_id[doc_name], use_v2=True)
-        docs = QueryService(session).retrieve(payload, k=max(RETRIEVAL_KS), mode=mode)
+        start = time.perf_counter()
+        docs = QueryService(session).retrieve(
+            payload, k=max(RETRIEVAL_KS), mode=mode, use_rerank=use_rerank)
+        latencies.append(time.perf_counter() - start)
         gold = gold_pages_for_queried_doc(item)
         per_question.append({
             "id": item["id"], "type": item["type"],
@@ -222,7 +230,8 @@ def run_retrieval_only(session: Session, golden: list[dict], name_to_doc_id: dic
     for r in per_question:
         by_type.setdefault(r["type"] + ("_cross_document" if r["cross_document"] else ""), []).append(r)
     return {
-        "overall": {"total": len(per_question), **{m: mean(per_question, m) for m in metric_keys}},
+        "overall": {"total": len(per_question), **{m: mean(per_question, m) for m in metric_keys},
+                    "mean_latency_s": round(sum(latencies) / len(latencies), 3) if latencies else None},
         "by_type": {t: {"total": len(rows), **{m: mean(rows, m) for m in metric_keys}}
                     for t, rows in by_type.items()},
         "results": per_question,
@@ -235,6 +244,7 @@ def print_retrieval_summary(report: dict):
     print("=" * 72)
     cols = [f"R@{k}" for k in RETRIEVAL_KS] + [f"H@{k}" for k in RETRIEVAL_KS] + ["MRR"]
     keys = [f"recall@{k}" for k in RETRIEVAL_KS] + [f"hit@{k}" for k in RETRIEVAL_KS] + ["mrr"]
+    print(f"mean retrieval latency: {report['overall']['mean_latency_s']}s/query")
     print(f"{'':32s}{'n':>3s} " + " ".join(f"{c:>6s}" for c in cols))
     rows = [("overall", report["overall"])] + sorted(report["by_type"].items())
     for name, s in rows:
@@ -254,9 +264,10 @@ async def main():
               list(name_to_doc_id)}")
 
         if retrieval_only:
-            report = run_retrieval_only(session, golden, name_to_doc_id, mode=arg_value('--mode'))
+            report = run_retrieval_only(session, golden, name_to_doc_id, mode=arg_value('--mode'),
+                                        use_rerank='--rerank' in sys.argv)
             ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-            out_path = RESULTS_DIR / f"{ts}_retrieval_{arg_value('--mode') or 'default'}.json"
+            out_path = RESULTS_DIR / f"{ts}_retrieval_{arg_value('--mode') or 'default'}{'_rerank' if '--rerank' in sys.argv else ''}.json"
             with open(out_path, "w") as f:
                 json.dump(report, f, indent=2)
             print_retrieval_summary(report)

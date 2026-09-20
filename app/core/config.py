@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     final_k: int = 8
     candidate_k: int = 40
     rrf_k: int = 60
+    rerank_enabled: bool = False
+    reranker_model: str = "BAAI/bge-reranker-base"
 
     model_config = SettingsConfigDict(env_file=".env")
 

@@ -1,0 +1,1562 @@
+{
+  "overall": {
+    "total": 35,
+    "recall@3": 0.895,
+    "hit@3": 0.943,
+    "recall@8": 0.938,
+    "hit@8": 0.971,
+    "recall@40": 0.981,
+    "hit@40": 1.0,
+    "mrr": 0.878,
+    "mean_latency_s": 3.003
+  },
+  "by_type": {
+    "single_hop": {
+      "total": 20,
+      "recall@3": 0.95,
+      "hit@3": 0.95,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.908
+    },
+    "multi_hop": {
+      "total": 5,
+      "recall@3": 0.667,
+      "hit@3": 1.0,
+      "recall@8": 0.767,
+      "hit@8": 1.0,
+      "recall@40": 0.867,
+      "hit@40": 1.0,
+      "mrr": 0.8
+    },
+    "multi_hop_cross_document": {
+      "total": 5,
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.9
+    },
+    "table_lookup": {
+      "total": 5,
+      "recall@3": 0.8,
+      "hit@3": 0.8,
+      "recall@8": 0.8,
+      "hit@8": 0.8,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.814
+    }
+  },
+  "results": [
+    {
+      "id": "q001",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        6
+      ],
+      "retrieved_pages": [
+        [
+          5,
+          6
+        ],
+        [
+          51
+        ],
+        [
+          5
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          51
+        ],
+        [
+          28,
+          29
+        ],
+        [
+          30
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q002",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        12
+      ],
+      "retrieved_pages": [
+        [
+          12
+        ],
+        [
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          47
+        ],
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          10
+        ],
+        [
+          7
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q003",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        10
+      ],
+      "retrieved_pages": [
+        [
+          10
+        ],
+        [
+          8
+        ],
+        [
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          34,
+          35
+        ],
+        [
+          18
+        ],
+        [
+          48,
+          49
+        ],
+        [
+          39
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q004",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        17
+      ],
+      "retrieved_pages": [
+        [
+          17
+        ],
+        [
+          46
+        ],
+        [
+          5
+        ],
+        [
+          47
+        ],
+        [
+          48,
+          49
+        ],
+        [
+          49
+        ],
+        [
+          48
+        ],
+        [
+          22
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q005",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        2
+      ],
+      "retrieved_pages": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          5
+        ],
+        [
+          3
+        ],
+        [
+          60
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          61
+        ],
+        [
+          3
+        ],
+        [
+          60,
+          61
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q006",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        53
+      ],
+      "retrieved_pages": [
+        [
+          53
+        ],
+        [
+          5
+        ],
+        [
+          31
+        ],
+        [
+          33
+        ],
+        [
+          43
+        ],
+        [
+          43
+        ],
+        [
+          32
+        ],
+        [
+          27
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q007",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        40
+      ],
+      "retrieved_pages": [
+        [
+          40
+        ],
+        [
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          37
+        ],
+        [
+          25
+        ],
+        [
+          34,
+          35
+        ],
+        [
+          44
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q008",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        20
+      ],
+      "retrieved_pages": [
+        [
+          20
+        ],
+        [
+          1
+        ],
+        [
+          33
+        ],
+        [
+          36
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          14
+        ],
+        [
+          2
+        ],
+        [
+          29
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q009",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        4
+      ],
+      "retrieved_pages": [
+        [
+          4
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          36
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q010",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        9
+      ],
+      "retrieved_pages": [
+        [
+          27
+        ],
+        [
+          9
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          36
+        ],
+        [
+          2
+        ],
+        [
+          8
+        ],
+        [
+          32
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.5
+    },
+    {
+      "id": "q011",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        25
+      ],
+      "retrieved_pages": [
+        [
+          25
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          2
+        ],
+        [
+          31
+        ],
+        [
+          1
+        ],
+        [
+          11
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q012",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        1
+      ],
+      "retrieved_pages": [
+        [
+          1
+        ],
+        [
+          36
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          29
+        ],
+        [
+          32
+        ],
+        [
+          30
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q013",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        83
+      ],
+      "retrieved_pages": [
+        [
+          83
+        ],
+        [
+          84
+        ],
+        [
+          44
+        ],
+        [
+          4
+        ],
+        [
+          22
+        ],
+        [
+          79,
+          80
+        ],
+        [
+          36
+        ],
+        [
+          45,
+          46
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q014",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        83
+      ],
+      "retrieved_pages": [
+        [
+          83
+        ],
+        [
+          82
+        ],
+        [
+          35
+        ],
+        [
+          56
+        ],
+        [
+          36
+        ],
+        [
+          13
+        ],
+        [
+          62
+        ],
+        [
+          12
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q015",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        44
+      ],
+      "retrieved_pages": [
+        [
+          44
+        ],
+        [
+          22
+        ],
+        [
+          13
+        ],
+        [
+          4
+        ],
+        [
+          39
+        ],
+        [
+          12
+        ],
+        [
+          36
+        ],
+        [
+          5
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q016",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        46
+      ],
+      "retrieved_pages": [
+        [
+          46
+        ],
+        [
+          27
+        ],
+        [
+          29,
+          30
+        ],
+        [
+          26
+        ],
+        [
+          4
+        ],
+        [
+          25
+        ],
+        [
+          14
+        ],
+        [
+          34
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q017",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        44
+      ],
+      "retrieved_pages": [
+        [
+          94
+        ],
+        [
+          76
+        ],
+        [
+          45
+        ],
+        [
+          13
+        ],
+        [
+          47
+        ],
+        [
+          44
+        ],
+        [
+          79,
+          80
+        ],
+        [
+          78,
+          79
+        ]
+      ],
+      "recall@3": 0.0,
+      "hit@3": 0.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.16666666666666666
+    },
+    {
+      "id": "q018",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        8
+      ],
+      "retrieved_pages": [
+        [
+          8,
+          9
+        ],
+        [
+          2
+        ],
+        [
+          101
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          2
+        ],
+        [
+          19
+        ],
+        [
+          73
+        ],
+        [
+          6
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q019",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        10
+      ],
+      "retrieved_pages": [
+        [
+          10
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          11
+        ],
+        [
+          2
+        ],
+        [
+          92
+        ],
+        [
+          2
+        ],
+        [
+          28
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q020",
+      "type": "single_hop",
+      "cross_document": false,
+      "gold_pages": [
+        89
+      ],
+      "retrieved_pages": [
+        [
+          94
+        ],
+        [
+          88,
+          89
+        ],
+        [
+          88
+        ],
+        [
+          39
+        ],
+        [
+          39,
+          40
+        ],
+        [
+          2
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          36
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.5
+    },
+    {
+      "id": "q021",
+      "type": "multi_hop",
+      "cross_document": false,
+      "gold_pages": [
+        54,
+        55
+      ],
+      "retrieved_pages": [
+        [
+          54,
+          55
+        ],
+        [
+          53
+        ],
+        [
+          37,
+          38
+        ],
+        [
+          39
+        ],
+        [
+          5
+        ],
+        [
+          22
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          33
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q022",
+      "type": "multi_hop",
+      "cross_document": false,
+      "gold_pages": [
+        32,
+        33
+      ],
+      "retrieved_pages": [
+        [
+          32
+        ],
+        [
+          33
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          29
+        ],
+        [
+          33
+        ],
+        [
+          36
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q023",
+      "type": "multi_hop",
+      "cross_document": false,
+      "gold_pages": [
+        44,
+        49,
+        83
+      ],
+      "retrieved_pages": [
+        [
+          83
+        ],
+        [
+          88,
+          89
+        ],
+        [
+          39
+        ],
+        [
+          83
+        ],
+        [
+          84
+        ],
+        [
+          36
+        ],
+        [
+          4
+        ],
+        [
+          28,
+          29
+        ]
+      ],
+      "recall@3": 0.3333333333333333,
+      "hit@3": 1.0,
+      "recall@8": 0.3333333333333333,
+      "hit@8": 1.0,
+      "recall@40": 0.3333333333333333,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q024",
+      "type": "multi_hop",
+      "cross_document": false,
+      "gold_pages": [
+        18,
+        35
+      ],
+      "retrieved_pages": [
+        [
+          28,
+          29
+        ],
+        [
+          18
+        ],
+        [
+          16
+        ],
+        [
+          18
+        ],
+        [
+          34,
+          35
+        ],
+        [
+          43
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          19
+        ]
+      ],
+      "recall@3": 0.5,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.5
+    },
+    {
+      "id": "q025",
+      "type": "multi_hop",
+      "cross_document": false,
+      "gold_pages": [
+        9,
+        14
+      ],
+      "retrieved_pages": [
+        [
+          2
+        ],
+        [
+          9
+        ],
+        [
+          36
+        ],
+        [
+          1
+        ],
+        [
+          29
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          33
+        ],
+        [
+          11
+        ]
+      ],
+      "recall@3": 0.5,
+      "hit@3": 1.0,
+      "recall@8": 0.5,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.5
+    },
+    {
+      "id": "q026",
+      "type": "multi_hop",
+      "cross_document": true,
+      "gold_pages": [
+        44
+      ],
+      "retrieved_pages": [
+        [
+          22
+        ],
+        [
+          44
+        ],
+        [
+          35
+        ],
+        [
+          27
+        ],
+        [
+          47
+        ],
+        [
+          28
+        ],
+        [
+          39
+        ],
+        [
+          28,
+          29
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.5
+    },
+    {
+      "id": "q027",
+      "type": "multi_hop",
+      "cross_document": true,
+      "gold_pages": [
+        20
+      ],
+      "retrieved_pages": [
+        [
+          20
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          33
+        ],
+        [
+          36
+        ],
+        [
+          20
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q028",
+      "type": "multi_hop",
+      "cross_document": true,
+      "gold_pages": [
+        49
+      ],
+      "retrieved_pages": [
+        [
+          49
+        ],
+        [
+          30,
+          31
+        ],
+        [
+          31
+        ],
+        [
+          51
+        ],
+        [
+          52,
+          53
+        ],
+        [
+          31,
+          32
+        ],
+        [
+          28,
+          29
+        ],
+        [
+          64,
+          65
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q029",
+      "type": "multi_hop",
+      "cross_document": true,
+      "gold_pages": [
+        35
+      ],
+      "retrieved_pages": [
+        [
+          35
+        ],
+        [
+          34
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          9
+        ],
+        [
+          2
+        ],
+        [
+          32
+        ],
+        [
+          36
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q030",
+      "type": "multi_hop",
+      "cross_document": true,
+      "gold_pages": [
+        40
+      ],
+      "retrieved_pages": [
+        [
+          40
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          39
+        ],
+        [
+          43
+        ],
+        [
+          42
+        ],
+        [
+          41
+        ],
+        [
+          13
+        ],
+        [
+          44
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q036",
+      "type": "table_lookup",
+      "cross_document": false,
+      "gold_pages": [
+        8
+      ],
+      "retrieved_pages": [
+        [
+          4
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          2
+        ],
+        [
+          36
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          32
+        ],
+        [
+          29
+        ]
+      ],
+      "recall@3": 0.0,
+      "hit@3": 0.0,
+      "recall@8": 0.0,
+      "hit@8": 0.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 0.07142857142857142
+    },
+    {
+      "id": "q037",
+      "type": "table_lookup",
+      "cross_document": false,
+      "gold_pages": [
+        33
+      ],
+      "retrieved_pages": [
+        [
+          33
+        ],
+        [
+          1
+        ],
+        [
+          33
+        ],
+        [
+          32
+        ],
+        [
+          2
+        ],
+        [
+          14
+        ],
+        [
+          36
+        ],
+        [
+          29
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q038",
+      "type": "table_lookup",
+      "cross_document": false,
+      "gold_pages": [
+        29
+      ],
+      "retrieved_pages": [
+        [
+          29
+        ],
+        [
+          29
+        ],
+        [
+          29
+        ],
+        [
+          32
+        ],
+        [
+          31,
+          32
+        ],
+        [
+          27
+        ],
+        [
+          1
+        ],
+        [
+          8
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q039",
+      "type": "table_lookup",
+      "cross_document": false,
+      "gold_pages": [
+        17
+      ],
+      "retrieved_pages": [
+        [
+          17
+        ],
+        [
+          18
+        ],
+        [
+          21
+        ],
+        [
+          22
+        ],
+        [
+          24
+        ],
+        [
+          5
+        ],
+        [
+          24
+        ],
+        [
+          23
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    },
+    {
+      "id": "q040",
+      "type": "table_lookup",
+      "cross_document": false,
+      "gold_pages": [
+        34
+      ],
+      "retrieved_pages": [
+        [
+          34,
+          35
+        ],
+        [
+          46
+        ],
+        [
+          35,
+          36
+        ],
+        [
+          40,
+          41
+        ],
+        [
+          38
+        ],
+        [
+          39
+        ],
+        [
+          17
+        ],
+        [
+          47
+        ]
+      ],
+      "recall@3": 1.0,
+      "hit@3": 1.0,
+      "recall@8": 1.0,
+      "hit@8": 1.0,
+      "recall@40": 1.0,
+      "hit@40": 1.0,
+      "mrr": 1.0
+    }
+  ]
+}
