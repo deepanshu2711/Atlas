@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     rrf_k: int = 60
     rerank_enabled: bool = False
     reranker_model: str = "BAAI/bge-reranker-base"
+    contextual_chunks_enabled: bool = False
 
     model_config = SettingsConfigDict(env_file=".env")
 

@@ -11,6 +11,7 @@ from app.core.logging import get_logger
 from app.models.documents import Documents
 from app.repositories.documents import DocumentsRepository
 from app.services.bm25 import invalidate as invalidate_bm25
+from app.services.contextualize import build_context_llm, situate_chunk, summarize_document
 from app.utils.store import vector_store, vector_store_v2
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.accelerator_options import AcceleratorOptions
@@ -179,6 +180,18 @@ class DocumentsService:
             doc_id, time.perf_counter() - chunk_start, len(chunks),
         )
 
+        context_llm = None
+        doc_summary = ""
+        if settings.contextual_chunks_enabled and chunks:
+            context_start = time.perf_counter()
+            context_llm = build_context_llm()
+            sample_text = "\n\n".join(c.text for c in chunks[:3])
+            doc_summary = summarize_document(context_llm, sample_text)
+            logger.info(
+                "ingest_document_v2 doc_id=%s stage=doc_summary elapsed=%.2fs",
+                doc_id, time.perf_counter() - context_start,
+            )
+
         texts, metadatas, ids = [], [], []
 
         for idx, chunk in enumerate(chunks):
@@ -195,7 +208,14 @@ class DocumentsService:
                 for item in chunk.meta.doc_items
                 if item.prov
             ]
-            texts.append(chunker.contextualize(chunk))
+            context = ""
+            if context_llm is not None:
+                context = situate_chunk(
+                    context_llm, doc_summary, chunk.meta.headings, chunk.text)
+
+            contextualized = chunker.contextualize(chunk)
+            texts.append(
+                f"{context}\n\n{contextualized}" if context else contextualized)
             metadatas.append({
                 "doc_id": doc_id,
                 "chunk_index": idx,
@@ -203,6 +223,7 @@ class DocumentsService:
                 "block_types": [item.label for item in chunk.meta.doc_items],
                 "pages": sorted({p["page_no"] for p in provenance}),
                 "provenance": provenance,
+                "context": context,
             })
             ids.append(
                 str(uuid.uuid5(uuid.NAMESPACE_URL, f"{doc_id}:v2:{idx}")))
