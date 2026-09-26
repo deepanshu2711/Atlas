@@ -10,13 +10,16 @@ class Settings(BaseSettings):
     docling_ocr_enabled: bool = False
     docling_table_structure_enabled: bool = False
     qdrant_timeout_seconds: int = 180
-    retrieval_mode: Literal["dense", "bm25", "hybrid"] = "dense"
+    retrieval_mode: Literal["dense", "bm25", "hybrid", "graph", "hybrid_graph"] = "dense"
     final_k: int = 8
     candidate_k: int = 40
     rrf_k: int = 60
     rerank_enabled: bool = False
     reranker_model: str = "BAAI/bge-reranker-base"
-    contextual_chunks_enabled: bool = False
+    contextual_chunks_enabled: bool = True
+    graph_enabled: bool = False
+    graph_k: int = 20
+    kuzu_path: str = "data/graph.kuzu"
 
     model_config = SettingsConfigDict(env_file=".env")
 

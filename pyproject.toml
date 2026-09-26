@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.19.2",
     "docling>=2.126.0",
     "fastapi[standard]>=0.141.1",
+    "kuzu>=0.11.3",
     "langchain>=1.4.0",
     "langchain-huggingface>=1.2.2",
     "langchain-ollama>=1.1.0",

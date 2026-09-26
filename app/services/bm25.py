@@ -60,6 +60,12 @@ def _get_index(collection: str, doc_id: str) -> _Index | None:
     return _indexes[key]
 
 
+def chunks_for(doc_id: str, use_v2: bool) -> list[Document]:
+    """All chunks of a document as stored in Qdrant, sorted by chunk_index."""
+    index = _get_index(COLLECTION_NAME_v2 if use_v2 else COLLECTION_NAME, doc_id)
+    return index.docs if index else []
+
+
 def invalidate(doc_id: str) -> None:
     """Drop cached indexes for a document; call after (re-)ingesting it."""
     for collection in (COLLECTION_NAME, COLLECTION_NAME_v2):
