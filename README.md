@@ -273,6 +273,31 @@ Context-size warning: with `final_k=8` the estimated prompt (chars / 3.5) exceed
 13-15k characters). Ollama truncates an over-long prompt, so end-to-end accuracy at `final_k=8`
 is not yet validated; raise `num_ctx` or lower `final_k` if answers degrade.
 
+### Graph retrieval (Kuzu)
+
+With `GRAPH_ENABLED=true`, v2 ingestion asks the LLM for up to 10 entities and 10 relations per
+chunk (one extra call per chunk) and writes them to an embedded Kuzu database at `KUZU_PATH`
+(default `data/graph.kuzu`):
+
+```
+(Chunk)-[:MENTIONS]->(Entity)-[:RELATED {type}]->(Entity)
+```
+
+At query time the graph retriever finds the document's entities whose names appear in the
+question (whole-word match, no LLM call), then scores each chunk 1 point per matched entity it
+mentions plus 0.5 per entity one `RELATED` hop away. `RETRIEVAL_MODE=graph` uses that ranking
+alone; `RETRIEVAL_MODE=hybrid_graph` fuses it (top `GRAPH_K`, default 20) with dense and BM25
+through RRF. A question that names no known entity gets no graph results, and fusion falls back
+to dense + BM25.
+
+```bash
+PYTHONPATH=. uv run python evals/run_eval.py --retrieval-only --mode hybrid_graph [--rerank]
+```
+
+The eval builds the graph for documents ingested before the graph existed, reading their chunks
+from Qdrant rather than re-parsing. Kuzu holds a file lock, so stop the API server before running
+the eval against the same `KUZU_PATH`. No graph results are recorded yet.
+
 ## Build plan & status
 
 - [x] **0 — Golden set before code.** `evals/golden.jsonl`: 40 questions over 3 real PDFs in `docs/` — 20 single-hop, 10 multi-hop, 5 unanswerable, 5 table-lookup — each with a hand-written answer and source page.

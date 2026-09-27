@@ -3,7 +3,7 @@ QueryService pipeline and scores answers with an LLM judge.
 
 Usage:
     uv run python evals/run_eval.py
-    uv run python evals/run_eval.py --v2 --retrieval-only [--mode dense|bm25|hybrid] [--rerank]   # no LLM; page recall@k / MRR
+    uv run python evals/run_eval.py --v2 --retrieval-only [--mode dense|bm25|hybrid|graph|hybrid_graph] [--rerank]   # no LLM; page recall@k / MRR
 """
 from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
 from app.utils.llm_factory import llm
@@ -11,6 +11,9 @@ from app.core.config import settings
 from app.services.query import QueryService
 from app.utils.reranker import get_reranker
 from app.services.documents import DocumentsService
+from app.services.bm25 import chunks_for
+from app.services.graph import index_document as index_graph
+from app.utils.graph_store import get_graph_store
 from app.schemas.query import QueryPayload
 from app.repositories.documents import DocumentsRepository
 from app.core.database import engine
@@ -97,6 +100,20 @@ def ensure_ingested(session: Session, use_v2: bool = False):
             repo.update(document)
         name_to_doc_id[document.name] = document.doc_id
     return name_to_doc_id
+
+
+def ensure_graph_indexed(name_to_doc_id: dict):
+    """Build the Kuzu graph for any document that has v2 chunks but no graph
+    yet (ingested before graph_enabled). Reads the chunks back from Qdrant,
+    so nothing is re-parsed; costs one LLM call per chunk."""
+    store = get_graph_store()
+    for name, doc_id in name_to_doc_id.items():
+        if store.has_document(doc_id):
+            continue
+        chunks = chunks_for(doc_id, use_v2=True)
+        print(f"  building graph for {name} ({len(chunks)} chunks)...")
+        n = index_graph(doc_id, [(d.metadata["chunk_index"], d.page_content) for d in chunks])
+        print(f"    {n} entities")
 
 
 async def judge(question, gold_answer, qtype, model_answer, unanswerable: bool) -> tuple[str, str]:
@@ -263,6 +280,12 @@ async def main():
         name_to_doc_id = ensure_ingested(session, use_v2=use_v2)
         print(f"  {len(name_to_doc_id)} document(s) ready: {
               list(name_to_doc_id)}")
+
+        # --mode only applies to --retrieval-only; otherwise settings decide
+        mode = (arg_value('--mode') if retrieval_only else None) or settings.retrieval_mode
+        if use_v2 and mode in ("graph", "hybrid_graph"):
+            print("Checking graph index...")
+            ensure_graph_indexed(name_to_doc_id)
 
         if retrieval_only:
             report = run_retrieval_only(session, golden, name_to_doc_id, mode=arg_value('--mode'),
