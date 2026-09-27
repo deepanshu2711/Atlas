@@ -12,6 +12,7 @@ from app.models.documents import Documents
 from app.repositories.documents import DocumentsRepository
 from app.services.bm25 import invalidate as invalidate_bm25
 from app.services.contextualize import build_context_llm, situate_chunk, summarize_document
+from app.services.graph import index_document as index_graph
 from app.utils.store import vector_store, vector_store_v2
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.accelerator_options import AcceleratorOptions
@@ -236,6 +237,16 @@ class DocumentsService:
             "ingest_document_v2 doc_id=%s stage=embed_upsert elapsed=%.2fs chunks=%d",
             doc_id, time.perf_counter() - upsert_start, len(chunks),
         )
+
+        if settings.graph_enabled:
+            graph_start = time.perf_counter()
+            # Extract from the same text that was embedded, so a chunk's
+            # situating context can contribute entities too.
+            num_entities = index_graph(doc_id, list(enumerate(texts)))
+            logger.info(
+                "ingest_document_v2 doc_id=%s stage=graph elapsed=%.2fs entities=%d",
+                doc_id, time.perf_counter() - graph_start, num_entities,
+            )
 
         logger.info(
             "ingest_document_v2 doc_id=%s stage=total elapsed=%.2fs pages=%s chunks=%d",

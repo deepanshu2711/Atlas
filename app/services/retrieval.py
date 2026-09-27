@@ -5,10 +5,11 @@ from langchain_core.documents import Document
 from app.core.config import settings
 from app.services.bm25 import bm25_search
 from app.services.filters import doc_filter
+from app.services.graph import graph_search
 from app.utils.reranker import get_reranker
 from app.utils.store import vector_store, vector_store_v2
 
-RetrievalMode = Literal["dense", "bm25", "hybrid"]
+RetrievalMode = Literal["dense", "bm25", "hybrid", "graph", "hybrid_graph"]
 
 
 def dense_search(query: str, doc_id: str, k: int, use_v2: bool) -> list[Document]:
@@ -49,13 +50,17 @@ def _first_stage(query: str, doc_id: str, use_v2: bool, k: int, mode: RetrievalM
         return dense_search(query, doc_id, k, use_v2)
     if mode == "bm25":
         return bm25_search(query, doc_id, k, use_v2)
-    if mode == "hybrid":
+    if mode == "graph":
+        return graph_search(query, doc_id, k, use_v2)
+    if mode in ("hybrid", "hybrid_graph"):
         n = settings.candidate_k
-        fused = rrf_fuse([
+        rankings = [
             dense_search(query, doc_id, n, use_v2),
             bm25_search(query, doc_id, n, use_v2),
-        ], settings.rrf_k)
-        return fused[:k]
+        ]
+        if mode == "hybrid_graph":
+            rankings.append(graph_search(query, doc_id, settings.graph_k, use_v2))
+        return rrf_fuse(rankings, settings.rrf_k)[:k]
     raise NotImplementedError(f"retrieval_mode={mode!r} is not implemented")
 
 
