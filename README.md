@@ -239,6 +239,8 @@ a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is id
 | 2026-09-20 | 55% (22/40) | 65% (13/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | v2 + hybrid retrieval (dense + BM25, RRF) + `bge-reranker-base` over 40 candidates, `final_k=8`, `num_ctx=8192`. 5 questions gained, none lost vs the 2026-09-19 run; retrieval, `final_k` and `num_ctx` changed together, so the gain is not attributed to one change | `evals/results/20260920T095920Z_v2_hybrid_rerank_k8.json` |
 | 2026-09-28 | 50% (20/40) | 60% (12/20) | 0% (0/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | v2 re-ingested with `GRAPH_ENABLED=true`, `CONTEXTUAL_CHUNKS_ENABLED=false`; `RETRIEVAL_MODE=hybrid_graph`, no rerank, `final_k=8` | `evals/results/20260928T072608Z_v2_hybrid_graph_k8.json` |
 | 2026-09-28 | 52.5% (21/40) | 60% (12/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | Same chunks and graph; `hybrid_graph` + `bge-reranker-base`, `final_k=8`. Within one question of hybrid + rerank (22/40): the graph adds no measurable end-to-end gain | `evals/results/20260928T075543Z_v2_hybrid_graph_rerank_k8.json` |
+| 2026-09-28 | 12.5% (5/40) | 0% (0/20) | 0% (0/5) | 0% (0/5) | 0% (0/5) | 100% (5/5) | `--agentic` (hop budget 4, `step_k=3`, `agent_num_ctx=16384`) + citation verifier, on `hybrid_graph` + rerank, `final_k=8`. Verifier replaced 24/40 answers with an abstention, 23 of them only for missing `[cN]` citations — see [Agentic loop](#agentic-loop) | `evals/results/20260928T113426Z_v2_hybrid_graph_rerank_k8_agentic_h4.json` |
+| 2026-09-28 | 47.5% (19/40) | 50% (10/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | Same, `VERIFY_ENABLED=false`. No questions gained, 2 lost (q015, q016) vs single-pass `hybrid_graph` + rerank | `evals/results/20260928T115436Z_v2_hybrid_graph_rerank_k8_agentic_h4_noverify.json` |
 
 **Retrieval results (retrieval-only, no LLM or judge)**:
 
@@ -317,6 +319,43 @@ hybrid + rerank. Those differences are within the noise of a local 3B model grad
 the graph currently does not earn its extra LLM call per chunk at ingest. The remaining
 multi-hop failures sit at 1/5 across all three runs even though retrieval recall@8 for them is
 0.87–1.0, which points at answer synthesis rather than retrieval.
+
+### Agentic loop
+
+```bash
+PYTHONPATH=. RETRIEVAL_MODE=hybrid_graph GRAPH_ENABLED=true RERANK_ENABLED=true \
+  uv run python evals/run_eval.py --v2 --agentic            # add VERIFY_ENABLED=false to skip the verifier
+```
+
+Both runs use the same chunks and graph as the single-pass `hybrid_graph` + rerank run
+(`CONTEXTUAL_CHUNKS_ENABLED=false`), with `qwen2.5:3b` for planning, answering, verifying and judging.
+
+| Config | Accuracy | Hops | LLM calls | Tokens | Latency | Evidence page recall | Report |
+|---|---|---|---|---|---|---|---|
+| single-pass `hybrid_graph` + rerank (reference) | 52.5% (21/40) | – | – | – | – | – | `evals/results/20260928T075543Z_v2_hybrid_graph_rerank_k8.json` |
+| agentic + verifier | 12.5% (5/40) | 3.08 | 4.90 | 12,574 | 20.8 s | 0.967 | `evals/results/20260928T113426Z_v2_hybrid_graph_rerank_k8_agentic_h4.json` |
+| agentic, no verifier | 47.5% (19/40) | 3.08 | 4.22 | 9,648 | 19.7 s | 0.967 | `evals/results/20260928T115436Z_v2_hybrid_graph_rerank_k8_agentic_h4_noverify.json` |
+
+Costs are means per question; the single-pass report predates cost tracking, so `evals/compare.py`
+cannot diff it. Unanswerable questions are the most expensive (8 hops, 24k tokens, 41 s) because they
+run against every document.
+
+- **The verifier as built is harmful with a 3B writer.** `qwen2.5:3b` mostly ignores the instruction
+  to cite `[cN]` after each sentence, and `verify()` marks any uncited claim unsupported without
+  checking it. 23 of the 24 rejected answers failed only on "no citation", and many were correct
+  (e.g. "300 round-trip flights between San Francisco and New York", verbatim the gold answer). The
+  repair pass did not add citations either.
+- **Without the verifier the loop does not beat single-pass.** 19/40 vs 21/40, with nothing gained.
+  Of the two losses, q015's answer matches the single-pass answer the judge passed (judge noise), and
+  q016's correct answer ends with an appended "I don't have enough information…" line that the judge
+  penalised — the answer prompt lets the model tack the abstention onto a real answer.
+- **Retrieval is not the bottleneck.** Evidence page recall is 0.967 overall (0.767 on `multi_hop`),
+  yet `multi_hop` stays at 1/5; the planner usually stops after 2 hops. As with single-pass, the
+  limit is answer synthesis and grading with a local 3B model.
+
+Next: verify uncited claims against all gathered evidence instead of failing them outright, stop the
+writer appending the abstention line to real answers, and re-run single-pass with the current
+`run_eval.py` so `compare.py` has a cost baseline.
 
 ## Build plan & status
 
