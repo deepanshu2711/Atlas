@@ -15,12 +15,19 @@ class Settings(BaseSettings):
     final_k: int = 8
     candidate_k: int = 40
     rrf_k: int = 60
-    rerank_enabled: bool = True
+    rerank_enabled: bool = False
     reranker_model: str = "BAAI/bge-reranker-base"
     contextual_chunks_enabled: bool = False
-    graph_enabled: bool = True
+    graph_enabled: bool = False
     graph_k: int = 20
     kuzu_path: str = "data/graph.kuzu"
+    agentic_enabled: bool = True
+    agent_max_hops: int = 4
+    agent_step_k: int = 3
+    agent_num_ctx: int = 16384
+    verify_enabled: bool = True
+    verify_max_claims: int = 8
+    verify_repair_attempts: int = 1
 
     model_config = SettingsConfigDict(env_file=".env")
 

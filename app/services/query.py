@@ -3,8 +3,10 @@ from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from sqlmodel import Session
 
+from app.core.config import settings
 from app.repositories.documents import DocumentsRepository
 from app.schemas.query import QueryPayload
+from app.services.agent import NO_ANSWER, Trace, answer_agentic
 from app.services.retrieval import RetrievalMode, retrieve
 from app.utils.llm_factory import llm
 
@@ -43,14 +45,23 @@ class QueryService:
         if document is None:
             raise HTTPException(status_code=404, detail="Document not found")
 
+        agentic = settings.agentic_enabled if payload.agentic is None else payload.agentic
+        if agentic:
+            if not payload.use_v2:
+                raise HTTPException(status_code=400, detail="Agentic retrieval requires use_v2")
+            answer, docs, trace = await answer_agentic(payload.query, payload.document_id)
+            return {"answer": answer, "sources": docs, "trace": trace}
+
+        # Traced like the agentic path so the two can be compared on cost.
+        trace = Trace(mode="single_pass", hops=1)
         docs = self.retrieve(payload)
 
         if not docs:
-            return {"answer": "I don't have enough information in this document to answer that.", "sources": []}
+            return {"answer": NO_ANSWER, "sources": [], "trace": trace.finish()}
 
         context = "\n\n---\n\n".join(doc.page_content for doc in docs)
         messages = _ANSWER_PROMPT.format_messages(
             context=context, question=payload.query)
-        response = await llm.ainvoke(messages)
+        answer = await trace.call(llm, "answer", messages)
 
-        return {"answer": response.content, "sources": docs}
+        return {"answer": answer, "sources": docs, "trace": trace.finish()}

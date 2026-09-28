@@ -4,6 +4,8 @@ QueryService pipeline and scores answers with an LLM judge.
 Usage:
     uv run python evals/run_eval.py
     uv run python evals/run_eval.py --v2 --retrieval-only [--mode dense|bm25|hybrid|graph|hybrid_graph] [--rerank]   # no LLM; page recall@k / MRR
+    uv run python evals/run_eval.py --v2 --agentic   # assess/plan/execute loop + citation verifier
+    uv run python evals/compare.py <baseline.json> <candidate.json>   # accuracy gained vs cost added
 """
 from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
 from app.utils.llm_factory import llm
@@ -138,7 +140,11 @@ async def judge(question, gold_answer, qtype, model_answer, unanswerable: bool) 
     return verdict, text
 
 
-async def run_question(session: Session, item: dict, name_to_doc_id: dict, use_v2: bool = False) -> dict:
+COST_KEYS = ("hops", "llm_calls", "input_tokens", "output_tokens", "latency_s")
+
+
+async def run_question(session: Session, item: dict, name_to_doc_id: dict, use_v2: bool = False,
+                       agentic: bool = False) -> dict:
     qtype = item["type"]
     unanswerable = qtype == "unanswerable"
     doc_field = item["doc"]
@@ -156,11 +162,14 @@ async def run_question(session: Session, item: dict, name_to_doc_id: dict, use_v
         target_doc_ids = [name_to_doc_id[doc_field]]
         cross_document = False
 
-    answers = []
+    answers, traces, sources = [], [], []
     for doc_id in target_doc_ids:
         service = QueryService(session)
-        result = await service.query(QueryPayload(query=item["question"], document_id=doc_id, use_v2=use_v2))
+        result = await service.query(QueryPayload(query=item["question"], document_id=doc_id,
+                                                  use_v2=use_v2, agentic=agentic))
         answers.append(result["answer"])
+        traces.append(result["trace"])
+        sources.extend(result["sources"])
 
     if unanswerable:
         # must abstain on every document in the corpus to count as correct
@@ -175,6 +184,17 @@ async def run_question(session: Session, item: dict, name_to_doc_id: dict, use_v
         verdict, detail = await judge(item["question"], item["answer"], qtype, combined_answer, unanswerable=False)
         passed = verdict == "CORRECT"
 
+    # Cost of answering (the judge is not part of the system, so excluded);
+    # an unanswerable item queries every document, so its cost is the sum.
+    cost = {key: round(sum(t[key] for t in traces), 3) for key in COST_KEYS}
+    verifications = [t["verification"] for t in traces if t["verification"] is not None]
+    evidence = {}
+    if not unanswerable and use_v2:
+        gold = gold_pages_for_queried_doc(item)
+        pages = {p for d in sources for p in d.metadata.get("pages", [])}
+        evidence = {"evidence_pages": sorted(pages),
+                    "evidence_recall": len(set(gold) & pages) / len(gold)}
+
     return {
         "id": item["id"],
         "type": qtype,
@@ -184,6 +204,10 @@ async def run_question(session: Session, item: dict, name_to_doc_id: dict, use_v
         "model_answer": answers,
         "passed": passed,
         "judge_detail": detail,
+        **cost,
+        **evidence,
+        "verified": all(v["passed"] for v in verifications) if verifications else None,
+        "trace": traces,
     }
 
 
@@ -271,7 +295,9 @@ def print_retrieval_summary(report: dict):
 
 async def main():
     retrieval_only = "--retrieval-only" in sys.argv
-    use_v2 = "--v2" in sys.argv or retrieval_only  # only v2 chunks carry page metadata
+    agentic = "--agentic" in sys.argv
+    # only v2 chunks carry page metadata, and the agentic loop needs them
+    use_v2 = "--v2" in sys.argv or retrieval_only or agentic
     RESULTS_DIR.mkdir(exist_ok=True)
     golden = load_golden()
 
@@ -302,7 +328,7 @@ async def main():
         for i, item in enumerate(golden, 1):
             print(f"[{i}/{len(golden)}] {item['id']} ({item['type']})...")
             try:
-                result = await run_question(session, item, name_to_doc_id, use_v2=use_v2)
+                result = await run_question(session, item, name_to_doc_id, use_v2=use_v2, agentic=agentic)
             except Exception as exc:
                 result = {
                     "id": item["id"], "type": item["type"], "cross_document": False,
@@ -310,17 +336,26 @@ async def main():
                     "model_answer": None, "passed": False, "judge_detail": f"ERROR: {exc}",
                 }
             results.append(result)
+            cost = f" [hops={result['hops']} calls={result['llm_calls']} " \
+                f"tok={result['input_tokens'] + result['output_tokens']} {result['latency_s']}s]" \
+                if "hops" in result else ""
             print(
-                f"  -> {'PASS' if result['passed'] else 'FAIL'}: {result['judge_detail'][:100]}")
+                f"  -> {'PASS' if result['passed'] else 'FAIL'}{cost}: {result['judge_detail'][:100]}")
 
     report = summarize(results)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     suffix = "_v2" if use_v2 else ""
     if use_v2:  # record which retrieval config produced this run
         cfg = {"mode": settings.retrieval_mode, "rerank": settings.rerank_enabled,
-               "final_k": settings.final_k, "num_ctx": llm.num_ctx}
+               "final_k": settings.final_k, "num_ctx": llm.num_ctx, "agentic": agentic}
+        if agentic:
+            cfg.update(max_hops=settings.agent_max_hops, step_k=settings.agent_step_k,
+                       agent_num_ctx=settings.agent_num_ctx, verify=settings.verify_enabled,
+                       verify_repair_attempts=settings.verify_repair_attempts)
         report["config"] = cfg
         suffix += f"_{cfg['mode']}{'_rerank' if cfg['rerank'] else ''}_k{cfg['final_k']}"
+        if agentic:
+            suffix += f"_agentic_h{settings.agent_max_hops}{'' if settings.verify_enabled else '_noverify'}"
     out_path = RESULTS_DIR / f"{ts}{suffix}.json"
     with open(out_path, "w") as f:
         json.dump(report, f, indent=2)
@@ -329,38 +364,54 @@ async def main():
     print(f"\nFull report written to {out_path}")
 
 
+def _stats(items: list[dict]) -> dict:
+    """Accuracy plus mean cost per question. Errored items have no cost
+    fields and are left out of the means."""
+    def mean(key):
+        values = [i[key] for i in items if i.get(key) is not None]
+        return round(sum(values) / len(values), 3) if values else None
+
+    out = {
+        "total": len(items),
+        "passed": sum(1 for i in items if i["passed"]),
+        "accuracy": round(sum(1 for i in items if i["passed"]) / len(items), 3) if items else None,
+    }
+    for key in COST_KEYS + ("evidence_recall",):
+        out[f"mean_{key}"] = mean(key)
+    costed = [i for i in items if "input_tokens" in i]
+    out["mean_tokens"] = round(sum(i["input_tokens"] + i["output_tokens"] for i in costed)
+                               / len(costed), 1) if costed else None
+    verified = [i["verified"] for i in items if i.get("verified") is not None]
+    out["verify_pass_rate"] = round(sum(verified) / len(verified), 3) if verified else None
+    return out
+
+
 def summarize(results: list[dict]) -> dict:
     by_type = {}
     for r in results:
         key = r["type"] + ("_cross_document" if r["cross_document"] else "")
         by_type.setdefault(key, []).append(r)
 
-    breakdown = {
-        key: {
-            "total": len(items),
-            "passed": sum(1 for i in items if i["passed"]),
-            "accuracy": round(sum(1 for i in items if i["passed"]) / len(items), 3) if items else None,
-        }
-        for key, items in by_type.items()
-    }
-    overall = {
-        "total": len(results),
-        "passed": sum(1 for r in results if r["passed"]),
-        "accuracy": round(sum(1 for r in results if r["passed"]) / len(results), 3) if results else None,
-    }
-    return {"overall": overall, "by_type": breakdown, "results": results}
+    breakdown = {key: _stats(items) for key, items in by_type.items()}
+    return {"overall": _stats(results), "by_type": breakdown, "results": results}
+
+
+def _fmt(value, spec):
+    return "-" if value is None else format(value, spec)
 
 
 def print_summary(report: dict):
-    print("\n" + "=" * 50)
+    print("\n" + "=" * 90)
     print("EVAL SUMMARY")
-    print("=" * 50)
-    o = report["overall"]
-    print(f"Overall: {o['passed']}/{o['total']} ({o['accuracy']:.1%})")
-    print("-" * 50)
-    for key, s in sorted(report["by_type"].items()):
-        print(f"{key:30s} {s['passed']:2d}/{s['total']
-              :2d}  ({s['accuracy']:.1%})")
+    print("=" * 90)
+    print(f"{'':30s}{'pass':>7s} {'acc':>6s} {'hops':>5s} {'calls':>5s} "
+          f"{'tokens':>7s} {'lat_s':>6s} {'ev_rec':>6s} {'verif':>6s}")
+    rows = [("overall", report["overall"])] + sorted(report["by_type"].items())
+    for key, s in rows:
+        print(f"{key:30s}{s['passed']:3d}/{s['total']:<3d} {s['accuracy']:6.1%} "
+              f"{_fmt(s['mean_hops'], '5.2f')} {_fmt(s['mean_llm_calls'], '5.2f')} "
+              f"{_fmt(s['mean_tokens'], '7.0f')} {_fmt(s['mean_latency_s'], '6.2f')} "
+              f"{_fmt(s['mean_evidence_recall'], '6.3f')} {_fmt(s['verify_pass_rate'], '6.3f')}")
 
 
 if __name__ == "__main__":
