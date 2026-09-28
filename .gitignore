@@ -37,4 +37,4 @@ pyrightconfig.json
 *.log
 
 # Uploaded files
-data/
+# data/

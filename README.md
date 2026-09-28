@@ -237,6 +237,8 @@ a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is id
 | 2026-09-11 | 25% (10/40) | 25% (5/20) | 0% (0/5) | 0% (0/5) | 0% (0/5) | 100% (5/5) | Naive baseline: 512-char fixed chunks, dense top-3, no reranking | `evals/results/20260911T064416Z.json` |
 | 2026-09-19 | 42.5% (17/40) | 55% (11/20) | 0% (0/5) | 20% (1/5) | 0% (0/5) | 100% (5/5) | v2: Docling parsing + HybridChunker (table structure and OCR off); run with `--v2` | `evals/results/20260919T123003Z_v2.json` |
 | 2026-09-20 | 55% (22/40) | 65% (13/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | v2 + hybrid retrieval (dense + BM25, RRF) + `bge-reranker-base` over 40 candidates, `final_k=8`, `num_ctx=8192`. 5 questions gained, none lost vs the 2026-09-19 run; retrieval, `final_k` and `num_ctx` changed together, so the gain is not attributed to one change | `evals/results/20260920T095920Z_v2_hybrid_rerank_k8.json` |
+| 2026-09-28 | 50% (20/40) | 60% (12/20) | 0% (0/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | v2 re-ingested with `GRAPH_ENABLED=true`, `CONTEXTUAL_CHUNKS_ENABLED=false`; `RETRIEVAL_MODE=hybrid_graph`, no rerank, `final_k=8` | `evals/results/20260928T072608Z_v2_hybrid_graph_k8.json` |
+| 2026-09-28 | 52.5% (21/40) | 60% (12/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | Same chunks and graph; `hybrid_graph` + `bge-reranker-base`, `final_k=8`. Within one question of hybrid + rerank (22/40): the graph adds no measurable end-to-end gain | `evals/results/20260928T075543Z_v2_hybrid_graph_rerank_k8.json` |
 
 **Retrieval results (retrieval-only, no LLM or judge)**:
 
@@ -296,7 +298,25 @@ PYTHONPATH=. uv run python evals/run_eval.py --retrieval-only --mode hybrid_grap
 
 The eval builds the graph for documents ingested before the graph existed, reading their chunks
 from Qdrant rather than re-parsing. Kuzu holds a file lock, so stop the API server before running
-the eval against the same `KUZU_PATH`. No graph results are recorded yet.
+the eval against the same `KUZU_PATH`.
+
+**Graph results** (2026-09-28, chunks re-ingested with `GRAPH_ENABLED=true` and
+`CONTEXTUAL_CHUNKS_ENABLED=false`, retrieval-only, no rerank):
+
+| Mode | R@3 | R@8 | R@40 | H@3 | H@8 | MRR | Latency | Report |
+|---|---|---|---|---|---|---|---|---|
+| hybrid (same chunks, reference) | **0.781** | 0.952 | 0.981 | **0.829** | 0.971 | **0.775** | 0.38 s | `evals/results/20260928T070121Z_retrieval_hybrid.json` |
+| graph | 0.271 | 0.529 | 0.843 | 0.286 | 0.543 | 0.247 | 0.08 s | `evals/results/20260928T070200Z_retrieval_graph.json` |
+| hybrid_graph | 0.600 | 0.952 | 0.981 | 0.629 | 0.971 | 0.542 | 0.43 s | `evals/results/20260928T070255Z_retrieval_hybrid_graph.json` |
+
+Graph alone is a weak retriever, and fusing it into hybrid leaves recall@8/@40 unchanged but
+pushes the gold page down (R@3 0.781 → 0.600, MRR 0.775 → 0.542). It does not help
+`multi_hop_cross_document` either (R@3 0.800 for both hybrid and hybrid_graph). End-to-end
+(results log above): `hybrid_graph` 20/40, `hybrid_graph` + rerank 21/40, against 22/40 for
+hybrid + rerank. Those differences are within the noise of a local 3B model grading itself, so
+the graph currently does not earn its extra LLM call per chunk at ingest. The remaining
+multi-hop failures sit at 1/5 across all three runs even though retrieval recall@8 for them is
+0.87–1.0, which points at answer synthesis rather than retrieval.
 
 ## Build plan & status
 
