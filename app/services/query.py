@@ -6,7 +6,7 @@ from sqlmodel import Session
 from app.core.config import settings
 from app.repositories.documents import DocumentsRepository
 from app.schemas.query import QueryPayload
-from app.services.agent import NO_ANSWER, Trace, answer_agentic
+from app.services.agent import NO_ANSWER, Trace, answer_agentic, strip_trailing_abstention
 from app.services.retrieval import RetrievalMode, retrieve
 from app.utils.llm_factory import llm
 
@@ -15,8 +15,11 @@ _ANSWER_PROMPT = ChatPromptTemplate.from_messages([
      "You are a document question-answering assistant. Answer the user's "
      "question using ONLY the information in the provided context below.\n\n"
      "Rules:\n"
-     "- If the answer is not contained in the context, say \"I don't have "
-     "enough information in this document to answer that.\" Do not use "
+     "- If the context answers only part of the question, give that part and "
+     "say which part is missing. Do not refuse.\n"
+     "- Only if the context contains nothing relevant, reply with exactly: "
+     "\"I don't have enough information in this document to answer that.\" "
+     "and nothing else. Never add that sentence after an answer. Do not use "
      "outside knowledge.\n"
      "- Be concise and directly answer the question first, then add "
      "supporting detail if needed.\n"
@@ -62,6 +65,6 @@ class QueryService:
         context = "\n\n---\n\n".join(doc.page_content for doc in docs)
         messages = _ANSWER_PROMPT.format_messages(
             context=context, question=payload.query)
-        answer = await trace.call(llm, "answer", messages)
+        answer = strip_trailing_abstention(await trace.call(llm, "answer", messages))
 
         return {"answer": answer, "sources": docs, "trace": trace.finish()}

@@ -80,17 +80,34 @@ def test_lookup_table_prefers_the_table_chunk_over_prose(monkeypatch):
 
 # ---- verifier --------------------------------------------------------------
 
-def test_verify_fails_uncited_and_unknown_citations_without_llm_call():
+def test_verify_checks_uncited_claims_against_all_evidence():
     evidence = agent.Evidence()
-    evidence.add([_doc(1, "Article 5 prohibits social scoring.")], limit=5)
-    llm = _FakeLLM(['{"supported": true, "reason": "stated"}'])
+    evidence.add([_doc(1, "Article 5 prohibits social scoring."), _doc(2, "Fines reach 30 million.")], limit=5)
+    llm = _FakeLLM(['{"supported": true}', '{"supported": true}', '{"supported": false}'])
     trace = agent.Trace(mode="test")
     report = asyncio.run(agent.verify(
-        "Article 5 prohibits social scoring [c1]. It also bans cars. Fines apply [c42].",
+        "Article 5 prohibits social scoring [c1]. Fines reach 30 million. It also bans cars [c42].",
         evidence, llm, trace))
-    assert [c["supported"] for c in report["claims"]] == [True, False, False]
+    assert [c["scope"] for c in report["claims"]] == ["cited", "all_evidence", "all_evidence"]
+    assert [c["supported"] for c in report["claims"]] == [True, True, False]
     assert not report["passed"]
-    assert trace.llm_calls == {"verify": 1}  # only the cited claim cost a call
+    assert trace.llm_calls == {"verify": 3}
+    # the uncited claim was shown every gathered chunk, the cited one only c1
+    assert "Fines reach" not in llm.prompts[0] and "Fines reach" in llm.prompts[1]
+
+
+def test_uncited_but_supported_answer_passes(monkeypatch):
+    answer, _, trace = _run_loop(
+        monkeypatch, ['{"sufficient": true}'], ["The fine is 30 million euros."],
+        ['{"supported": true}'])
+    assert answer == "The fine is 30 million euros."
+    assert trace["verification"]["passed"]
+
+
+def test_strip_trailing_abstention_keeps_answer_and_pure_refusals():
+    mixed = "The fine is 30 million euros. I don't have enough information in this document to answer that."
+    assert agent.strip_trailing_abstention(mixed) == "The fine is 30 million euros."
+    assert agent.strip_trailing_abstention(agent.NO_ANSWER) == agent.NO_ANSWER
 
 
 # ---- the loop --------------------------------------------------------------

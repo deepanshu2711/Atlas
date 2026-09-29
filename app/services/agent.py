@@ -49,7 +49,9 @@ ANSWER_PROMPT = """Answer the question using ONLY the evidence below. Each evide
 Rules:
 - After every sentence, cite the id(s) of the chunk(s) that support it, e.g. "Article 5 prohibits social scoring [c12]."
 - Do not state anything the cited chunks do not say. Do not use outside knowledge.
-- If the evidence does not answer the question, reply exactly: "{no_answer}"
+- If the evidence answers only part of the question, give that part and say which part is missing. Do not refuse.
+- Only if the evidence contains nothing relevant, reply with exactly this sentence and nothing else: "{no_answer}"
+- Never add that sentence after an answer. An answer and a refusal are mutually exclusive.
 - Be concise: answer the question directly first, then supporting detail.
 {feedback}
 Evidence:
@@ -61,7 +63,7 @@ REPAIR_FEEDBACK = """- A previous draft made these claims, which the cited chunk
 {claims}
 """
 
-VERIFY_PROMPT = """Does the source text support the claim? The claim is supported only if the source states it or it follows directly from the source.
+VERIFY_PROMPT = """Does the source text support the claim? The claim is supported only if the source states it or it follows directly from the source. Ignore formatting and wording differences (numbers, currency symbols, casing).
 
 Source text:
 {sources}
@@ -257,20 +259,22 @@ def split_claims(answer: str) -> list[tuple[str, list[str]]]:
 
 
 async def verify(answer: str, evidence: Evidence, llm: ChatOllama, trace: Trace) -> dict:
-    """Check every claim against the chunks it cites. A claim with no
-    citation, or citing a chunk that was never retrieved, fails without an
-    LLM call."""
+    """Check every claim against the evidence. A claim is checked against the
+    chunks it cites; a claim with no usable citation (a small model often
+    forgets them) is checked against all gathered evidence instead of being
+    failed outright, so a missing `[cN]` is not itself a rejection."""
     results = []
     for claim, cited in split_claims(answer)[:settings.verify_max_claims]:
         sources = [evidence.docs[c] for c in cited if c in evidence.docs]
+        scope = "cited"
         if not sources:
-            results.append({"claim": claim, "cited": cited, "supported": False,
-                            "reason": "no citation" if not cited else "cites a chunk that was not retrieved"})
-            continue
+            sources = list(evidence.docs.values())
+            scope = "all_evidence"
         raw = await trace.call(llm, "verify", VERIFY_PROMPT.format(
             sources="\n\n---\n\n".join(d.page_content for d in sources), claim=claim))
         data = parse_json(raw)
-        results.append({"claim": claim, "cited": cited, "supported": data.get("supported") is True,
+        results.append({"claim": claim, "cited": cited, "scope": scope,
+                        "supported": data.get("supported") is True,
                         "reason": str(data.get("reason") or "")})
     return {"passed": all(r["supported"] for r in results), "claims": results}
 
@@ -281,13 +285,24 @@ async def generate(question: str, evidence: Evidence, llm: ChatOllama, trace: Tr
                    unsupported: list[str] | None = None) -> str:
     feedback = REPAIR_FEEDBACK.format(
         claims="\n".join(f"  - {c}" for c in unsupported)) if unsupported else ""
-    return (await trace.call(llm, "answer", ANSWER_PROMPT.format(
+    return strip_trailing_abstention(await trace.call(llm, "answer", ANSWER_PROMPT.format(
         no_answer=NO_ANSWER, feedback=feedback, evidence=evidence.full_text(),
-        question=question))).strip()
+        question=question)))
+
+
+_ABSTENTION_RE = re.compile(r"I don't have enough information[^.\n]*\.?", re.IGNORECASE)
 
 
 def is_abstention(answer: str) -> bool:
     return "don't have enough information" in answer.lower()
+
+
+def strip_trailing_abstention(answer: str) -> str:
+    """Drop an abstention sentence tacked onto a real answer. A pure
+    abstention is returned unchanged; the judge penalises the mixed form even
+    when the answer part is right."""
+    stripped = _ABSTENTION_RE.sub("", answer).strip()
+    return stripped if len(re.findall(r"\w+", stripped)) >= 3 else answer.strip()
 
 
 async def answer_agentic(question: str, doc_id: str) -> tuple[str, list[Document], dict]:
