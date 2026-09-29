@@ -8,7 +8,7 @@ Usage:
     uv run python evals/compare.py <baseline.json> <candidate.json>   # accuracy gained vs cost added
 """
 from app.utils.qdrant import COLLECTION_NAME, COLLECTION_NAME_v2, client as qdrant_client
-from app.utils.llm_factory import llm
+from app.utils.llm_factory import build_judge_llm, judge_model_name, llm
 from app.core.config import settings
 from app.services.query import QueryService
 from app.utils.reranker import get_reranker
@@ -21,6 +21,7 @@ from app.repositories.documents import DocumentsRepository
 from app.core.database import engine
 import asyncio
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -51,8 +52,16 @@ Respond with exactly one word on the first line: {labels}
 Then a one-sentence reason on the second line."""
 
 INSTRUCTIONS_NORMAL = (
-    "Judge whether the system's answer is factually consistent with the gold "
-    "answer (same facts/entities/numbers - wording can differ)."
+    "Judge whether the system's answer conveys the same facts as the gold answer.\n"
+    "Rules:\n"
+    "- Ignore formatting and wording: casing, hyphenation, currency notation "
+    "(\"EUR 30,000,000\" = \"€30,000,000\"), number formatting, list vs "
+    "sentence, the order of listed items.\n"
+    "- Extra correct detail in the system's answer is fine. Extra detail that "
+    "contradicts the gold answer is not.\n"
+    "- Every distinct fact, item or number in the gold answer must be present. "
+    "If any is missing or different, the answer is INCORRECT.\n"
+    "- An answer that declines to answer is INCORRECT."
 )
 LABELS_NORMAL = "CORRECT or INCORRECT"
 
@@ -63,6 +72,9 @@ INSTRUCTIONS_UNANSWERABLE = (
     "specific answer anyway (HALLUCINATED)."
 )
 LABELS_UNANSWERABLE = "ABSTAINED or HALLUCINATED"
+
+# A separate model grades the answers so the system is not marked by itself.
+judge_llm = build_judge_llm()
 
 
 def arg_value(flag: str) -> str | None:
@@ -127,7 +139,7 @@ async def judge(question, gold_answer, qtype, model_answer, unanswerable: bool) 
         instructions=INSTRUCTIONS_UNANSWERABLE if unanswerable else INSTRUCTIONS_NORMAL,
         labels=LABELS_UNANSWERABLE if unanswerable else LABELS_NORMAL,
     )
-    response = await llm.ainvoke(prompt)
+    response = await judge_llm.ainvoke(prompt)
     text = response.content.strip()
     first_line = text.splitlines()[0].strip().upper() if text else ""
     # Order matters: "INCORRECT" contains "CORRECT" as a substring, so the
@@ -293,7 +305,42 @@ def print_retrieval_summary(report: dict):
         print(f"{name:32s}{s['total']:3d} " + " ".join(f"{s[k]:6.3f}" for k in keys))
 
 
+async def rejudge(path: Path):
+    """Re-grade the saved answers of an earlier run with the current judge.
+    Nothing is re-answered, so this is the cheap way to separate a judge
+    change from a system change."""
+    old = json.loads(path.read_text())
+    results = []
+    for r in old["results"]:
+        if r.get("model_answer") is None:
+            results.append(r)
+            continue
+        unanswerable = r["type"] == "unanswerable"
+        answers = r["model_answer"]
+        if unanswerable:
+            verdicts = [(await judge(r["question"], r["gold_answer"], r["type"], a, True))[0]
+                        for a in answers]
+            passed, detail = all(v == "ABSTAINED" for v in verdicts), "; ".join(verdicts)
+        else:
+            verdict, detail = await judge(r["question"], r["gold_answer"], r["type"],
+                                          " | ".join(answers), False)
+            passed = verdict == "CORRECT"
+        print(f"  {r['id']}: {'PASS' if passed else 'FAIL'} (was {'PASS' if r['passed'] else 'FAIL'})")
+        results.append({**r, "passed": passed, "judge_detail": detail})
+    report = summarize(results)
+    report["config"] = {**old.get("config", {}), "judge_model": judge_model_name(),
+                        "rejudged_from": path.name}
+    out_path = RESULTS_DIR / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_rejudged_{path.stem}.json"
+    out_path.write_text(json.dumps(report, indent=2))
+    print_summary(report)
+    print(f"\nFull report written to {out_path}")
+
+
 async def main():
+    if "--rejudge" in sys.argv:
+        return await rejudge(Path(arg_value("--rejudge")))
+    if judge_model_name() == os.environ.get("OLLAMA_MODEL", "qwen2.5:3b"):
+        print("warning: JUDGE_MODEL is unset or equals the answering model; the system is grading itself")
     retrieval_only = "--retrieval-only" in sys.argv
     agentic = "--agentic" in sys.argv
     # only v2 chunks carry page metadata, and the agentic loop needs them
@@ -347,7 +394,8 @@ async def main():
     suffix = "_v2" if use_v2 else ""
     if use_v2:  # record which retrieval config produced this run
         cfg = {"mode": settings.retrieval_mode, "rerank": settings.rerank_enabled,
-               "final_k": settings.final_k, "num_ctx": llm.num_ctx, "agentic": agentic}
+               "final_k": settings.final_k, "num_ctx": llm.num_ctx, "agentic": agentic,
+               "judge_model": judge_model_name()}
         if agentic:
             cfg.update(max_hops=settings.agent_max_hops, step_k=settings.agent_step_k,
                        agent_num_ctx=settings.agent_num_ctx, verify=settings.verify_enabled,

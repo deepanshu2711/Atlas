@@ -357,6 +357,24 @@ Next: verify uncited claims against all gathered evidence instead of failing the
 writer appending the abstention line to real answers, and re-run single-pass with the current
 `run_eval.py` so `compare.py` has a cost baseline.
 
+### Accuracy fixes after the 2026-09-28 runs (not yet evaluated)
+
+Changes made after reading the failures of the 22/40 run; none has been re-run against the golden set yet, so
+treat them as untested until a new row appears in the results log.
+
+- **Judge is a separate model.** Set `JUDGE_MODEL` (Ollama model name) so the answering model no longer
+  grades itself; the eval warns when they match and records `judge_model` in the report config. The judge
+  prompt now ignores formatting (currency notation, casing, list order) but still requires every gold fact.
+  `evals/run_eval.py --rejudge evals/results/<file>.json` re-grades saved answers with the current judge
+  without re-answering, which separates a judge change from a system change.
+- **Docling table structure is on by default** (`DOCLING_TABLE_STRUCTURE_ENABLED=true`). Documents must be
+  re-ingested to pick it up.
+- **Verifier no longer fails on missing citations.** A claim with no usable `[cN]` is checked against all
+  gathered evidence instead of being rejected. The answer prompts also forbid appending the abstention
+  sentence to a real answer, and `strip_trailing_abstention` removes it if the model does anyway. Risk to
+  watch: the prompt now asks for a partial answer instead of a refusal, so check that `unanswerable`
+  stays at 5/5.
+
 ## Build plan & status
 
 - [x] **0 — Golden set before code.** `evals/golden.jsonl`: 40 questions over 3 real PDFs in `docs/` — 20 single-hop, 10 multi-hop, 5 unanswerable, 5 table-lookup — each with a hand-written answer and source page.

@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     qdrant_url: str
     qdrant_api_key: str
     docling_ocr_enabled: bool = False
-    docling_table_structure_enabled: bool = False
+    docling_table_structure_enabled: bool = True
     qdrant_timeout_seconds: int = 180
     retrieval_mode: Literal["dense", "bm25",
                             "hybrid", "graph", "hybrid_graph"] = "dense"
@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     verify_enabled: bool = True
     verify_max_claims: int = 8
     verify_repair_attempts: int = 1
+    # Ollama model that grades eval answers; empty means the answering model.
+    judge_model: str = ""
 
     model_config = SettingsConfigDict(env_file=".env")
 
