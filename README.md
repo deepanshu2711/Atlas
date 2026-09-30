@@ -241,6 +241,7 @@ a reachable Qdrant instance (`.env`). Safe to re-run anytime — ingestion is id
 | 2026-09-28 | 52.5% (21/40) | 60% (12/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | Same chunks and graph; `hybrid_graph` + `bge-reranker-base`, `final_k=8`. Within one question of hybrid + rerank (22/40): the graph adds no measurable end-to-end gain | `evals/results/20260928T075543Z_v2_hybrid_graph_rerank_k8.json` |
 | 2026-09-28 | 12.5% (5/40) | 0% (0/20) | 0% (0/5) | 0% (0/5) | 0% (0/5) | 100% (5/5) | `--agentic` (hop budget 4, `step_k=3`, `agent_num_ctx=16384`) + citation verifier, on `hybrid_graph` + rerank, `final_k=8`. Verifier replaced 24/40 answers with an abstention, 23 of them only for missing `[cN]` citations — see [Agentic loop](#agentic-loop) | `evals/results/20260928T113426Z_v2_hybrid_graph_rerank_k8_agentic_h4.json` |
 | 2026-09-28 | 47.5% (19/40) | 50% (10/20) | 20% (1/5) | 20% (1/5) | 40% (2/5) | 100% (5/5) | Same, `VERIFY_ENABLED=false`. No questions gained, 2 lost (q015, q016) vs single-pass `hybrid_graph` + rerank | `evals/results/20260928T115436Z_v2_hybrid_graph_rerank_k8_agentic_h4_noverify.json` |
+| 2026-09-30 | 42.5% (17/40) | 40% (8/20) | 40% (2/5) | 0% (0/5) | 40% (2/5) | 100% (5/5) | `--agentic` + verifier after the accuracy fixes below (table structure on, re-ingested, verifier no longer fails uncited claims), `RETRIEVAL_MODE=dense`, no rerank, `final_k=8`; answers by `qwen2.5:3b`, graded by `llama3.1:8b`. Not comparable with earlier rows (new ingestion, retrieval mode and judge changed together) — see [Accuracy fixes](#accuracy-fixes-after-the-2026-09-28-runs) | `evals/results/20260930T165551Z_v2_dense_k8_agentic_h4.json` |
 
 **Retrieval results (retrieval-only, no LLM or judge)**:
 
@@ -357,10 +358,28 @@ Next: verify uncited claims against all gathered evidence instead of failing the
 writer appending the abstention line to real answers, and re-run single-pass with the current
 `run_eval.py` so `compare.py` has a cost baseline.
 
-### Accuracy fixes after the 2026-09-28 runs (not yet evaluated)
+### Accuracy fixes after the 2026-09-28 runs
 
-Changes made after reading the failures of the 22/40 run; none has been re-run against the golden set yet, so
-treat them as untested until a new row appears in the results log.
+Changes made after reading the failures of the 22/40 run. They were evaluated together in one run on
+2026-09-30 (below), so their individual effects are not separated.
+
+**Result (2026-09-30, `--v2 --agentic`, verifier on, `dense`, no rerank):** 42.5% (17/40), up from 12.5%
+with the old verifier. 12 questions fixed, none broken vs the 2026-09-28 agentic + verifier run.
+
+| Type | Accuracy |
+|---|---|
+| single_hop | 40% (8/20) |
+| multi_hop | 40% (2/5) |
+| multi_hop_cross_document | 0% (0/5) |
+| table_lookup | 40% (2/5) |
+| unanswerable | 100% (5/5) |
+
+Per question: 3.02 hops, 7.10 LLM calls, 20,036 tokens, 19.0 s; evidence page recall 0.910; verifier score 0.448.
+`unanswerable` stayed at 5/5, so the partial-answer prompt did not cause hallucinations. Retrieval again
+finds the evidence (0.91 recall) while cross-document questions score 0/5, so answer synthesis across
+documents is the open problem. The run used `dense` retrieval, unlike the `hybrid_graph` + rerank baseline,
+so this is not a like-for-like comparison. A second run graded by `qwen2.5:3b` (self-grading) was stopped
+after 15 questions at 3/15 and produced no report.
 
 - **Judge is a separate model.** Set `JUDGE_MODEL` (Ollama model name) so the answering model no longer
   grades itself; the eval warns when they match and records `judge_model` in the report config. The judge

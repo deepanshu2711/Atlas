@@ -1,0 +1,4454 @@
+{
+  "overall": {
+    "total": 40,
+    "passed": 17,
+    "accuracy": 0.425,
+    "mean_hops": 3.025,
+    "mean_llm_calls": 7.1,
+    "mean_input_tokens": 19637.275,
+    "mean_output_tokens": 398.825,
+    "mean_latency_s": 18.992,
+    "mean_evidence_recall": 0.91,
+    "mean_tokens": 20036.1,
+    "verify_pass_rate": 0.448
+  },
+  "by_type": {
+    "single_hop": {
+      "total": 20,
+      "passed": 8,
+      "accuracy": 0.4,
+      "mean_hops": 2.2,
+      "mean_llm_calls": 6.8,
+      "mean_input_tokens": 18891.15,
+      "mean_output_tokens": 408.35,
+      "mean_latency_s": 19.949,
+      "mean_evidence_recall": 0.9,
+      "mean_tokens": 19299.5,
+      "verify_pass_rate": 0.421
+    },
+    "multi_hop": {
+      "total": 5,
+      "passed": 2,
+      "accuracy": 0.4,
+      "mean_hops": 2.6,
+      "mean_llm_calls": 8.6,
+      "mean_input_tokens": 29408.6,
+      "mean_output_tokens": 565.0,
+      "mean_latency_s": 25.045,
+      "mean_evidence_recall": 0.767,
+      "mean_tokens": 29973.6,
+      "verify_pass_rate": 0.5
+    },
+    "multi_hop_cross_document": {
+      "total": 5,
+      "passed": 0,
+      "accuracy": 0.0,
+      "mean_hops": 2.2,
+      "mean_llm_calls": 5.6,
+      "mean_input_tokens": 16550.2,
+      "mean_output_tokens": 380.8,
+      "mean_latency_s": 13.716,
+      "mean_evidence_recall": 1.0,
+      "mean_tokens": 16931.0,
+      "verify_pass_rate": 0.5
+    },
+    "unanswerable": {
+      "total": 5,
+      "passed": 5,
+      "accuracy": 1.0,
+      "mean_hops": 7.4,
+      "mean_llm_calls": 10.0,
+      "mean_input_tokens": 21205.0,
+      "mean_output_tokens": 383.0,
+      "mean_latency_s": 21.294,
+      "mean_evidence_recall": null,
+      "mean_tokens": 21588.0,
+      "verify_pass_rate": null
+    },
+    "table_lookup": {
+      "total": 5,
+      "passed": 2,
+      "accuracy": 0.4,
+      "mean_hops": 3.2,
+      "mean_llm_calls": 5.4,
+      "mean_input_tokens": 14369.8,
+      "mean_output_tokens": 228.4,
+      "mean_latency_s": 12.087,
+      "mean_evidence_recall": 1.0,
+      "mean_tokens": 14598.2,
+      "verify_pass_rate": 0.5
+    }
+  },
+  "results": [
+    {
+      "id": "q001",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What four primary considerations did NIST's Generative AI Public Working Group (GAI PWG) focus on?",
+      "gold_answer": "Governance, Content Provenance, Pre-Deployment Testing, and Incident Disclosure.",
+      "model_answer": [
+        "NIST's Generative AI Public Working Group (GAI PWG) focused on four primary considerations: Governance, Pre-deployment Testing, Content Provenance, and Incident Disclosure."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer conveys the same facts as the gold answer, with the only difference being the order of \"Pre-deployment Testing\" and \"Content Provenance\", which is allowed under the rules.",
+      "hops": 2,
+      "llm_calls": 4,
+      "input_tokens": 8170,
+      "output_tokens": 166,
+      "latency_s": 15.593,
+      "evidence_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        29,
+        30,
+        51,
+        53,
+        56,
+        60,
+        61
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What four primary considerations did NIST's Generative AI Public Working Group (GAI PWG) focus on?",
+              "added": [
+                "c0",
+                "c8",
+                "c7",
+                "c86",
+                "c87",
+                "c51",
+                "c98",
+                "c92"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c86",
+              "missing": "the four primary considerations",
+              "added": [
+                "c6",
+                "c5",
+                "c109"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c86",
+              "missing": "the four primary considerations mentioned by NIST's Generative AI Public Working Group (GAI PWG)",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 8170,
+          "output_tokens": 166,
+          "latency_s": 15.593,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "NIST's Generative AI Public Working Group (GAI PWG) focused on four primary considerations: Governance, Pre-deployment Testing, Content Provenance, and Incident Disclosure.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states that the focus of the GAI PWG was limited to four primary considerations relevant to GAI: Governance, Content Provenance, Pre-deployment Testing, and Incident Disclosure."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q002",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "According to the NIST GAI Profile, training a single transformer LLM can emit as much carbon as how many round-trip flights, and between which cities?",
+      "gold_answer": "As much carbon as 300 round-trip flights between San Francisco and New York.",
+      "model_answer": [
+        "Training a single transformer LLM can emit as much carbon as 300 round-trip flights between San Francisco and New York."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer contains all the same facts as the gold answer, including the number of round-trip flights (300) and the cities (San Francisco and New York).",
+      "hops": 2,
+      "llm_calls": 4,
+      "input_tokens": 9287,
+      "output_tokens": 161,
+      "latency_s": 13.356,
+      "evidence_pages": [
+        3,
+        4,
+        5,
+        6,
+        9,
+        12,
+        29,
+        30,
+        40,
+        41,
+        52,
+        53,
+        61
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to the NIST GAI Profile, training a single transformer LLM can emit as much carbon as how many round-trip flights, and between which cities?",
+              "added": [
+                "c18",
+                "c8",
+                "c14",
+                "c90",
+                "c70",
+                "c7",
+                "c91",
+                "c51"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c18",
+              "missing": "the number of round-trip flights and the cities associated with the carbon emissions",
+              "added": [
+                "c6",
+                "c4",
+                "c110"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c18",
+              "missing": "the number of round-trip flights and the cities mentioned in the NIST GAI Profile",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 9287,
+          "output_tokens": 161,
+          "latency_s": 13.356,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "Training a single transformer LLM can emit as much carbon as 300 round-trip flights between San Francisco and New York.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text directly states 'Current estimates suggest that training a single transformer LLM can emit as much carbon as 300 round-trip flights between San Francisco and New York."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q003",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What two colloquial terms does the NIST GAI Profile give for 'confabulation'?",
+      "gold_answer": "'Hallucinations' or 'fabrications.'",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer declines to answer, which is not in line with the gold answer that provides specific terms for 'confabulation'.",
+      "hops": 2,
+      "llm_calls": 6,
+      "input_tokens": 19263,
+      "output_tokens": 388,
+      "latency_s": 22.969,
+      "evidence_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        61
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What two colloquial terms does the NIST GAI Profile give for 'confabulation'?",
+              "added": [
+                "c15",
+                "c8",
+                "c12",
+                "c0",
+                "c7",
+                "c10",
+                "c16",
+                "c13"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c15",
+              "missing": "the two colloquial terms for 'confabulation' given by the NIST GAI Profile",
+              "added": [
+                "c6",
+                "c110",
+                "c5"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c15",
+              "missing": "the two colloquial terms for 'confabulation' given by the NIST GAI Profile",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 6,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 2
+          },
+          "input_tokens": 19263,
+          "output_tokens": 388,
+          "latency_s": 22.969,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The NIST GAI Profile gives the colloquial terms 'hallucinations' or 'fabrications' for 'confabulation'.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text defines 'confabulation' as a phenomenon where GAI systems generate and confidently present erroneous or false content, and mentions 'hallucinations' or 'fabrications' as colloquial terms for this phenomenon. However, the source does not explicitly give 'hallucinations' or 'fabrications' as the colloquial terms for 'confabulation.' Instead, it states that 'hallucinations' or 'fabrications' are colloquial terms for the erroneous or false content generated by GAI systems."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "The NIST GAI Profile gives the colloquial terms 'hallucinations' or 'fabrications' for 'confabulation'."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q004",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "In the NIST GAI Profile's Action ID scheme, what do the four function prefixes GV, MP, MS, and MG stand for?",
+      "gold_answer": "GV = Govern; MP = Map; MS = Measure; MG = Manage.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer, as it declines to answer the question, whereas the gold answer provides specific information about the meaning of each function prefix.",
+      "hops": 2,
+      "llm_calls": 12,
+      "input_tokens": 47988,
+      "output_tokens": 692,
+      "latency_s": 33.145,
+      "evidence_pages": [
+        4,
+        5,
+        6,
+        9,
+        17,
+        29,
+        30,
+        31,
+        37,
+        43,
+        48,
+        49,
+        62
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "In the NIST GAI Profile's Action ID scheme, what do the four function prefixes GV, MP, MS, and MG stand for?",
+              "added": [
+                "c29",
+                "c51",
+                "c54",
+                "c83",
+                "c8",
+                "c7",
+                "c73",
+                "c64"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c29",
+              "missing": "the specific meanings of the function prefixes GV, MP, MS, and MG",
+              "added": [
+                "c6",
+                "c113",
+                "c14"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c29",
+              "missing": "the specific meanings of the function prefixes GV, MP, MS, and MG in the NIST GAI Profile's Action ID scheme",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 12,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 8
+          },
+          "input_tokens": 47988,
+          "output_tokens": 692,
+          "latency_s": 33.145,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "GV stands for Govern",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state that GV stands for Govern. It only provides the tagging of AI RMF functions as GV = Govern; MP = Map; MS = Measure; MG = Manage."
+              },
+              {
+                "claim": "MP stands for Map",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not state that MP stands for Map. Instead, it states that MP - 3.4 refers to Processes for operator and practitioner proficiency with AI system performance and trustworthiness - and relevant technical standards and certifications."
+              },
+              {
+                "claim": "MS stands for Measure",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states 'MS -4.2-001, Suggested Action = Conduct adversarial testing at a regular cadence to map and measure GAI risks, including tests to address attempts to deceive or manipulate the application of provenance techniques or other misuses. Identify vulnerabilities and understand potential misuse scenarios and unintended outputs.. MS -4.2-001, GAI Risks = Information Integrity ; Information Security."
+              },
+              {
+                "claim": "MG stands for Manage",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states 'MG -4.1-001, Suggested Action = Collaborate with external researchers, industry experts, and community representatives to maintain awareness of emerging best practices and technologies in measuring and managing identified risks.' This directly supports the claim that MG stands for Manage."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "In the NIST GAI Profile's Action ID scheme:\n- GV stands for Govern\n- MP stands for Map\n- MS stands for Measure\n- MG stands for Manage"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q005",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What is the official NIST publication number of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile,' and when was it published?",
+      "gold_answer": "NIST AI 600-1, published July 2024.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer, as it declines to answer the question, whereas the gold answer provides specific information about the publication number and date.",
+      "hops": 3,
+      "llm_calls": 7,
+      "input_tokens": 17109,
+      "output_tokens": 379,
+      "latency_s": 22.696,
+      "evidence_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        15,
+        16,
+        36,
+        37,
+        39,
+        60,
+        61
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What is the official NIST publication number of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile,' and when was it published?",
+              "added": [
+                "c0",
+                "c7",
+                "c8",
+                "c110",
+                "c4",
+                "c2",
+                "c67",
+                "c109"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c0",
+              "missing": "the official NIST publication number and the publication date of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile'",
+              "added": [
+                "c6",
+                "c63",
+                "c26"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the official NIST publication number of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile' and the publication date",
+              "added": []
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the official NIST publication number of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile' and the publication date",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 7,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 2,
+            "verify": 2
+          },
+          "input_tokens": 17109,
+          "output_tokens": 379,
+          "latency_s": 22.696,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The official NIST publication number of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile' is NIST AI 100-1.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state the official NIST publication number of the 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile' as NIST AI 100-1. The text mentions NIST AI 100-1 in the context of the AI Risk Management Framework (AI RMF) but does not confirm it as the specific publication number for the Generative AI Profile."
+              },
+              {
+                "claim": "It was published in July 2024.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states 'This publication is available free of charge from: [https://doi.org/10.6028/NIST.AI.600-1](https://doi.org/10.6028/NIST.AI.600-1) July 2024."
+              }
+            ],
+            "repair_attempts": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q006",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What three types of structured public feedback does Appendix A.1.5 of the NIST GAI Profile describe?",
+      "gold_answer": "Participatory Engagement Methods, Field Testing, and AI Red-teaming.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not the same as the gold answer that provides specific information about the types of structured public feedback described in Appendix A.1.5 of the NIST GAI Profile.",
+      "hops": 2,
+      "llm_calls": 10,
+      "input_tokens": 25051,
+      "output_tokens": 476,
+      "latency_s": 29.765,
+      "evidence_pages": [
+        4,
+        5,
+        6,
+        9,
+        18,
+        51,
+        53,
+        54,
+        56,
+        61
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What three types of structured public feedback does Appendix A.1.5 of the NIST GAI Profile describe?",
+              "added": [
+                "c92",
+                "c98",
+                "c7",
+                "c86",
+                "c110",
+                "c8",
+                "c30",
+                "c94"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c92",
+              "missing": "the three types of structured public feedback",
+              "added": [
+                "c6",
+                "c14",
+                "c5"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c92",
+              "missing": "the three types of structured public feedback described in Appendix A.1.5",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 10,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 6
+          },
+          "input_tokens": 25051,
+          "output_tokens": 476,
+          "latency_s": 29.765,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "Participatory Engagement Methods",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly support the claim that 'Participatory Engagement Methods' are supported. The text discusses structured public feedback and its applications, but does not specifically mention or endorse Participatory Engagement Methods."
+              },
+              {
+                "claim": "Field Testing",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly mention or support the claim about Field Testing. The text discusses Field Testing in the context of structured public feedback, but does not provide specific information about Field Testing itself."
+              },
+              {
+                "claim": "AI Red-teaming",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly mention or support the claim of 'AI Red-teaming'. The text discusses structured public feedback and its applications, but does not provide specific information about AI red-teaming."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "Appendix A.1.5 of the NIST GAI Profile describes three types of structured public feedback:\n\n1. Participatory Engagement Methods\n2. Field Testing\n3. AI Red-teaming"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q007",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "According to a footnote in the NIST GAI Profile's MEASURE 2.11 discussion, what is a 'Winogender Schema' used to evaluate?",
+      "gold_answer": "A sample set of paired sentences that differ only by the gender of the pronouns used, employed to evaluate gender bias in natural language processing coreference resolution systems.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer, as it declines to answer and does not provide any information about the 'Winogender Schema'.",
+      "hops": 2,
+      "llm_calls": 3,
+      "input_tokens": 6461,
+      "output_tokens": 86,
+      "latency_s": 12.718,
+      "evidence_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        32,
+        37,
+        41,
+        42,
+        43,
+        46,
+        48,
+        56
+      ],
+      "evidence_recall": 0.0,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to a footnote in the NIST GAI Profile's MEASURE 2.11 discussion, what is a 'Winogender Schema' used to evaluate?",
+              "added": [
+                "c7",
+                "c8",
+                "c0",
+                "c73",
+                "c56",
+                "c98",
+                "c71",
+                "c64"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c73",
+              "missing": "a 'Winogender Schema' used to evaluate",
+              "added": [
+                "c6",
+                "c82",
+                "c78"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c73",
+              "missing": "a 'Winogender Schema' used to evaluate",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 6461,
+          "output_tokens": 86,
+          "latency_s": 12.718,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q008",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What five agents make up the Corrective RAG system described in the Agentic RAG survey?",
+      "gold_answer": "Context Retrieval Agent, Relevance Evaluation Agent, Query Refinement Agent, External Knowledge Retrieval Agent, and Response Synthesis Agent.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which does not convey the same facts as the gold answer.",
+      "hops": 2,
+      "llm_calls": 14,
+      "input_tokens": 19994,
+      "output_tokens": 545,
+      "latency_s": 28.076,
+      "evidence_pages": [
+        1,
+        6,
+        7,
+        8,
+        14,
+        16,
+        19,
+        20,
+        29,
+        31
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What five agents make up the Corrective RAG system described in the Agentic RAG survey?",
+              "added": [
+                "c44",
+                "c59",
+                "c120",
+                "c20",
+                "c58",
+                "c101",
+                "c15",
+                "c37"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c58",
+              "missing": "the names of the five agents that make up the Corrective RAG system",
+              "added": [
+                "c0",
+                "c41",
+                "c42"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c58",
+              "missing": "the names of the five agents that make up the Corrective RAG system",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 14,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 10
+          },
+          "input_tokens": 19994,
+          "output_tokens": 545,
+          "latency_s": 28.076,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "Context Retrieval Agent",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly support the claim about the Context Retrieval Agent."
+              },
+              {
+                "claim": "Relevance Evaluation Agent",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly imply the claim about the Relevance Evaluation Agent."
+              },
+              {
+                "claim": "Query Refinement Agent",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly support the claim about the Query Refinement Agent."
+              },
+              {
+                "claim": "External Knowledge Retrieval Agent",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The claim 'External Knowledge Retrieval Agent' is not directly supported by the provided text. The text describes the role and functionality of the External Knowledge Retrieval Agent, but does not explicitly state that the claim is supported by the source text."
+              },
+              {
+                "claim": "Response Synthesis Agent",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly support the claim about the Response Synthesis Agent."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "The five agents that make up the Corrective RAG system are:\n1. Context Retrieval Agent\n2. Relevance Evaluation Agent\n3. Query Refinement Agent\n4. External Knowledge Retrieval Agent\n5. Response Synthesis Agent"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q009",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Which two keyword-based retrieval techniques does the Agentic RAG survey say Na\u00efve RAG relies on?",
+      "gold_answer": "TF-IDF and BM25.",
+      "model_answer": [
+        "Na\u00efve RAG relies on keyword-based retrieval techniques such as TF-IDF and BM25."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer conveys the same facts as the gold answer, including the two keyword-based retrieval techniques Na\u00efve RAG relies on.",
+      "hops": 2,
+      "llm_calls": 4,
+      "input_tokens": 8718,
+      "output_tokens": 150,
+      "latency_s": 11.829,
+      "evidence_pages": [
+        1,
+        2,
+        4,
+        6,
+        7,
+        21,
+        22,
+        25,
+        29,
+        31,
+        34,
+        40,
+        42
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Which two keyword-based retrieval techniques does the Agentic RAG survey say Na\u00efve RAG relies on?",
+              "added": [
+                "c120",
+                "c11",
+                "c7",
+                "c5",
+                "c101",
+                "c64",
+                "c15",
+                "c135"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c11",
+              "missing": "the specific keyword-based retrieval techniques used by Na\u00efve RAG",
+              "added": [
+                "c165",
+                "c160",
+                "c80"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c11",
+              "missing": "the specific keyword-based retrieval techniques used by Na\u00efve RAG",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 8718,
+          "output_tokens": 150,
+          "latency_s": 11.829,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "Na\u00efve RAG relies on keyword-based retrieval techniques such as TF-IDF and BM25.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text states that Na\u00efve RAG 'rely[s] on simple keyword-based retrieval techniques, such as TF-IDF and BM25, to fetch documents from static datasets."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q010",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What four components does the Agentic RAG survey say make up an AI agent?",
+      "gold_answer": "LLM (with defined Role and Task), Memory (short-term and long-term), Planning (Reflection & Self-Critique), and Tools.",
+      "model_answer": [
+        "An AI agent comprises LLM (with defined Role and Task), Memory (Short-Term and Long-Term), Planning (Reflection & Self-Critique), and Tools (Vector Search, Web Search, APIs, etc.)."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer includes all the components mentioned in the gold answer, with the addition of specific examples of tools, but does not introduce any contradictory or missing information.",
+      "hops": 3,
+      "llm_calls": 5,
+      "input_tokens": 8576,
+      "output_tokens": 210,
+      "latency_s": 13.384,
+      "evidence_pages": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        15,
+        16,
+        25,
+        31,
+        33,
+        36
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What four components does the Agentic RAG survey say make up an AI agent?",
+              "added": [
+                "c21",
+                "c20",
+                "c44",
+                "c145",
+                "c15",
+                "c120",
+                "c7",
+                "c128"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c21",
+              "missing": "the four components of the Agentic RAG survey",
+              "added": [
+                "c80",
+                "c40",
+                "c0"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the four components of the Agentic RAG survey",
+              "added": []
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the four components of the Agentic RAG survey",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 5,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 8576,
+          "output_tokens": 210,
+          "latency_s": 13.384,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "An AI agent comprises LLM (with defined Role and Task), Memory (Short-Term and Long-Term), Planning (Reflection & Self-Critique), and Tools (Vector Search, Web Search, APIs, etc.).",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states that an AI agent comprises LLM (with defined Role and Task), Memory (Short-Term and Long-Term), Planning (Reflection & Self-Critique), and Tools (Vector Search, Web Search, APIs, etc.)."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q011",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What two primary innovations does GeAR (Graph-Enhanced Agent for Retrieval-Augmented Generation) use to advance RAG performance?",
+      "gold_answer": "Graph Expansion (enhancing base retrievers with graph-structured data) and an Agent Framework (an agent-based architecture that manages retrieval tasks dynamically).",
+      "model_answer": [
+        "GeAR uses two primary innovations to advance RAG performance: Graph Expansion and an Agent Framework [c82].\n\nKey Idea of GeAR GeAR advances RAG performance through two primary innovations:\n- Graph Expansion: Enhances conventional base retrievers (e.g., BM25) by expanding the retrieval process to include graph-structured data, enabling the system to capture complex relationships and dependencies between entities.\n- Agent Framework: Incorporates an agent-based architecture that utilizes graph expansion to manage retrieval tasks more effectively, allowing for dynamic and autonomous decision-making in the retrieval process. [c82]"
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately conveys the same facts as the gold answer, including the two primary innovations of Graph Expansion and an Agent Framework, and provides additional details that do not contradict the gold answer.",
+      "hops": 2,
+      "llm_calls": 6,
+      "input_tokens": 8066,
+      "output_tokens": 352,
+      "latency_s": 16.493,
+      "evidence_pages": [
+        1,
+        2,
+        3,
+        4,
+        25,
+        29,
+        31
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What two primary innovations does GeAR (Graph-Enhanced Agent for Retrieval-Augmented Generation) use to advance RAG performance?",
+              "added": [
+                "c82",
+                "c117",
+                "c120",
+                "c101",
+                "c10",
+                "c8",
+                "c7",
+                "c119"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c82",
+              "missing": "the specific information about the two primary innovations used by GeAR to advance RAG performance",
+              "added": [
+                "c0",
+                "c80",
+                "c79"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c82",
+              "missing": "The two primary innovations of GeAR that advance RAG performance are not explicitly stated in the provided evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 6,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1,
+            "verify": 3
+          },
+          "input_tokens": 8066,
+          "output_tokens": 352,
+          "latency_s": 16.493,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "GeAR uses two primary innovations to advance RAG performance: Graph Expansion and an Agent Framework.",
+                "cited": [
+                  "c82"
+                ],
+                "scope": "cited",
+                "supported": true,
+                "reason": "The source text explicitly states that GeAR advances RAG performance through two primary innovations: Graph Expansion and an Agent Framework."
+              },
+              {
+                "claim": "Graph Expansion: Enhances conventional base retrievers (e.g., BM25) by expanding the retrieval process to include graph-structured data, enabling the system to capture complex relationships and dependencies between entities.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states that 'Graph Expansion: Enhances conventional base retrievers (e.g., BM25) by expanding the retrieval process to include graph-structured data, enabling the system to capture complex relationships and dependencies between entities.'"
+              },
+              {
+                "claim": "Agent Framework: Incorporates an agent-based architecture that utilizes graph expansion to manage retrieval tasks more effectively, allowing for dynamic and autonomous decision-making in the retrieval process.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states 'Agent Framework: Incorporates an agent-based architecture that utilizes graph expansion to manage retrieval tasks more effectively, allowing for dynamic and autonomous decision-making in the retrieval process.'"
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q012",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Which university is the Agentic RAG survey's first listed author, Aditi Singh, affiliated with?",
+      "gold_answer": "Cleveland State University.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer explicitly declines to answer, which contradicts the gold answer that provides a specific university affiliation.",
+      "hops": 2,
+      "llm_calls": 6,
+      "input_tokens": 10173,
+      "output_tokens": 186,
+      "latency_s": 9.759,
+      "evidence_pages": [
+        1,
+        8,
+        29,
+        31,
+        32,
+        36,
+        40,
+        41
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Which university is the Agentic RAG survey's first listed author, Aditi Singh, affiliated with?",
+              "added": [
+                "c0",
+                "c145",
+                "c120",
+                "c115",
+                "c101",
+                "c114",
+                "c20",
+                "c122"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c0",
+              "missing": "the university name of Aditi Singh",
+              "added": [
+                "c161",
+                "c160",
+                "c162"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c0",
+              "missing": "the university name of Aditi Singh",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 6,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 2
+          },
+          "input_tokens": 10173,
+          "output_tokens": 186,
+          "latency_s": 9.759,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "Aditi Singh, the first listed author of the Agentic RAG survey, is affiliated with Cleveland State University.",
+                "cited": [
+                  "c0"
+                ],
+                "scope": "cited",
+                "supported": false,
+                "reason": "The source text does not provide information about Aditi Singh's affiliation with Cleveland State University or her being the first listed author of the Agentic RAG survey."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "Aditi Singh, the first listed author of the Agentic RAG survey, is affiliated with Cleveland State University [c0]."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q013",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Under Article 71 of the AI Act proposal, what is the maximum administrative fine for non-compliance with the prohibited AI practices in Article 5?",
+      "gold_answer": "Up to \u20ac30,000,000, or up to 6% of the company's total worldwide annual turnover for the preceding financial year, whichever is higher.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer because it declines to answer, whereas the gold answer provides a specific maximum administrative fine.",
+      "hops": 2,
+      "llm_calls": 6,
+      "input_tokens": 23203,
+      "output_tokens": 402,
+      "latency_s": 24.567,
+      "evidence_pages": [
+        4,
+        8,
+        13,
+        22,
+        25,
+        26,
+        44,
+        69,
+        79,
+        80,
+        81,
+        83,
+        88,
+        89
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Under Article 71 of the AI Act proposal, what is the maximum administrative fine for non-compliance with the prohibited AI practices in Article 5?",
+              "added": [
+                "c167",
+                "c88",
+                "c6",
+                "c163",
+                "c45",
+                "c27",
+                "c161",
+                "c13"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c88",
+              "missing": "the maximum administrative fine for non-compliance with the prohibited AI practices in Article 5",
+              "added": [
+                "c179",
+                "c52",
+                "c143"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c88",
+              "missing": "The maximum administrative fine for non-compliance with the prohibited AI practices in Article 5 is not specified in the provided evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 6,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 2
+          },
+          "input_tokens": 23203,
+          "output_tokens": 402,
+          "latency_s": 24.567,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The maximum administrative fine for non-compliance with the prohibited AI practices in Article 5 is 30,000,000 EUR or 6% of the company's total worldwide annual turnover for the preceding financial year, whichever is higher.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The claim is not supported by the source text. The source text specifies a maximum administrative fine of up to 6% of the company's total worldwide annual turnover for the preceding financial year for non-compliance with prohibited AI practices in Article 5, not 30,000,000 EUR."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "The maximum administrative fine for non-compliance with the prohibited AI practices in Article 5 is 30,000,000 EUR or 6% of the company's total worldwide annual turnover for the preceding financial year, whichever is higher."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q014",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Under Article 71 of the AI Act proposal, what is the maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities?",
+      "gold_answer": "Up to \u20ac10,000,000, or up to 2% of total worldwide annual turnover for the preceding financial year, whichever is higher.",
+      "model_answer": [
+        "The maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities is up to 10,000,000 EUR or, if the offender is a company, up to 2% of its total worldwide annual turnover for the preceding financial year, whichever is higher."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer conveys the same facts as the gold answer, including the maximum administrative fine amount and the condition for companies, with no extra details that contradict the gold answer.",
+      "hops": 2,
+      "llm_calls": 4,
+      "input_tokens": 14848,
+      "output_tokens": 264,
+      "latency_s": 12.92,
+      "evidence_pages": [
+        1,
+        4,
+        28,
+        29,
+        36,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        99,
+        105
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Under Article 71 of the AI Act proposal, what is the maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities?",
+              "added": [
+                "c167",
+                "c166",
+                "c161",
+                "c169",
+                "c163",
+                "c6",
+                "c72",
+                "c58"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c167",
+              "missing": "the maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities as specified in Article 71 of the AI Act proposal",
+              "added": [
+                "c0",
+                "c209",
+                "c229"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c167",
+              "missing": "the maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities under Article 71 of the AI Act proposal",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 14848,
+          "output_tokens": 264,
+          "latency_s": 12.92,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "The maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities is up to 10,000,000 EUR or, if the offender is a company, up to 2% of its total worldwide annual turnover for the preceding financial year, whichever is higher.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states that the maximum administrative fine for supplying incorrect, incomplete, or misleading information to notified bodies and national competent authorities is up to 10,000,000 EUR or, if the offender is a company, up to 2% of its total worldwide annual turnover for the preceding financial year, whichever is higher."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q015",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "What four categories of AI practices does Article 5 of the AI Act proposal prohibit?",
+      "gold_answer": "(a) AI using subliminal techniques that materially distort behavior and cause or are likely to cause harm; (b) AI exploiting vulnerabilities of specific groups (due to age or physical/mental disability) to cause harm; (c) social scoring/evaluation of natural persons' trustworthiness by public authorities leading to detrimental treatment; and (d) 'real-time' remote biometric identification in publicly accessible spaces for law enforcement purposes, subject to narrow exceptions.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not in line with the gold answer that provides specific details about the prohibited AI practices.",
+      "hops": 2,
+      "llm_calls": 14,
+      "input_tokens": 58278,
+      "output_tokens": 1663,
+      "latency_s": 47.269,
+      "evidence_pages": [
+        4,
+        5,
+        13,
+        19,
+        20,
+        22,
+        25,
+        26,
+        44,
+        56,
+        69,
+        88,
+        89,
+        95
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What four categories of AI practices does Article 5 of the AI Act proposal prohibit?",
+              "added": [
+                "c88",
+                "c27",
+                "c45",
+                "c6",
+                "c198",
+                "c40",
+                "c7",
+                "c111"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c88",
+              "missing": "the four categories of AI practices that Article 5 prohibits",
+              "added": [
+                "c179",
+                "c52",
+                "c143"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c88",
+              "missing": "The four categories of AI practices that Article 5 of the AI Act proposal prohibits are not explicitly stated in the provided evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 14,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 10
+          },
+          "input_tokens": 58278,
+          "output_tokens": 1663,
+          "latency_s": 47.269,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "Placing on the market, putting into service or use of an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behavior in a manner that causes or is likely to cause physical or psychological harm.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states in Article 5.2.2 that 'the placing on the market, putting into service or use of an AI system that deploys subliminal components individuals cannot perceive or exploit vulnerabilities of children and people due to their age, physical or mental incapacities' is prohibited. This directly supports the claim."
+              },
+              {
+                "claim": "Placing on the market, putting into service or use of an AI system that exploits any of the vulnerabilities of a specific group of persons due to their age, physical or mental disability, in order to materially distort the behavior of a person pertaining to that group in a manner that causes or is likely to cause physical or psychological harm.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The claim is directly supported by Article 5.2.2 of the source text, which states that placing on the market, putting into service or use of an AI system that exploits any of the vulnerabilities of a specific group of persons due to their age, physical or mental disability, in order to materially distort the behavior of a person pertaining to that group in a manner that causes or is likely to cause physical or psychological harm, is prohibited."
+              },
+              {
+                "claim": "Detrimental or unfavourable treatment of certain natural persons or whole groups thereof in social contexts which are unrelated to the contexts in which the data was originally generated or collected.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The claim is directly supported by Article 5.2.2 of the source text, which states that certain AI systems intended to distort human behavior, such as those that deploy subliminal components or exploit vulnerabilities of specific vulnerable groups, should be forbidden because they contradict Union values and provide novel and powerful tools for manipulative, exploitative, and social control practices. The claim aligns with the prohibition of such practices."
+              },
+              {
+                "claim": "Detrimental or unfavourable treatment of certain natural persons or whole groups thereof that is unjustified or disproportionate to their social behavior or its gravity.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": ""
+              },
+              {
+                "claim": "Use of 'real-time' remote biometric identification systems in publicly accessible spaces for the purpose of law enforcement, unless and in as far as such use is strictly necessary for one of the following objectives.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The claim is supported by the source text, which explicitly states that the use of 'real-time' remote biometric identification systems in publicly accessible spaces for the purpose of law enforcement is prohibited, unless and in as far as such use is strictly necessary for one of the following objectives."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "Article 5 of the AI Act proposal prohibits the following four categories of AI practices:\n1. Placing on the market, putting into service or use of an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behavior in a manner that causes or is likely to cause physical or psychological harm.\n2. Placing on the market, putting into service or use of an AI system that exploits any of the vulnerabilities of a specific group of persons due to their age, physical or mental disability, in order to materially distort the behavior of a person pertaining to that group in a manner that causes or is likely to cause physical or psychological harm.\n3. Placing on the market, putting into service or use of AI systems by public authorities or on their behalf for the evaluation or classification of the trustworthiness of natural persons over a certain period of time based on their social behavior or known or predicted personal or personality characteristics, with the social score leading to either or both of the following:\n   - Detrimental or unfavourable treatment of certain natural persons or whole groups thereof in social contexts which are unrelated to the contexts in which the data was originally generated or collected.\n   - Detrimental or unfavourable treatment of certain natural persons or whole groups thereof that is unjustified or disproportionate to their social behavior or its gravity.\n4. Use of 'real-time' remote biometric identification systems in publicly accessible spaces for the purpose of law enforcement, unless and in as far as such use is strictly necessary for one of the following objectives."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q016",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Under Article 6(1) of the AI Act proposal, what two conditions must both be satisfied for an AI system to be classified as high-risk via the product-safety route?",
+      "gold_answer": "(a) the AI system is intended to be used as a safety component of a product, or is itself a product, covered by the Union harmonisation legislation listed in Annex II; and (b) that product is required to undergo third-party conformity assessment under that legislation.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not in line with the gold answer that provides specific conditions for an AI system to be classified as high-risk.",
+      "hops": 2,
+      "llm_calls": 8,
+      "input_tokens": 29140,
+      "output_tokens": 750,
+      "latency_s": 22.598,
+      "evidence_pages": [
+        1,
+        4,
+        5,
+        14,
+        26,
+        46,
+        47,
+        56,
+        58,
+        69,
+        101
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Under Article 6(1) of the AI Act proposal, what two conditions must both be satisfied for an AI system to be classified as high-risk via the product-safety route?",
+              "added": [
+                "c91",
+                "c28",
+                "c53",
+                "c6",
+                "c7",
+                "c117",
+                "c111",
+                "c94"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c91",
+              "missing": "the two specific conditions for an AI system to be classified as high-risk via the product-safety route under Article 6(1) of the AI Act proposal",
+              "added": [
+                "c213",
+                "c0",
+                "c143"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c91",
+              "missing": "the two specific conditions for an AI system to be classified as high-risk via the product-safety route under Article 6(1) of the AI Act proposal",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 8,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 4
+          },
+          "input_tokens": 29140,
+          "output_tokens": 750,
+          "latency_s": 22.598,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The AI system is intended to be used as a safety component of a product, or is itself a product, covered by the Union harmonisation legislation listed in Annex II.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly imply that the AI system is intended to be used as a safety component of a product or is itself a product covered by the Union harmonisation legislation listed in Annex II. The text discusses high-risk AI systems based on their intended purpose and the specific requirements for their conformity assessment, but does not provide the specific conditions mentioned in the claim."
+              },
+              {
+                "claim": "The product whose safety component is the AI system, or the AI system itself as a product, is required to undergo a third-party conformity assessment with a view to the placing on the market or putting into service of that product pursuant to the Union harmonisation legislation listed in Annex II.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states in point (b) of Article 6: 'the product whose safety component is the AI system, or the AI system itself as a product, is required to undergo a third-party conformity assessment with a view to the placing on the market or putting into service of that product pursuant to the Union harmonisation legislation listed in Annex II.' This directly supports the claim."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "For an AI system to be classified as high-risk via the product-safety route under Article 6(1) of the AI Act proposal, both of the following conditions must be satisfied:\n\n1. The AI system is intended to be used as a safety component of a product, or is itself a product, covered by the Union harmonisation legislation listed in Annex II.\n\n2. The product whose safety component is the AI system, or the AI system itself as a product, is required to undergo a third-party conformity assessment with a view to the placing on the market or putting into service of that product pursuant to the Union harmonisation legislation listed in Annex II."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q017",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "How does Article 3 of the AI Act proposal define a 'serious incident'?",
+      "gold_answer": "Any incident that directly or indirectly leads, might have led, or might lead to (a) the death of a person or serious damage to a person's health, property, or the environment, or (b) a serious and irreversible disruption of the management and operation of critical infrastructure.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not in line with the gold answer that provides a clear definition of a 'serious incident'.",
+      "hops": 2,
+      "llm_calls": 7,
+      "input_tokens": 21007,
+      "output_tokens": 531,
+      "latency_s": 16.713,
+      "evidence_pages": [
+        1,
+        8,
+        13,
+        46,
+        47,
+        52,
+        56,
+        76,
+        94,
+        99,
+        101
+      ],
+      "evidence_recall": 0.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "How does Article 3 of the AI Act proposal define a 'serious incident'?",
+              "added": [
+                "c157",
+                "c194",
+                "c92",
+                "c13",
+                "c93",
+                "c103",
+                "c111",
+                "c25"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c157",
+              "missing": "Article 3 of the AI Act proposal does not mention 'serious incident' definition.",
+              "added": [
+                "c0",
+                "c213",
+                "c209"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c157",
+              "missing": "Article 3 of the AI Act proposal does not mention 'serious incident' directly.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 7,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 3
+          },
+          "input_tokens": 21007,
+          "output_tokens": 531,
+          "latency_s": 16.713,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "Article 3 of the AI Act proposal defines a 'serious incident' as any incident or malfunctioning of high-risk AI systems that constitutes a breach of obligations under Union law intended to protect fundamental rights.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly define a 'serious incident' as any incident or malfunctioning of high-risk AI systems that constitutes a breach of obligations under Union law intended to protect fundamental rights. The text specifies that such incidents must be reported if they meet certain conditions, but it does not define 'serious incident' in that precise manner."
+              },
+              {
+                "claim": "The provider must establish a causal link between the AI system and the incident or reasonable likelihood of such a link, and notify the market surveillance authorities within 15 days after becoming aware of the serious incident or malfunctioning.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states that the provider must establish a causal link between the AI system and the incident or a reasonable likelihood of such a link, and notify the market surveillance authorities within 15 days after becoming aware of the serious incident or malfunctioning."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "Article 3 of the AI Act proposal defines a 'serious incident' as any incident or malfunctioning of high-risk AI systems that constitutes a breach of obligations under Union law intended to protect fundamental rights. The provider must establish a causal link between the AI system and the incident or reasonable likelihood of such a link, and notify the market surveillance authorities within 15 days after becoming aware of the serious incident or malfunctioning."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q018",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "How many total contributions did the European Commission receive during its online public consultation on the White Paper on Artificial Intelligence?",
+      "gold_answer": "1,215 contributions.",
+      "model_answer": [
+        "The European Commission received a total of 1215 contributions during its online public consultation on the White Paper on Artificial Intelligence."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer conveys the same facts as the gold answer, including the exact number of contributions received by the European Commission.",
+      "hops": 3,
+      "llm_calls": 5,
+      "input_tokens": 15676,
+      "output_tokens": 247,
+      "latency_s": 17.387,
+      "evidence_pages": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        34,
+        35,
+        101,
+        105
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "How many total contributions did the European Commission receive during its online public consultation on the White Paper on Artificial Intelligence?",
+              "added": [
+                "c15",
+                "c3",
+                "c5",
+                "c17",
+                "c4",
+                "c9",
+                "c2",
+                "c69"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c15",
+              "missing": "the total number of contributions received by the European Commission during the online public consultation on the White Paper on Artificial Intelligence",
+              "added": [
+                "c0",
+                "c213",
+                "c229"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the total number of contributions received by the European Commission during the online public consultation on the White Paper on Artificial Intelligence",
+              "added": []
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c15",
+              "missing": "the total number of contributions received by the European Commission during the online public consultation on the White Paper on Artificial Intelligence",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 5,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 15676,
+          "output_tokens": 247,
+          "latency_s": 17.387,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "The European Commission received a total of 1215 contributions during its online public consultation on the White Paper on Artificial Intelligence.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states 'In total, 1215 contributions were received, of which 352 were from companies or business organizations/associations, 406 from individuals (92% individuals from EU), 152 on behalf of academic/research institutions, and 73 from public authorities."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q019",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Of the policy options assessed in the AI Act proposal's impact assessment, which one did the Commission prefer, and what did it entail?",
+      "gold_answer": "Option 3+: a horizontal EU regulatory framework following a proportionate risk-based approach, imposing mandatory requirements only on high-risk AI systems, plus the possibility for providers of non-high-risk AI systems to voluntarily adopt a code of conduct.",
+      "model_answer": [
+        "The Commission preferred option 3+, which is a horizontal EU legislative instrument following a proportionate risk-based approach, with the possibility for all providers of non-high-risk AI systems to follow a code of conduct."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer conveys the same facts as the gold answer, including the preferred option, its characteristics, and the possibility for non-high-risk AI system providers to follow a code of conduct.",
+      "hops": 3,
+      "llm_calls": 5,
+      "input_tokens": 12845,
+      "output_tokens": 206,
+      "latency_s": 11.596,
+      "evidence_pages": [
+        1,
+        2,
+        8,
+        9,
+        10,
+        11,
+        13,
+        46,
+        47,
+        92,
+        101,
+        102
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Of the policy options assessed in the AI Act proposal's impact assessment, which one did the Commission prefer, and what did it entail?",
+              "added": [
+                "c18",
+                "c19",
+                "c25",
+                "c185",
+                "c2",
+                "c3",
+                "c15",
+                "c92"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c19",
+              "missing": "the specific policy option that the Commission preferred and what it entailed",
+              "added": [
+                "c0",
+                "c213",
+                "c215"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "which one did the Commission prefer, and what did it entail?",
+              "added": []
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the specific policy option that the Commission preferred and what it entailed",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 5,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 12845,
+          "output_tokens": 206,
+          "latency_s": 11.596,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "The Commission preferred option 3+, which is a horizontal EU legislative instrument following a proportionate risk-based approach, with the possibility for all providers of non-high-risk AI systems to follow a code of conduct.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states that the preferred option is option 3+, a regulatory framework for high-risk AI systems only, with the possibility for all providers of non-high-risk AI systems to follow a code of conduct."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q020",
+      "type": "single_hop",
+      "cross_document": false,
+      "question": "Per Article 85 of the AI Act proposal, how long after entry into force does the Regulation generally become applicable?",
+      "gold_answer": "24 months following entry into force, with earlier application for specific provisions (Title III Chapter 4 and Title VI apply after 3 months, and Article 71 applies after 12 months).",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer, as it declines to answer the question, whereas the gold answer provides specific details about the applicability of the Regulation.",
+      "hops": 2,
+      "llm_calls": 6,
+      "input_tokens": 13970,
+      "output_tokens": 313,
+      "latency_s": 16.154,
+      "evidence_pages": [
+        4,
+        5,
+        6,
+        36,
+        37,
+        87,
+        88,
+        89,
+        94,
+        101,
+        108
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Per Article 85 of the AI Act proposal, how long after entry into force does the Regulation generally become applicable?",
+              "added": [
+                "c178",
+                "c196",
+                "c179",
+                "c6",
+                "c175",
+                "c73",
+                "c8",
+                "c176"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c178",
+              "missing": "the specific time mentioned in Article 85 of the AI Act proposal",
+              "added": [
+                "c213",
+                "c214",
+                "c234"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c178",
+              "missing": "the exact time mentioned in Article 85 of the AI Act proposal",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 6,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 2
+          },
+          "input_tokens": 13970,
+          "output_tokens": 313,
+          "latency_s": 16.154,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The Regulation generally becomes applicable three years after the date of application of this Regulation referred to in Article 85(2).",
+                "cited": [
+                  "c178"
+                ],
+                "scope": "cited",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly imply that the Regulation becomes applicable three years after the date of application of this Regulation referred to in Article 85(2). The text only specifies that the Regulation applies to certain AI systems placed on the market or put into service before a specific date, but does not mention a three-year delay for general applicability."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "The Regulation generally becomes applicable three years after the date of application of this Regulation referred to in Article 85(2) [c178]."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q021",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "The NIST GAI Profile's Appendix A.1.5 describes four types of AI red-teaming based on participant composition. What are they, and which one is explicitly described as GAI performing red-teaming in combination with humans?",
+      "gold_answer": "General Public, Expert, Combination, and Human/AI. The 'Human/AI' type is described as 'Performed by GAI in combination with specialist or non-specialist human teams,' and is noted as potentially more cost-effective than human red-teamers alone.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\nThe system's answer declines to answer, which contradicts the gold answer that explicitly states the four types of AI red-teaming.",
+      "hops": 2,
+      "llm_calls": 16,
+      "input_tokens": 51123,
+      "output_tokens": 1076,
+      "latency_s": 36.754,
+      "evidence_pages": [
+        4,
+        9,
+        13,
+        27,
+        29,
+        30,
+        33,
+        43,
+        48,
+        49,
+        53,
+        54,
+        55
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "The NIST GAI Profile's Appendix A.1.5 describes four types of AI red-teaming based on participant composition. What are they, and which one is explicitly described as GAI performing red-teaming in combination with humans?",
+              "added": [
+                "c95",
+                "c51",
+                "c48",
+                "c73",
+                "c92",
+                "c21",
+                "c83",
+                "c58"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c95",
+              "missing": "which one is explicitly described as GAI performing red-teaming in combination with humans",
+              "added": [
+                "c6",
+                "c5",
+                "c14"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c95",
+              "missing": "The specific type of AI red-teaming that is explicitly described as GAI performing red-teaming in combination with humans is missing.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 16,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 12
+          },
+          "input_tokens": 51123,
+          "output_tokens": 1076,
+          "latency_s": 36.754,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The NIST GAI Profile's Appendix A.1.5 describes four types of AI red-teaming based on participant composition.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not describe four types of AI red-teaming based on participant composition. Instead, it discusses various types of AI red-teaming depending on the use case, such as General Public, Expert, Combination, and Human/AI. There is no mention of four specific types based on participant composition."
+              },
+              {
+                "claim": "General Public: Performed by general users (not necessarily AI or technical experts) who are expected to use the model or interact with its outputs.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The claim is directly supported by the source text, which states 'General Public: Performed by general users (not necessarily AI or technical experts) who are expected to use the model or interact with its outputs.'"
+              },
+              {
+                "claim": "Expert: Performed by specialists with expertise in the domain or specific AI red-teaming context.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states 'Expert: Performed by specialists with expertise in the domain or specific AI red-team ing context.'"
+              },
+              {
+                "claim": "Combination: In scenarios when it is difficult to identify and recruit specialists with sufficient domain and contextual expertise, AI red-teaming exercises may leverage both expert and general public participants.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly states 'Combination: In scenarios when it is difficult to identify and recruit specialists with sufficient domain and contextual expertise, AI red - teaming exercises may leverage both expert and general public participants."
+              },
+              {
+                "claim": "Human / AI: Performed by GAI in combination with specialist or non-specialist human teams.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly support the claim that 'Human / AI: Performed by GAI in combination with specialist or non-specialist human teams.' This information is not present in the provided text."
+              },
+              {
+                "claim": "The Human / AI type is explicitly described as GAI performing red-teaming in combination with specialist or non-specialist human teams.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly describes the Human / AI type of AI red-teaming as performed by GAI in combination with specialist or non-specialist human teams."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "The NIST GAI Profile's Appendix A.1.5 describes four types of AI red-teaming based on participant composition. They are:\n- General Public: Performed by general users (not necessarily AI or technical experts) who are expected to use the model or interact with its outputs.\n- Expert: Performed by specialists with expertise in the domain or specific AI red-teaming context.\n- Combination: In scenarios when it is difficult to identify and recruit specialists with sufficient domain and contextual expertise, AI red-teaming exercises may leverage both expert and general public participants.\n- Human / AI: Performed by GAI in combination with specialist or non-specialist human teams.\n\nThe Human / AI type is explicitly described as GAI performing red-teaming in combination with specialist or non-specialist human teams."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q022",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "Section 10.1 of the Agentic RAG survey cautions that 'Agentic RAG should not be viewed as a universal replacement for traditional RAG' due to added complexity and cost. Using Table 3's ratings, which architectures have the highest Engineering Complexity and Latency ratings, and how does this support the caution in Section 10.1?",
+      "gold_answer": "Hierarchical/Corrective RAG and Graph-Based/Document-Centric RAG both have 'High' Engineering Complexity; Hierarchical/Corrective RAG has 'High' Latency and Graph-Based/Document-Centric RAG has 'Moderate to high' Latency (Table 3). This supports Section 10.1's caution that agentic designs introduce coordination complexity, latency, and computational cost, so simple or well-scoped queries are better served by lower-overhead modular RAG pipelines.",
+      "model_answer": [
+        "Hierarchical / Corrective RAG and Graph-Based / Document-Centric RAG have the highest Engineering Complexity and Latency ratings in Table 3, which supports the caution in Section 10.1 that Agentic RAG should not be viewed as a universal replacement for traditional RAG due to added complexity and cost."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately conveys the same facts as the gold answer, including the specific architectures with high engineering complexity and latency ratings, and how these support the caution in Section 10.1.",
+      "hops": 4,
+      "llm_calls": 8,
+      "input_tokens": 20140,
+      "output_tokens": 539,
+      "latency_s": 25.909,
+      "evidence_pages": [
+        6,
+        7,
+        14,
+        25,
+        26,
+        29,
+        32,
+        33,
+        38,
+        40,
+        41,
+        42
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 4,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Section 10.1 of the Agentic RAG survey cautions that 'Agentic RAG should not be viewed as a universal replacement for traditional RAG' due to added complexity and cost. Using Table 3's ratings, which architectures have the highest Engineering Complexity and Latency ratings, and how does this support the caution in Section 10.1?",
+              "added": [
+                "c126",
+                "c123",
+                "c129",
+                "c37",
+                "c100",
+                "c98",
+                "c128",
+                "c15"
+              ]
+            },
+            {
+              "action": "LOOKUP_TABLE",
+              "argument": "Table 3",
+              "missing": "the highest Engineering Complexity and Latency ratings for architectures in Table 3",
+              "added": [
+                "c124"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c128",
+              "missing": "the highest Engineering Complexity and Latency ratings for architectures in Table 3",
+              "added": [
+                "c153",
+                "c165",
+                "c160"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c12",
+              "missing": "the highest Engineering Complexity and Latency ratings for architectures in Table 3",
+              "added": [
+                "c80",
+                "c163",
+                "c83"
+              ]
+            }
+          ],
+          "llm_calls": 8,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 2,
+            "verify": 3
+          },
+          "input_tokens": 20140,
+          "output_tokens": 539,
+          "latency_s": 25.909,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "Hierarchical / Corrective RAG and Graph-Based / Document-Centric RAG have the highest Engineering Complexity and Latency ratings in Table 3, which supports the caution in Section 10.1 that Agentic RAG should not be viewed as a universal replacement for traditional RAG due to added complexity and cost.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "Table 3 in Section 9.1 provides a taxonomy-driven comparison of Agentic RAG Architectures, including ratings for Engineering Complexity and Latency. Hierarchical / Corrective RAG and Graph-Based / Document-Centric RAG are explicitly noted to have the highest Engineering Complexity and Latency ratings, which aligns with the caution in Section 10.1 that Agentic RAG should not be viewed as a universal replacement for traditional RAG due to added complexity and cost."
+              }
+            ],
+            "repair_attempts": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q023",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "Article 71 of the AI Act proposal sets the highest tier of administrative fines (up to \u20ac30,000,000 or 6% of turnover) for violations of two specific articles. What does each of those two articles require?",
+      "gold_answer": "Article 5 lays down the list of prohibited AI practices (e.g., subliminal manipulation, exploiting vulnerabilities, social scoring, real-time remote biometric identification in public spaces for law enforcement). Article 10 sets data and data governance requirements for high-risk AI systems, requiring training, validation, and testing data sets to be relevant, representative, free of errors, and complete, among other governance practices.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer, as it declines to answer, whereas the gold answer provides specific details about the two articles.",
+      "hops": 2,
+      "llm_calls": 11,
+      "input_tokens": 57410,
+      "output_tokens": 828,
+      "latency_s": 37.468,
+      "evidence_pages": [
+        1,
+        4,
+        8,
+        25,
+        26,
+        29,
+        36,
+        37,
+        83,
+        84,
+        99,
+        105
+      ],
+      "evidence_recall": 0.3333333333333333,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Article 71 of the AI Act proposal sets the highest tier of administrative fines (up to \u20ac30,000,000 or 6% of turnover) for violations of two specific articles. What does each of those two articles require?",
+              "added": [
+                "c167",
+                "c169",
+                "c13",
+                "c72",
+                "c73",
+                "c6",
+                "c59",
+                "c52"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c167",
+              "missing": "the specific two articles that require the penalties up to \u20ac30,000,000 or 6% of turnover",
+              "added": [
+                "c0",
+                "c209",
+                "c229"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c167",
+              "missing": "the specific articles that require the penalties mentioned in Article 71",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 11,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 7
+          },
+          "input_tokens": 57410,
+          "output_tokens": 828,
+          "latency_s": 37.468,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "Article 71 of the AI Act proposal sets the highest tier of administrative fines (up to \u20ac30,000,000 or 6% of turnover) for violations of two specific articles.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text clearly states in Article 71 that violations of Article 5 (non-compliance with the prohibition of AI practices) and Article 10 (non-compliance with requirements) shall be subject to administrative fines of up to \u20ac30,000,000 or 6% of the total worldwide annual turnover for the preceding financial year, whichever is higher."
+              },
+              {
+                "claim": "Article 5, which prohibits the artificial intelligence practices referred to in Article 5.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly imply that Article 5 prohibits artificial intelligence practices. Instead, it refers to Article 5 as a source for prohibitions, but does not specify what those prohibitions are."
+              },
+              {
+                "claim": "Article 10, which requires the AI system to comply with the requirements laid down by the Regulation.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state or directly imply that Article 10 requires the AI system to comply with the requirements laid down by the Regulation. Article 10 is mentioned in relation to non-compliance with requirements or obligations under the Regulation, but it does not specify that Article 10 itself mandates compliance with the Regulation's requirements."
+              },
+              {
+                "claim": "Therefore, Article 5 prohibits the non-compliance with the prohibition of the artificial intelligence practices referred to in Article 5, while Article 10 requires the AI system to comply with the requirements laid down by the Regulation.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not explicitly state that Article 5 prohibits non-compliance with the prohibition of AI practices referred to in Article 5, nor does it state that Article 10 requires the AI system to comply with the requirements laid down by the Regulation. Instead, Article 5 prohibits non-compliance with the prohibition of AI practices, and Article 10 requires the AI system to comply with the requirements laid down in Article 10."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "Article 71 of the AI Act proposal sets the highest tier of administrative fines (up to \u20ac30,000,000 or 6% of turnover) for violations of two specific articles. Those articles are:\n\n- Article 5, which prohibits the artificial intelligence practices referred to in Article 5.\n- Article 10, which requires the AI system to comply with the requirements laid down by the Regulation.\n\nTherefore, Article 5 prohibits the non-compliance with the prohibition of the artificial intelligence practices referred to in Article 5, while Article 10 requires the AI system to comply with the requirements laid down by the Regulation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q024",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "GOVERN 1.3 (action GV-1.3-002) in the NIST GAI Profile recommends establishing minimum performance/assurance thresholds before deployment approval. Which specific purpose-built NIST testing environment does MEASURE 2.3 (action MS-2.3-004) recommend using to empirically evaluate GAI trustworthy characteristics?",
+      "gold_answer": "NIST Dioptra. MS-2.3-004 recommends utilizing a purpose-built testing environment such as NIST Dioptra to empirically evaluate GAI trustworthy characteristics, addressing risks including CBRN Information or Capabilities, Data Privacy, Confabulation, Information Integrity, Information Security, Dangerous/Violent/Hateful Content, and Harmful Bias and Homogenization.",
+      "model_answer": [
+        "AI Actor Tasks: AI Deployment, MEASURE 2.3 (action MS-2.3-004) recommends utilizing a purpose-built testing environment such as NIST Dioptra to empirically evaluate GAI trustworthy characteristics."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer conveys the same facts as the gold answer, including the specific purpose-built NIST testing environment recommended by MEASURE 2.3 (action MS-2.3-004) and the list of risks it addresses.",
+      "hops": 3,
+      "llm_calls": 5,
+      "input_tokens": 14044,
+      "output_tokens": 288,
+      "latency_s": 18.932,
+      "evidence_pages": [
+        4,
+        5,
+        9,
+        18,
+        22,
+        23,
+        29,
+        30,
+        34,
+        35,
+        37,
+        43,
+        52,
+        53,
+        59,
+        60,
+        63,
+        64
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "GOVERN 1.3 (action GV-1.3-002) in the NIST GAI Profile recommends establishing minimum performance/assurance thresholds before deployment approval. Which specific purpose-built NIST testing environment does MEASURE 2.3 (action MS-2.3-004) recommend using to empirically evaluate GAI trustworthy characteristics?",
+              "added": [
+                "c60",
+                "c73",
+                "c51",
+                "c30",
+                "c90",
+                "c91",
+                "c39",
+                "c64"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c60",
+              "missing": "MEASURE 2.3 (action MS-2.3-004) recommends using a specific NIST testing environment to empirically evaluate GAI trustworthy characteristics.",
+              "added": [
+                "c6",
+                "c14",
+                "c7"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c64",
+              "missing": "The specific purpose-built NIST testing environment recommended by MEASURE 2.3 (action MS-2.3-004) is missing.",
+              "added": [
+                "c106",
+                "c117",
+                "c52"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c64",
+              "missing": "The specific purpose-built NIST testing environment recommended by MEASURE 2.3 (action MS-2.3-004) to empirically evaluate GAI trustworthy characteristics is missing.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 5,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 14044,
+          "output_tokens": 288,
+          "latency_s": 18.932,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "AI Actor Tasks: AI Deployment, MEASURE 2.3 (action MS-2.3-004) recommends utilizing a purpose-built testing environment such as NIST Dioptra to empirically evaluate GAI trustworthy characteristics.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text includes MS - 2.3 -004, 1 = Utilize a purpose - built testing environment such as NIST Dioptra to empirically evaluate GAI trustworthy characteristics, which directly supports the claim."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q025",
+      "type": "multi_hop",
+      "cross_document": false,
+      "question": "The Agentic RAG survey distinguishes 'agentic patterns' (Section 3) from 'agentic workflow patterns' (Section 4). Using Reflection (Section 3.1) and Evaluator-Optimizer (Section 4.5) as examples, what is the key structural difference between the two categories?",
+      "gold_answer": "Reflection is a pattern within a single agent's own iterative process: the agent critiques and refines its own output via self-feedback, optionally aided by external tools. Evaluator-Optimizer is a system-level workflow pattern describing how prompts, models, or agents are coordinated: it generates an initial output and iteratively refines it using feedback from a separate evaluation model, operating at the orchestration level rather than a single agent's internal self-critique.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not in line with the gold answer that provides a clear explanation of the key structural difference between the two categories.",
+      "hops": 2,
+      "llm_calls": 3,
+      "input_tokens": 4326,
+      "output_tokens": 94,
+      "latency_s": 6.162,
+      "evidence_pages": [
+        1,
+        6,
+        7,
+        11,
+        14,
+        27,
+        29,
+        32,
+        39,
+        42
+      ],
+      "evidence_recall": 0.5,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "The Agentic RAG survey distinguishes 'agentic patterns' (Section 3) from 'agentic workflow patterns' (Section 4). Using Reflection (Section 3.1) and Evaluator-Optimizer (Section 4.5) as examples, what is the key structural difference between the two categories?",
+              "added": [
+                "c100",
+                "c98",
+                "c123",
+                "c89",
+                "c99",
+                "c25",
+                "c37",
+                "c15"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c100",
+              "missing": "the key structural difference between agentic patterns and agentic workflow patterns",
+              "added": [
+                "c165",
+                "c4",
+                "c157"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c100",
+              "missing": "the key structural difference between agentic workflow patterns and agentic patterns",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 4326,
+          "output_tokens": 94,
+          "latency_s": 6.162,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q026",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Both The AI Act and the NIST GAI Profile address AI systems that could manipulate or harm people, but they take different regulatory approaches. What does Article 5(a) of the AI Act do about subliminal manipulation, and how does this differ from how the NIST GAI Profile treats 'Dangerous, Violent, or Hateful Content' as a GAI risk?",
+      "gold_answer": "Article 5(a) of the AI Act legally prohibits placing on the market, putting into service, or using an AI system that deploys subliminal techniques beyond a person's consciousness to materially distort behavior in a way that causes or is likely to cause physical or psychological harm \u2014 an outright ban. By contrast, the NIST GAI Profile's 'Dangerous, Violent, or Hateful Content' risk (Section 2.3) is treated as a risk to be managed through suggested governance, mapping, measuring, and management actions (e.g., content filters, red-teaming) rather than a prohibited practice, since NIST's document is a voluntary risk-management framework, not a binding legal prohibition.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer because it declines to answer the question, whereas the gold answer provides a detailed explanation of the differences between the AI Act and the NIST GAI Profile regarding subliminal manipulation and 'Dangerous, Violent, or Hateful Content'.",
+      "hops": 1,
+      "llm_calls": 13,
+      "input_tokens": 44009,
+      "output_tokens": 1275,
+      "latency_s": 33.997,
+      "evidence_pages": [
+        4,
+        13,
+        22,
+        28,
+        29,
+        35,
+        44,
+        56,
+        78,
+        79
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 1,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Both The AI Act and the NIST GAI Profile address AI systems that could manipulate or harm people, but they take different regulatory approaches. What does Article 5(a) of the AI Act do about subliminal manipulation, and how does this differ from how the NIST GAI Profile treats 'Dangerous, Violent, or Hateful Content' as a GAI risk?",
+              "added": [
+                "c27",
+                "c45",
+                "c88",
+                "c70",
+                "c58",
+                "c111",
+                "c6",
+                "c160"
+              ]
+            }
+          ],
+          "llm_calls": 13,
+          "llm_calls_by_stage": {
+            "plan": 1,
+            "answer": 2,
+            "verify": 10
+          },
+          "input_tokens": 44009,
+          "output_tokens": 1275,
+          "latency_s": 33.997,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "Article 5(a) of the AI Act prohibits the placing on the market, putting into service or use of an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behavior in a manner that causes or is likely to cause that person or another person physical or psychological harm.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text directly states in Article 5, point (a) that 'the placing on the market, putting into service or use of an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behavior in a manner that causes or is likely to cause that person or another person physical or psychological harm' is prohibited."
+              },
+              {
+                "claim": "This prohibition specifically targets subliminal manipulation, which involves techniques that bypass conscious awareness.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text explicitly mentions 'subliminal techniques' as a form of manipulation that should be prohibited. Article 5.2.2. of the source text states, 'the placing on the market, putting into service or use of an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behaviour in a manner that causes or is likely to cause that person or another person physical or psychological harm.' This directly supports the claim that the prohibition targets subliminal manipulation."
+              },
+              {
+                "claim": "In contrast, the NIST GAI Profile categorizes 'Dangerous, Violent, or Hateful Content' as a GAI risk.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does not mention or support the claim about the NIST GAI Profile categorizing 'Dangerous, Violent, or Hateful Content' as a GAI risk. The provided text discusses AI practices and risks related to manipulation, exploitation, and social control, but does not reference the NIST GAI Profile or its categorization of content types."
+              },
+              {
+                "claim": "Unlike the AI Act's focus on subliminal techniques, the NIST GAI Profile addresses content that is overtly harmful, violent, or hateful, which can be more easily identified and addressed through content moderation and user reporting mechanisms.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The provided source text does not mention overtly harmful, violent, or hateful content. Instead, it focuses on subliminal techniques and vulnerabilities of specific groups, such as children and persons with disabilities, which can lead to harmful manipulation. The text does not address overtly harmful content that can be more easily identified and addressed through content moderation and user reporting mechanisms."
+              },
+              {
+                "claim": "The NIST GAI Profile does not specifically address subliminal techniques or their manipulation of consciousness.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The source text does address subliminal techniques and their manipulation of consciousness, as it specifically mentions 'subliminal components individuals cannot perceive' and 'exploit vulnerabilities of children and people due to their age, physical or mental incapacities' to distort behavior and cause harm."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "Article 5(a) of the AI Act prohibits the placing on the market, putting into service or use of an AI system that deploys subliminal techniques beyond a person's consciousness in order to materially distort a person's behavior in a manner that causes or is likely to cause that person or another person physical or psychological harm. This prohibition specifically targets subliminal manipulation, which involves techniques that bypass conscious awareness.\n\nIn contrast, the NIST GAI Profile categorizes 'Dangerous, Violent, or Hateful Content' as a GAI risk. Unlike the AI Act's focus on subliminal techniques, the NIST GAI Profile addresses content that is overtly harmful, violent, or hateful, which can be more easily identified and addressed through content moderation and user reporting mechanisms. The NIST GAI Profile does not specifically address subliminal techniques or their manipulation of consciousness."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q027",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "How does the Agentic RAG survey's Corrective RAG architecture aim to reduce hallucination/misinformation risk, and which specific NIST GAI Profile suggested action (by Action ID) recommends a similar mitigation for the 'Confabulation' risk?",
+      "gold_answer": "Corrective RAG uses a Relevance Evaluation Agent to flag irrelevant or ambiguous retrieved documents and an External Knowledge Retrieval Agent to fetch supplementary information when context is insufficient, before a Response Synthesis Agent generates the final answer \u2014 described as providing 'Factuality Assurance' by validating all retrieved and generated content. The NIST GAI Profile's action MS-2.5-003 recommends a similar mitigation for the 'Confabulation' risk: 'Review and verify sources and citations in GAI system outputs during pre-deployment risk measurement and ongoing monitoring activities.'",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer, as it does not mention the Relevance Evaluation Agent, External Knowledge Retrieval Agent, Response Synthesis Agent, Factuality Assurance, or the specific NIST GAI Profile action MS-2.5-003, which are all crucial details present in the gold answer.",
+      "hops": 2,
+      "llm_calls": 3,
+      "input_tokens": 4066,
+      "output_tokens": 129,
+      "latency_s": 6.543,
+      "evidence_pages": [
+        1,
+        2,
+        8,
+        9,
+        19,
+        20,
+        29,
+        34,
+        39
+      ],
+      "evidence_recall": 1.0,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "How does the Agentic RAG survey's Corrective RAG architecture aim to reduce hallucination/misinformation risk, and which specific NIST GAI Profile suggested action (by Action ID) recommends a similar mitigation for the 'Confabulation' risk?",
+              "added": [
+                "c60",
+                "c7",
+                "c134",
+                "c20",
+                "c58",
+                "c101",
+                "c136",
+                "c21"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "NIST GAI Profile Confabulation",
+              "missing": "The specific NIST GAI Profile suggested action (by Action ID) that recommends a similar mitigation for the 'Confabulation' risk is missing.",
+              "added": [
+                "c157",
+                "c0",
+                "c4"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "NIST GAI Profile Confabulation",
+              "missing": "The specific NIST GAI Profile suggested action (by Action ID) for the 'Confabulation' risk is missing.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 4066,
+          "output_tokens": 129,
+          "latency_s": 6.543,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q028",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Article 10(3) of the AI Act requires training, validation, and testing data sets for high-risk AI systems to be 'relevant, representative, free of errors and complete.' Which NIST GAI Profile risk category most directly addresses the harm that can result when GAI training data lacks these qualities?",
+      "gold_answer": "'Harmful Bias and Homogenization' (NIST GAI Profile, Section 2.6), which describes how non-representative training data can cause performance disparities between subgroups or languages, amplify societal biases, and lead to discriminatory decision-making \u2014 the risk that Article 10's data-quality requirements are designed to mitigate.",
+      "model_answer": [
+        "[NIST GAI Profile risk category that most directly addresses the harm that can result when GAI training data lacks these qualities is \"Data Quality and Reliability\" [c12]]."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer incorrectly identifies the NIST GAI Profile risk category as \"Data Quality and Reliability\" instead of \"Harmful Bias and Homogenization\", which is the correct category that most directly addresses the harm that can result when GAI training data lacks the qualities specified in Article 10(3) of the AI Act.",
+      "hops": 2,
+      "llm_calls": 5,
+      "input_tokens": 18581,
+      "output_tokens": 242,
+      "latency_s": 12.314,
+      "evidence_pages": [
+        1,
+        8,
+        14,
+        27,
+        30,
+        31,
+        32,
+        45,
+        49,
+        51,
+        101
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Article 10(3) of the AI Act requires training, validation, and testing data sets for high-risk AI systems to be 'relevant, representative, free of errors and complete.' Which NIST GAI Profile risk category most directly addresses the harm that can result when GAI training data lacks these qualities?",
+              "added": [
+                "c61",
+                "c28",
+                "c62",
+                "c97",
+                "c55",
+                "c63",
+                "c101",
+                "c13"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c61",
+              "missing": "the specific NIST GAI Profile risk category that addresses the harm resulting from incomplete training data sets",
+              "added": [
+                "c0",
+                "c213",
+                "c89"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c61",
+              "missing": "The NIST GAI Profile risk category that directly addresses the harm when GAI training data lacks relevance, representativeness, error-free status, and completeness is missing.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 5,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 1
+          },
+          "input_tokens": 18581,
+          "output_tokens": 242,
+          "latency_s": 12.314,
+          "verification": {
+            "passed": true,
+            "claims": [],
+            "repair_attempts": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q029",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Section 12.5 of the Agentic RAG survey identifies 'Safety, Trust, and Governance in Autonomous RAG Systems' as an open challenge, noting that tracing responsibility is difficult in multi-agent settings. Which NIST GAI Profile risk category most directly corresponds to concerns about misconfigurations and poor interactions between humans and AI systems?",
+      "gold_answer": "'Human-AI Configuration' (NIST GAI Profile, Section 2.7), which covers risks of misconfigurations and poor interactions between a system and the humans interacting with it, including automation bias and over-reliance \u2014 closely related to the accountability and oversight gaps the Agentic RAG survey raises for autonomous multi-agent systems.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, whereas the gold answer provides a specific and detailed response, indicating that the system's answer does not convey the same facts as the gold answer.",
+      "hops": 2,
+      "llm_calls": 3,
+      "input_tokens": 4335,
+      "output_tokens": 102,
+      "latency_s": 4.97,
+      "evidence_pages": [
+        2,
+        6,
+        7,
+        8,
+        9,
+        33,
+        34,
+        35,
+        36
+      ],
+      "evidence_recall": 1.0,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Section 12.5 of the Agentic RAG survey identifies 'Safety, Trust, and Governance in Autonomous RAG Systems' as an open challenge, noting that tracing responsibility is difficult in multi-agent settings. Which NIST GAI Profile risk category most directly corresponds to concerns about misconfigurations and poor interactions between humans and AI systems?",
+              "added": [
+                "c143",
+                "c134",
+                "c7",
+                "c145",
+                "c20",
+                "c21",
+                "c128",
+                "c15"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the NIST GAI Profile risk category corresponding to misconfigurations and poor interactions between humans and AI systems",
+              "added": []
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the NIST GAI Profile risk category corresponding to misconfigurations and poor interactions between humans and AI systems",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 4335,
+          "output_tokens": 102,
+          "latency_s": 4.97,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q030",
+      "type": "multi_hop",
+      "cross_document": true,
+      "question": "Compare the AI Act's definition of 'AI system' (Article 3(1)) with the NIST GAI Profile's description of what 'Generative AI' covers (footnote 1). Based on these definitions, would a generative foundation model as NIST describes it generally qualify as an 'AI system' under the AI Act?",
+      "gold_answer": "The AI Act (Article 3(1)) defines an 'AI system' as software developed with one or more of the techniques/approaches listed in Annex I that, for human-defined objectives, generates outputs such as content, predictions, recommendations, or decisions influencing its environment. NIST's footnote 1 describes Generative AI as models that 'emulate the structure and characteristics of input data in order to generate derived synthetic content' such as images, video, audio, or text, generally referring to generative foundation models. Since GAI models generate outputs (synthetic content) toward human-defined objectives, they would generally fall within the AI Act's broad, technology-neutral 'AI system' definition \u2014 though fully confirming this would require checking Annex I's specific list of techniques, which is not included in this corpus.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer does not convey the same facts as the gold answer, as it does not mention the specific definitions of 'AI system' and 'Generative AI' from the AI Act and NIST GAI Profile, respectively, and does not analyze whether a generative foundation model would qualify as an 'AI system' under the AI Act.",
+      "hops": 4,
+      "llm_calls": 4,
+      "input_tokens": 11760,
+      "output_tokens": 156,
+      "latency_s": 10.755,
+      "evidence_pages": [
+        1,
+        13,
+        19,
+        20,
+        22,
+        26,
+        27,
+        39,
+        40,
+        42,
+        67,
+        70,
+        95,
+        99,
+        101,
+        103,
+        105
+      ],
+      "evidence_recall": 1.0,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 4,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Compare the AI Act's definition of 'AI system' (Article 3(1)) with the NIST GAI Profile's description of what 'Generative AI' covers (footnote 1). Based on these definitions, would a generative foundation model as NIST describes it generally qualify as an 'AI system' under the AI Act?",
+              "added": [
+                "c80",
+                "c26",
+                "c40",
+                "c45",
+                "c198",
+                "c83",
+                "c78",
+                "c146"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c146",
+              "missing": "the NIST GAI Profile's description of what 'Generative AI' covers (footnote 1)",
+              "added": [
+                "c213",
+                "c139",
+                "c54"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c139",
+              "missing": "the NIST GAI Profile's description of what 'Generative AI' covers (footnote 1)",
+              "added": [
+                "c216",
+                "c229",
+                "c214"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c26",
+              "missing": "the specific definition of 'Generative AI' from the NIST GAI Profile's footnote 1",
+              "added": [
+                "c0",
+                "c218",
+                "c209"
+              ]
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1
+          },
+          "input_tokens": 11760,
+          "output_tokens": 156,
+          "latency_s": 10.755,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q031",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "What specific percentage reduction in hallucination/confabulation rates does the NIST GAI Profile or the Agentic RAG survey report when comparing retrieval-augmented generation to non-RAG systems?",
+      "gold_answer": "Not stated in the corpus. Both documents discuss confabulation/hallucination and describe RAG-based mitigations (e.g., Corrective RAG's 'Factuality Assurance', NIST's MS-2.5-003 citation verification) qualitatively, but neither document provides a specific quantified percentage reduction in hallucination rates.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED",
+      "hops": 8,
+      "llm_calls": 10,
+      "input_tokens": 21869,
+      "output_tokens": 377,
+      "latency_s": 20.685,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 4,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What specific percentage reduction in hallucination/confabulation rates does the NIST GAI Profile or the Agentic RAG survey report when comparing retrieval-augmented generation to non-RAG systems?",
+              "added": [
+                "c141",
+                "c101",
+                "c7",
+                "c120",
+                "c8",
+                "c5",
+                "c17",
+                "c151"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the specific percentage reduction in hallucination/confabulation rates for Agentic RAG systems",
+              "added": []
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c141,c101,c7,c120",
+              "missing": "specific percentage reduction in hallucination/confabulation rates",
+              "added": [
+                "c165",
+                "c148",
+                "c149"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c101",
+              "missing": "specific percentage reduction in hallucination/confabulation rates",
+              "added": [
+                "c80",
+                "c163",
+                "c4"
+              ]
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1
+          },
+          "input_tokens": 7337,
+          "output_tokens": 138,
+          "latency_s": 9.095,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What specific percentage reduction in hallucination/confabulation rates does the NIST GAI Profile or the Agentic RAG survey report when comparing retrieval-augmented generation to non-RAG systems?",
+              "added": [
+                "c15",
+                "c106",
+                "c26",
+                "c117",
+                "c12",
+                "c13",
+                "c16",
+                "c0"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c15",
+              "missing": "The specific percentage reduction in hallucination/confabulation rates when comparing retrieval-augmented generation to non-RAG systems is missing.",
+              "added": [
+                "c6",
+                "c7",
+                "c110"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c15",
+              "missing": "The specific percentage reduction in hallucination/confabulation rates when comparing retrieval-augmented generation to non-RAG systems is missing from the provided evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 7058,
+          "output_tokens": 120,
+          "latency_s": 6.85,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What specific percentage reduction in hallucination/confabulation rates does the NIST GAI Profile or the Agentic RAG survey report when comparing retrieval-augmented generation to non-RAG systems?",
+              "added": [
+                "c70",
+                "c31",
+                "c25",
+                "c46",
+                "c45",
+                "c58",
+                "c47",
+                "c146"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c146",
+              "missing": "the specific percentage reduction in hallucination/confabulation rates reported by the NIST GAI Profile or the Agentic RAG survey",
+              "added": [
+                "c213",
+                "c139",
+                "c54"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c146",
+              "missing": "The specific percentage reduction in hallucination/confabulation rates when comparing retrieval-augmented generation to non-RAG systems is missing.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 7474,
+          "output_tokens": 119,
+          "latency_s": 4.74,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q032",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "According to The AI Act document in this corpus, what specific monetary penalty applies to a company's failure to conduct a Fundamental Rights Impact Assessment?",
+      "gold_answer": "Not stated in the corpus. This document is the European Commission's original 2021 legislative proposal (COM(2021) 206 final); it does not contain a Fundamental Rights Impact Assessment requirement at all (that obligation was introduced in later versions of the AI Act), so no corresponding penalty appears in this text.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED",
+      "hops": 7,
+      "llm_calls": 10,
+      "input_tokens": 20625,
+      "output_tokens": 343,
+      "latency_s": 22.024,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to The AI Act document in this corpus, what specific monetary penalty applies to a company's failure to conduct a Fundamental Rights Impact Assessment?",
+              "added": [
+                "c110",
+                "c4",
+                "c131",
+                "c48",
+                "c96",
+                "c138",
+                "c95",
+                "c143"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c110",
+              "missing": "the specific monetary penalty for a company's failure to conduct a Fundamental Rights Impact Assessment",
+              "added": [
+                "c165",
+                "c36",
+                "c153"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c110",
+              "missing": "The specific monetary penalty for a company's failure to conduct a Fundamental Rights Impact Assessment is missing.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 3440,
+          "output_tokens": 102,
+          "latency_s": 6.151,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to The AI Act document in this corpus, what specific monetary penalty applies to a company's failure to conduct a Fundamental Rights Impact Assessment?",
+              "added": [
+                "c99",
+                "c12",
+                "c13",
+                "c110",
+                "c69",
+                "c47",
+                "c9",
+                "c67"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c99",
+              "missing": "The specific monetary penalty for failing to conduct a Fundamental Rights Impact Assessment is missing.",
+              "added": [
+                "c6",
+                "c5",
+                "c79"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c99",
+              "missing": "The specific monetary penalty for failing to conduct a Fundamental Rights Impact Assessment is missing.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 6120,
+          "output_tokens": 96,
+          "latency_s": 7.68,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to The AI Act document in this corpus, what specific monetary penalty applies to a company's failure to conduct a Fundamental Rights Impact Assessment?",
+              "added": [
+                "c167",
+                "c20",
+                "c19",
+                "c157",
+                "c23",
+                "c22",
+                "c51",
+                "c72"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c20",
+              "missing": "the specific monetary penalty for failing to conduct a Fundamental Rights Impact Assessment",
+              "added": [
+                "c0",
+                "c213",
+                "c83"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c19",
+              "missing": "The specific monetary penalty for a company's failure to conduct a Fundamental Rights Impact Assessment is missing.",
+              "added": [
+                "c215",
+                "c214",
+                "c54"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c20",
+              "missing": "The specific monetary penalty for a company's failure to conduct a Fundamental Rights Impact Assessment is missing from the provided evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1
+          },
+          "input_tokens": 11065,
+          "output_tokens": 145,
+          "latency_s": 8.193,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q033",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "What maximum energy consumption threshold, in kWh, does the NIST GAI Profile recommend before a GAI training run must undergo mandatory environmental review?",
+      "gold_answer": "Not stated in the corpus. The NIST GAI Profile discusses environmental impacts of GAI qualitatively (e.g., comparing training a single transformer LLM's carbon emissions to 300 round-trip flights) and lists suggested actions like measuring and documenting environmental impacts, but it does not specify any numeric energy threshold or mandatory review trigger.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED",
+      "hops": 8,
+      "llm_calls": 10,
+      "input_tokens": 21008,
+      "output_tokens": 440,
+      "latency_s": 22.005,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 4,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What maximum energy consumption threshold, in kWh, does the NIST GAI Profile recommend before a GAI training run must undergo mandatory environmental review?",
+              "added": [
+                "c55",
+                "c48",
+                "c129",
+                "c50",
+                "c57",
+                "c158",
+                "c148",
+                "c132"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c55,c48,c129,c50,c57,c158,c148,c132",
+              "missing": "the maximum energy consumption threshold, in kWh, recommended by NIST GAI Profile",
+              "added": [
+                "c149",
+                "c165",
+                "c153"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c55,c48,c129,c50,c57,c158,c148,c132,c149,c165,c153",
+              "missing": "the maximum energy consumption threshold in kWh recommended by NIST GAI Profile",
+              "added": [
+                "c160",
+                "c163",
+                "c159"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c55,c48,c129,c50,c57,c158,c148,c132,c165,c153,c160,c163,c159",
+              "missing": "the maximum energy consumption threshold in kWh recommended by NIST GAI Profile",
+              "added": []
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1
+          },
+          "input_tokens": 7612,
+          "output_tokens": 243,
+          "latency_s": 12.219,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What maximum energy consumption threshold, in kWh, does the NIST GAI Profile recommend before a GAI training run must undergo mandatory environmental review?",
+              "added": [
+                "c18",
+                "c91",
+                "c70",
+                "c90",
+                "c86",
+                "c8",
+                "c7",
+                "c30"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c18",
+              "missing": "the maximum energy consumption threshold, in kWh, recommended by NIST GAI Profile",
+              "added": [
+                "c6",
+                "c4",
+                "c110"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c18",
+              "missing": "the maximum energy consumption threshold, in kWh, recommended by NIST GAI Profile",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 5242,
+          "output_tokens": 98,
+          "latency_s": 4.419,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What maximum energy consumption threshold, in kWh, does the NIST GAI Profile recommend before a GAI training run must undergo mandatory environmental review?",
+              "added": [
+                "c62",
+                "c68",
+                "c52",
+                "c72",
+                "c231",
+                "c227",
+                "c229",
+                "c119"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c62",
+              "missing": "the maximum energy consumption threshold, in kWh, recommended by the NIST GAI Profile",
+              "added": [
+                "c0",
+                "c89",
+                "c90"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c62",
+              "missing": "the maximum energy consumption threshold, in kWh, recommended by NIST GAI Profile",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 8154,
+          "output_tokens": 99,
+          "latency_s": 5.367,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q034",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "Which benchmark dataset does the Agentic RAG survey identify as achieving the highest accuracy score for evaluating multi-agent coordination overhead?",
+      "gold_answer": "Not stated in the corpus. The survey lists numerous benchmarks (e.g., BEIR, MS MARCO, TREC, MuSiQue, HotpotQA, RAGBench) in Section 11 and notes coordination overhead as an open challenge in Section 12.1, but it never ranks benchmarks by accuracy for measuring coordination overhead specifically.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED",
+      "hops": 6,
+      "llm_calls": 9,
+      "input_tokens": 18229,
+      "output_tokens": 304,
+      "latency_s": 22.134,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Which benchmark dataset does the Agentic RAG survey identify as achieving the highest accuracy score for evaluating multi-agent coordination overhead?",
+              "added": [
+                "c7",
+                "c145",
+                "c20",
+                "c25",
+                "c15",
+                "c120",
+                "c21",
+                "c44"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the benchmark dataset that achieves the highest accuracy score for evaluating multi-agent coordination overhead",
+              "added": []
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "the benchmark dataset that achieves the highest accuracy score for evaluating multi-agent coordination overhead",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 3931,
+          "output_tokens": 90,
+          "latency_s": 9.027,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Which benchmark dataset does the Agentic RAG survey identify as achieving the highest accuracy score for evaluating multi-agent coordination overhead?",
+              "added": [
+                "c69",
+                "c68",
+                "c70",
+                "c48",
+                "c71",
+                "c73",
+                "c76",
+                "c92"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c69",
+              "missing": "The benchmark dataset that achieves the highest accuracy score for evaluating multi-agent coordination overhead is identified.",
+              "added": [
+                "c6",
+                "c43",
+                "c63"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c69",
+              "missing": "The benchmark dataset that achieves the highest accuracy score for evaluating multi-agent coordination overhead is missing from the provided evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 6036,
+          "output_tokens": 104,
+          "latency_s": 6.856,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "Which benchmark dataset does the Agentic RAG survey identify as achieving the highest accuracy score for evaluating multi-agent coordination overhead?",
+              "added": [
+                "c17",
+                "c15",
+                "c25",
+                "c61",
+                "c104",
+                "c97",
+                "c6",
+                "c9"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c104",
+              "missing": "The benchmark dataset that achieves the highest accuracy score for evaluating multi-agent coordination overhead is missing from the provided evidence.",
+              "added": [
+                "c0",
+                "c213",
+                "c229"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c104",
+              "missing": "The benchmark dataset that achieves the highest accuracy score for evaluating multi-agent coordination overhead is missing from the provided evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 8262,
+          "output_tokens": 110,
+          "latency_s": 6.251,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q035",
+      "type": "unanswerable",
+      "cross_document": false,
+      "question": "What year-over-year percentage growth in global spending on Agentic RAG tools does the survey report for 2025?",
+      "gold_answer": "Not stated in the corpus. The Agentic RAG survey discusses applications, tools, and frameworks (Sections 7-8) but does not include any market-spending or financial growth statistics.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that.",
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": true,
+      "judge_detail": "ABSTAINED; ABSTAINED; ABSTAINED",
+      "hops": 8,
+      "llm_calls": 11,
+      "input_tokens": 24294,
+      "output_tokens": 451,
+      "latency_s": 19.62,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What year-over-year percentage growth in global spending on Agentic RAG tools does the survey report for 2025?",
+              "added": [
+                "c136",
+                "c120",
+                "c111",
+                "c119",
+                "c101",
+                "c125",
+                "c117",
+                "c24"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c136",
+              "missing": "the year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [
+                "c165",
+                "c140",
+                "c4"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "12 Open Research Issues and Future Challenges in Agentic RAG",
+              "missing": "the year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [
+                "c20",
+                "c7",
+                "c145"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c136",
+              "missing": "the year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1
+          },
+          "input_tokens": 5706,
+          "output_tokens": 167,
+          "latency_s": 7.411,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What year-over-year percentage growth in global spending on Agentic RAG tools does the survey report for 2025?",
+              "added": [
+                "c69",
+                "c70",
+                "c43",
+                "c71",
+                "c83",
+                "c48",
+                "c56",
+                "c72"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c69,c70,c43,c71,c83,c48,c56",
+              "missing": "the year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [
+                "c6",
+                "c5",
+                "c103"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c103",
+              "missing": "the year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [
+                "c113",
+                "c109",
+                "c106"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c103",
+              "missing": "the year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1
+          },
+          "input_tokens": 9199,
+          "output_tokens": 175,
+          "latency_s": 7.362,
+          "verification": null
+        },
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "What year-over-year percentage growth in global spending on Agentic RAG tools does the survey report for 2025?",
+              "added": [
+                "c229",
+                "c215",
+                "c195",
+                "c224",
+                "c230",
+                "c209",
+                "c223",
+                "c221"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c229",
+              "missing": "the year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [
+                "c213",
+                "c0",
+                "c214"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c229",
+              "missing": "Year-over-year percentage growth in global spending on Agentic RAG tools for 2025",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 3,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 1
+          },
+          "input_tokens": 9389,
+          "output_tokens": 109,
+          "latency_s": 4.847,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q036",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "According to Table 1 ('Comparative Analysis of RAG Paradigms') in the Agentic RAG survey, what two strengths are listed for Na\u00efve RAG?",
+      "gold_answer": "Simple and easy to implement; Suitable for fact-based queries.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not present in the gold answer.",
+      "hops": 3,
+      "llm_calls": 4,
+      "input_tokens": 6831,
+      "output_tokens": 133,
+      "latency_s": 11.305,
+      "evidence_pages": [
+        6,
+        7,
+        8,
+        16,
+        25,
+        26,
+        29,
+        31,
+        32,
+        33,
+        37,
+        40,
+        42
+      ],
+      "evidence_recall": 1.0,
+      "verified": null,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to Table 1 ('Comparative Analysis of RAG Paradigms') in the Agentic RAG survey, what two strengths are listed for Na\u00efve RAG?",
+              "added": [
+                "c123",
+                "c120",
+                "c100",
+                "c15",
+                "c126",
+                "c20",
+                "c44",
+                "c128"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c123",
+              "missing": "the strengths listed for Na\u00efve RAG in Table 1",
+              "added": [
+                "c165",
+                "c80",
+                "c83"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "Table 1",
+              "missing": "the strengths listed for Na\u00efve RAG in Table 1",
+              "added": [
+                "c148",
+                "c160",
+                "c124"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c123",
+              "missing": "the strengths listed for Na\u00efve RAG in Table 1",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 4,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1
+          },
+          "input_tokens": 6831,
+          "output_tokens": 133,
+          "latency_s": 11.305,
+          "verification": null
+        }
+      ]
+    },
+    {
+      "id": "q037",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "According to Table 3 ('Taxonomy-Driven Comparison of Agentic RAG Architectures'), what is the Latency rating for Hierarchical/Corrective RAG, and how does it compare to Single-Agent RAG's Latency rating?",
+      "gold_answer": "Hierarchical/Corrective RAG has 'High' latency, while Single-Agent RAG has 'Low' latency.",
+      "model_answer": [
+        "Hierarchical/Corrective RAG has a Latency rating of High, compared to Single-Agent RAG's Latency rating of Low."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer accurately conveys the same facts as the gold answer, including the Latency rating for Hierarchical/Corrective RAG and its comparison to Single-Agent RAG's Latency rating.",
+      "hops": 4,
+      "llm_calls": 5,
+      "input_tokens": 11220,
+      "output_tokens": 240,
+      "latency_s": 7.461,
+      "evidence_pages": [
+        6,
+        7,
+        8,
+        14,
+        24,
+        25,
+        29,
+        31,
+        32,
+        33,
+        37,
+        38,
+        40,
+        42
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 4,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to Table 3 ('Taxonomy-Driven Comparison of Agentic RAG Architectures'), what is the Latency rating for Hierarchical/Corrective RAG, and how does it compare to Single-Agent RAG's Latency rating?",
+              "added": [
+                "c123",
+                "c37",
+                "c128",
+                "c126",
+                "c120",
+                "c100",
+                "c20",
+                "c15"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "Table 3",
+              "missing": "the Latency rating for Hierarchical/Corrective RAG and how it compares to Single-Agent RAG's Latency rating in Table 3",
+              "added": [
+                "c148",
+                "c80",
+                "c76"
+              ]
+            },
+            {
+              "action": "LOOKUP_TABLE",
+              "argument": "Table 3",
+              "missing": "Latency rating for Hierarchical/Corrective RAG and how it compares to Single-Agent RAG's Latency rating in Table 3",
+              "added": [
+                "c129",
+                "c124"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c129",
+              "missing": "the Latency rating for Hierarchical/Corrective RAG and how it compares to Single-Agent RAG's Latency rating in Table 3",
+              "added": [
+                "c165",
+                "c153",
+                "c158"
+              ]
+            }
+          ],
+          "llm_calls": 5,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 11220,
+          "output_tokens": 240,
+          "latency_s": 7.461,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "Hierarchical/Corrective RAG has a Latency rating of High, compared to Single-Agent RAG's Latency rating of Low.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text states that Hierarchical / Corrective RAG has a Latency rating of High, compared to Single-Agent RAG's Latency rating of Low."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q038",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "According to Table 2 ('Comparative Analysis: Traditional RAG vs Agentic RAG vs Agentic Document Workflows'), how does 'Context Maintenance' differ between Traditional RAG and Agentic Document Workflows (ADW)?",
+      "gold_answer": "Traditional RAG's Context Maintenance is 'Limited', while ADW 'Maintains state across multi-step workflows.'",
+      "model_answer": [
+        "Agentic Document Workflows (ADW) maintain state across multi-step workflows, while Traditional RAG has limited context maintenance."
+      ],
+      "passed": true,
+      "judge_detail": "CORRECT\n\nThe system's answer conveys the same facts as the gold answer, including the correct difference in context maintenance between Traditional RAG and Agentic Document Workflows.",
+      "hops": 4,
+      "llm_calls": 5,
+      "input_tokens": 10840,
+      "output_tokens": 211,
+      "latency_s": 14.535,
+      "evidence_pages": [
+        1,
+        2,
+        16,
+        20,
+        27,
+        28,
+        29,
+        32,
+        33,
+        37,
+        40
+      ],
+      "evidence_recall": 1.0,
+      "verified": true,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 4,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "According to Table 2 ('Comparative Analysis: Traditional RAG vs Agentic RAG vs Agentic Document Workflows'), how does 'Context Maintenance' differ between Traditional RAG and Agentic Document Workflows (ADW)?",
+              "added": [
+                "c98",
+                "c100",
+                "c99",
+                "c89",
+                "c123",
+                "c97",
+                "c7",
+                "c59"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c98",
+              "missing": "Context Maintenance for Agentic Document Workflows (ADW) is not provided in the gathered evidence.",
+              "added": [
+                "c0",
+                "c149",
+                "c160"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c97",
+              "missing": "Context Maintenance for Agentic Document Workflows (ADW) is missing.",
+              "added": [
+                "c158",
+                "c41",
+                "c128"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "",
+              "missing": "how 'Context Maintenance' differs between Traditional RAG and Agentic Document Workflows (ADW) in terms of state maintenance, multi-step orchestration, and domain-specific intelligence",
+              "added": []
+            }
+          ],
+          "llm_calls": 5,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 1,
+            "verify": 1
+          },
+          "input_tokens": 10840,
+          "output_tokens": 211,
+          "latency_s": 14.535,
+          "verification": {
+            "passed": true,
+            "claims": [
+              {
+                "claim": "Agentic Document Workflows (ADW) maintain state across multi-step workflows, while Traditional RAG has limited context maintenance.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": true,
+                "reason": "The source text clearly states that Agentic Document Workflows (ADW) maintain state across multi-step workflows, while Traditional RAG has limited context maintenance."
+              }
+            ],
+            "repair_attempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "q039",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "In the NIST GAI Profile's GOVERN 1.1 table, which GAI Risks are tagged to action GV-1.1-001 ('Align GAI development and use with applicable laws and regulations...')?",
+      "gold_answer": "Data Privacy; Harmful Bias and Homogenization; Intellectual Property.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not in line with the gold answer that provides specific information about the GAI Risks tagged to the action GV-1.1-001.",
+      "hops": 2,
+      "llm_calls": 6,
+      "input_tokens": 17760,
+      "output_tokens": 313,
+      "latency_s": 13.359,
+      "evidence_pages": [
+        4,
+        5,
+        9,
+        17,
+        18,
+        19,
+        20,
+        22,
+        23,
+        62
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 2,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "In the NIST GAI Profile's GOVERN 1.1 table, which GAI Risks are tagged to action GV-1.1-001 ('Align GAI development and use with applicable laws and regulations...')?",
+              "added": [
+                "c29",
+                "c32",
+                "c30",
+                "c39",
+                "c7",
+                "c31",
+                "c33",
+                "c35"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c29",
+              "missing": "The specific GAI Risks tagged to action GV-1.1-001 need to be identified from the evidence.",
+              "added": [
+                "c6",
+                "c113",
+                "c14"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c29",
+              "missing": "The specific GAI Risks tagged to action GV-1.1-001 need to be identified from the evidence.",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 6,
+          "llm_calls_by_stage": {
+            "plan": 2,
+            "answer": 2,
+            "verify": 2
+          },
+          "input_tokens": 17760,
+          "output_tokens": 313,
+          "latency_s": 13.359,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The GAI Risk tagged to action GV-1.1-001 ('Align GAI development and use with applicable laws and regulations...') is Data Privacy.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The GAI Risk tagged to action GV-1.1-001 is 'Data Privacy; Harmful Bias and Homogenization; Intellectual Property', not 'Data Privacy'."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "The GAI Risk tagged to action GV-1.1-001 ('Align GAI development and use with applicable laws and regulations...') is Data Privacy."
+          }
+        }
+      ]
+    },
+    {
+      "id": "q040",
+      "type": "table_lookup",
+      "cross_document": false,
+      "question": "In the NIST GAI Profile's MEASURE 2.3 table, what GAI Risks are tagged to action MS-2.3-001 ('Consider baseline model performance on suites of benchmarks when selecting a model for fine tuning or enhancement with retrieval-augmented generation')?",
+      "gold_answer": "Information Security; Confabulation.",
+      "model_answer": [
+        "I don't have enough information in this document to answer that."
+      ],
+      "passed": false,
+      "judge_detail": "INCORRECT\n\nThe system's answer declines to answer, which is not present in the gold answer, and does not convey the same facts.",
+      "hops": 3,
+      "llm_calls": 7,
+      "input_tokens": 25198,
+      "output_tokens": 245,
+      "latency_s": 13.773,
+      "evidence_pages": [
+        4,
+        5,
+        6,
+        7,
+        9,
+        34,
+        35,
+        36,
+        37,
+        39,
+        40,
+        41,
+        43,
+        46,
+        61
+      ],
+      "evidence_recall": 1.0,
+      "verified": false,
+      "trace": [
+        {
+          "mode": "agentic",
+          "hops": 3,
+          "actions": [
+            {
+              "action": "SEARCH",
+              "argument": "In the NIST GAI Profile's MEASURE 2.3 table, what GAI Risks are tagged to action MS-2.3-001 ('Consider baseline model performance on suites of benchmarks when selecting a model for fine tuning or enhancement with retrieval-augmented generation')?",
+              "added": [
+                "c10",
+                "c62",
+                "c67",
+                "c7",
+                "c60",
+                "c73",
+                "c78",
+                "c8"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c67",
+              "missing": "GAI Risks tagged to action MS-2.3-001 need to be identified from the evidence.",
+              "added": [
+                "c6",
+                "c63",
+                "c5"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c7",
+              "missing": "GAI Risks tagged to action MS-2.3-001",
+              "added": [
+                "c70",
+                "c110",
+                "c14"
+              ]
+            },
+            {
+              "action": "SEARCH",
+              "argument": "c7",
+              "missing": "GAI Risks associated with action MS-2.3-001",
+              "added": [],
+              "stopped": "repeated action"
+            }
+          ],
+          "llm_calls": 7,
+          "llm_calls_by_stage": {
+            "plan": 3,
+            "answer": 2,
+            "verify": 2
+          },
+          "input_tokens": 25198,
+          "output_tokens": 245,
+          "latency_s": 13.773,
+          "verification": {
+            "passed": false,
+            "claims": [
+              {
+                "claim": "The GAI Risk tagged to action MS-2.3-001 is Information Security.",
+                "cited": [],
+                "scope": "all_evidence",
+                "supported": false,
+                "reason": "The GAI Risk tagged to action MS-2.3-001 is Confabulation, not Information Security."
+              }
+            ],
+            "repair_attempts": 1,
+            "rejected_answer": "The GAI Risk tagged to action MS-2.3-001 is Information Security."
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "mode": "dense",
+    "rerank": false,
+    "final_k": 8,
+    "num_ctx": 8192,
+    "agentic": true,
+    "judge_model": "llama3.1:8b",
+    "max_hops": 4,
+    "step_k": 3,
+    "agent_num_ctx": 16384,
+    "verify": true,
+    "verify_repair_attempts": 1
+  }
+}
