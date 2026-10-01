@@ -1,3 +1,5 @@
+![Atlas: multi-tenant retrieval with clickable citations and an eval harness](docs/assets/atlas-banner.png)
+
 # Atlas
 
 A multi-tenant retrieval service that answers questions over documents nobody chunked nicely — with clickable citations and an eval harness that tells you when a change made it worse.
