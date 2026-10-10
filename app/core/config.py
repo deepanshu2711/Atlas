@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     docling_table_structure_enabled: bool = True
     qdrant_timeout_seconds: int = 180
     retrieval_mode: Literal["dense", "bm25",
-                            "hybrid", "graph", "hybrid_graph"] = "dense"
+                            "hybrid", "graph", "hybrid_graph"] = "hybrid_graph"
     final_k: int = 8
     candidate_k: int = 40
     rrf_k: int = 60
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     graph_enabled: bool = False
     graph_k: int = 20
     kuzu_path: str = "data/graph.kuzu"
-    agentic_enabled: bool = True
+    agentic_enabled: bool = False
     agent_max_hops: int = 4
     agent_step_k: int = 3
     agent_num_ctx: int = 16384
