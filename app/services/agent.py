@@ -19,6 +19,7 @@ from app.core.logging import get_logger
 from app.services.bm25 import chunks_for
 from app.services.retrieval import rerank, retrieve
 from app.utils.llm_factory import build_llm
+from opentelemetry import trace as otel
 
 logger = get_logger(__name__)
 
@@ -73,6 +74,8 @@ Claim: {claim}
 Respond with JSON only, in exactly this shape:
 {{"supported": true or false, "reason": "..."}}"""
 
+tracer = otel.get_tracer("atlas.agent")
+
 
 @dataclass
 class Trace:
@@ -88,12 +91,22 @@ class Trace:
     _start: float = field(default_factory=time.perf_counter, repr=False)
 
     async def call(self, llm: ChatOllama, stage: str, prompt) -> str:
-        response = await llm.ainvoke(prompt)
-        self.llm_calls[stage] = self.llm_calls.get(stage, 0) + 1
-        usage = getattr(response, "usage_metadata", None) or {}
-        self.input_tokens += usage.get("input_tokens", 0)
-        self.output_tokens += usage.get("output_tokens", 0)
-        return response.content
+        with tracer.start_as_current_span(f"llm.{stage}") as span:
+            span.set_attribute("openinference.span.kind", "LLM")
+            span.set_attribute(
+                "llm.model_name", getattr(llm, "model", "unknown"))
+            span.set_attribute("atlas.stage", stage)
+            response = await llm.ainvoke(prompt)
+            self.llm_calls[stage] = self.llm_calls.get(stage, 0) + 1
+            usage = getattr(response, "usage_metadata", None) or {}
+            inp, out = usage.get("input_tokens", 0), usage.get(
+                "output_tokens", 0)
+            self.input_tokens += inp
+            self.output_tokens += out
+            span.set_attribute("llm.token_count.prompt", inp)
+            span.set_attribute("llm.token_count.completion", out)
+            span.set_attribute("llm.token_count.total", inp + out)
+            return response.content
 
     def finish(self) -> dict:
         self.latency_s = round(time.perf_counter() - self._start, 3)
@@ -139,7 +152,8 @@ class Evidence:
         for cid, doc in self.docs.items():
             heading = " > ".join(doc.metadata.get("headings") or [])
             text = " ".join(doc.page_content.split())[:SNIPPET_CHARS]
-            lines.append(f"[{cid}] pages={doc.metadata.get('pages', [])} heading={heading!r}: {text}")
+            lines.append(f"[{cid}] pages={doc.metadata.get(
+                'pages', [])} heading={heading!r}: {text}")
         return "\n".join(lines)
 
     def full_text(self) -> str:
@@ -185,7 +199,8 @@ def lookup_table(doc_id: str, name: str) -> list[Document]:
     number = re.search(r"table\s*([0-9]+|[ivxlc]+)\b", name, re.IGNORECASE)
     if not number:
         return rerank(name, [d for d in chunks if _has_table(d)], k=settings.agent_step_k)
-    pattern = re.compile(rf"\btable\s+{re.escape(number.group(1))}\b", re.IGNORECASE)
+    pattern = re.compile(
+        rf"\btable\s+{re.escape(number.group(1))}\b", re.IGNORECASE)
     mentions = [d for d in chunks if pattern.search(d.page_content)]
     by_index = {d.metadata["chunk_index"]: d for d in chunks}
     out = []
@@ -251,7 +266,8 @@ def split_claims(answer: str) -> list[tuple[str, list[str]]]:
         sentence = sentence.strip(" \t-*•")
         cited = [f"c{n}" for group in _CITATION_RE.findall(sentence)
                  for n in re.findall(r"c(\d+)", group)]
-        text = re.sub(r"\s+([.,;!?])", r"\1", _CITATION_RE.sub("", sentence)).strip()
+        text = re.sub(r"\s+([.,;!?])", r"\1",
+                      _CITATION_RE.sub("", sentence)).strip()
         if len(re.findall(r"\w+", text)) < 2 or text.endswith(":"):
             continue
         claims.append((text, list(dict.fromkeys(cited))))
@@ -290,7 +306,8 @@ async def generate(question: str, evidence: Evidence, llm: ChatOllama, trace: Tr
         question=question)))
 
 
-_ABSTENTION_RE = re.compile(r"I don't have enough information[^.\n]*\.?", re.IGNORECASE)
+_ABSTENTION_RE = re.compile(
+    r"I don't have enough information[^.\n]*\.?", re.IGNORECASE)
 
 
 def is_abstention(answer: str) -> bool:
@@ -313,13 +330,16 @@ async def answer_agentic(question: str, doc_id: str) -> tuple[str, list[Document
     up to `agent_max_hops - 1` further actions. The budget is enforced here,
     not left to the model."""
     trace = Trace(mode="agentic")
-    planner = build_llm(num_ctx=settings.agent_num_ctx, num_predict=256, format="json")
+    planner = build_llm(num_ctx=settings.agent_num_ctx,
+                        num_predict=256, format="json")
     writer = build_llm(num_ctx=settings.agent_num_ctx)
     evidence = Evidence()
 
-    evidence.add(execute("SEARCH", question, question, doc_id), limit=settings.final_k)
+    evidence.add(execute("SEARCH", question, question, doc_id),
+                 limit=settings.final_k)
     trace.hops = 1
-    trace.actions.append({"action": "SEARCH", "argument": question, "added": list(evidence.docs)})
+    trace.actions.append(
+        {"action": "SEARCH", "argument": question, "added": list(evidence.docs)})
 
     seen = {("SEARCH", question.lower())}
     while trace.hops < settings.agent_max_hops:
@@ -333,21 +353,25 @@ async def answer_agentic(question: str, doc_id: str) -> tuple[str, list[Document
                                   "added": [], "stopped": "repeated action"})
             break
         seen.add((action, argument.lower()))
-        added = evidence.add(execute(action, argument, question, doc_id), limit=settings.agent_step_k)
+        added = evidence.add(
+            execute(action, argument, question, doc_id), limit=settings.agent_step_k)
         trace.hops += 1
-        trace.actions.append({"action": action, "argument": argument, "missing": missing, "added": added})
+        trace.actions.append(
+            {"action": action, "argument": argument, "missing": missing, "added": added})
 
     if not evidence.docs:
         return NO_ANSWER, [], trace.finish()
 
     answer = await generate(question, evidence, writer, trace)
     if settings.verify_enabled and not is_abstention(answer):
-        verifier = build_llm(num_ctx=settings.agent_num_ctx, num_predict=128, format="json")
+        verifier = build_llm(num_ctx=settings.agent_num_ctx,
+                             num_predict=128, format="json")
         report = await verify(answer, evidence, verifier, trace)
         attempts = 0
         while not report["passed"] and attempts < settings.verify_repair_attempts:
             attempts += 1
-            unsupported = [r["claim"] for r in report["claims"] if not r["supported"]]
+            unsupported = [r["claim"]
+                           for r in report["claims"] if not r["supported"]]
             answer = await generate(question, evidence, writer, trace, unsupported=unsupported)
             if is_abstention(answer):
                 break
