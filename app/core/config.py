@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -30,6 +31,9 @@ class Settings(BaseSettings):
     verify_repair_attempts: int = 1
     # Ollama model that grades eval answers; empty means the answering model.
     judge_model: str = ""
+    # Where JSONL trace spans are written, one file per trace. Defaults to the
+    # sibling Crucible checkout, so Atlas and Crucible spans share one folder.
+    span_dir: str = str(Path(__file__).resolve().parents[3] / "Crucible" / "spans")
 
     model_config = SettingsConfigDict(env_file=".env")
 

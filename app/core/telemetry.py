@@ -1,5 +1,4 @@
 import threading
-import os
 import json
 from opentelemetry.trace import format_trace_id, format_span_id
 from opentelemetry.sdk.trace.export import (
@@ -8,6 +7,8 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.resources import Resource
 from opentelemetry import trace
 from pathlib import Path
+
+from app.core.config import settings
 
 
 class JsonlSpanExporter(SpanExporter):
@@ -45,5 +46,5 @@ def setup_tracing(service_name: str):
     provider = TracerProvider(
         resource=Resource.create({"service.name": service_name}))
     provider.add_span_processor(
-        SimpleSpanProcessor(JsonlSpanExporter(os.environ.get("SPAN_DIR", "./spans"))))
+        SimpleSpanProcessor(JsonlSpanExporter(settings.span_dir)))
     trace.set_tracer_provider(provider)
