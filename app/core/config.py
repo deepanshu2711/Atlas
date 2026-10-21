@@ -33,7 +33,9 @@ class Settings(BaseSettings):
     judge_model: str = ""
     # Where JSONL trace spans are written, one file per trace. Defaults to the
     # sibling Crucible checkout, so Atlas and Crucible spans share one folder.
-    span_dir: str = str(Path(__file__).resolve().parents[3] / "Crucible" / "spans")
+    span_dir: str = str(
+        Path(__file__).resolve().parents[3] / "Crucible" / "spans")
+    allow_fault_injection: bool = True
 
     model_config = SettingsConfigDict(env_file=".env")
 
