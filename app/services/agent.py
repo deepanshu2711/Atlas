@@ -15,6 +15,7 @@ from langchain_core.documents import Document
 from langchain_ollama import ChatOllama
 
 from app.core.config import settings
+from app.core.faults import maybe_fail
 from app.core.logging import get_logger
 from app.services.bm25 import chunks_for
 from app.services.retrieval import rerank, retrieve
@@ -76,6 +77,19 @@ Respond with JSON only, in exactly this shape:
 
 tracer = otel.get_tracer("atlas.agent")
 
+def run_action(action: str, argument: str, question: str, doc_id: str,
+               evidence: Evidence, limit: int, forced: bool = False) -> list[str]:
+    with tracer.start_as_current_span(f"tool.{action.lower()}") as span:
+        span.set_attribute("openinference.span.kind", "TOOL")
+        span.set_attribute("tool.name", action)
+        span.set_attribute("tool.parameters", json.dumps({"argument": argument}))
+        span.set_attribute("atlas.forced", forced)
+        maybe_fail(action, span)
+        docs = execute(action, argument, question, doc_id)
+        added = evidence.add(docs, limit=limit)
+        span.set_attribute("atlas.returned", len(docs))
+        span.set_attribute("atlas.added", len(added))
+        return added
 
 @dataclass
 class Trace:
@@ -322,64 +336,155 @@ def strip_trailing_abstention(answer: str) -> str:
     return stripped if len(re.findall(r"\w+", stripped)) >= 3 else answer.strip()
 
 
-async def answer_agentic(question: str, doc_id: str) -> tuple[str, list[Document], dict]:
+
+async def answer_agentic(
+    question: str, doc_id: str
+) -> tuple[str, list[Document], dict]:
     """Run the loop and return (answer, evidence chunks, trace).
 
-    Hop 1 is always a plain search on the question, so the loop starts from
-    exactly what single-pass retrieval would have seen; the planner then gets
-    up to `agent_max_hops - 1` further actions. The budget is enforced here,
-    not left to the model."""
+    Hop 1 is always a plain search on the question. Failed actions are
+    logged and consume a hop, while failed actions are not marked as
+    seen so the planner can retry them.
+    """
     trace = Trace(mode="agentic")
-    planner = build_llm(num_ctx=settings.agent_num_ctx,
-                        num_predict=256, format="json")
+    planner = build_llm(
+        num_ctx=settings.agent_num_ctx,
+        num_predict=256,
+        format="json",
+    )
     writer = build_llm(num_ctx=settings.agent_num_ctx)
     evidence = Evidence()
 
-    evidence.add(execute("SEARCH", question, question, doc_id),
-                 limit=settings.final_k)
-    trace.hops = 1
-    trace.actions.append(
-        {"action": "SEARCH", "argument": question, "added": list(evidence.docs)})
+    # Hop 1: forced search on the original question.
+    try:
+        added = evidence.add(
+            execute("SEARCH", question, question, doc_id),
+            limit=settings.final_k,
+        )
+        trace.actions.append({
+            "action": "SEARCH",
+            "argument": question,
+            "added": added,
+        })
+    except Exception as exc:
+        logger.warning("forced search failed: %s", exc)
+        trace.actions.append({
+            "action": "SEARCH",
+            "argument": question,
+            "added": [],
+            "error": _err(exc),
+        })
 
+    trace.hops = 1
     seen = {("SEARCH", question.lower())}
+
     while trace.hops < settings.agent_max_hops:
-        action, argument, missing = parse_plan(await trace.call(
-            planner, "plan", PLAN_PROMPT.format(question=question, evidence=evidence.snippets())))
+        action, argument, missing = parse_plan(
+            await trace.call(
+                planner,
+                "plan",
+                PLAN_PROMPT.format(
+                    question=question,
+                    evidence=evidence.snippets(),
+                ),
+            )
+        )
+
         if action == "ANSWER":
             break
-        if (action, argument.lower()) in seen:
-            # repeating an action cannot find anything new; stop spending
-            trace.actions.append({"action": action, "argument": argument, "missing": missing,
-                                  "added": [], "stopped": "repeated action"})
+
+        key = (action, argument.lower())
+
+        if key in seen:
+            trace.actions.append({
+                "action": action,
+                "argument": argument,
+                "missing": missing,
+                "added": [],
+                "stopped": "repeated action",
+            })
             break
-        seen.add((action, argument.lower()))
-        added = evidence.add(
-            execute(action, argument, question, doc_id), limit=settings.agent_step_k)
+
+        # Each action attempt consumes one hop, even on failure.
         trace.hops += 1
-        trace.actions.append(
-            {"action": action, "argument": argument, "missing": missing, "added": added})
+
+        try:
+            added = evidence.add(
+                execute(action, argument, question, doc_id),
+                limit=settings.agent_step_k,
+            )
+        except Exception as exc:
+            logger.warning(
+                "action failed action=%s error=%s",
+                action,
+                exc,
+            )
+            trace.actions.append({
+                "action": action,
+                "argument": argument,
+                "missing": missing,
+                "added": [],
+                "error": _err(exc),
+            })
+            continue  # Failed actions may be retried by the planner.
+
+        seen.add(key)
+        trace.actions.append({
+            "action": action,
+            "argument": argument,
+            "missing": missing,
+            "added": added,
+        })
 
     if not evidence.docs:
         return NO_ANSWER, [], trace.finish()
 
     answer = await generate(question, evidence, writer, trace)
+
     if settings.verify_enabled and not is_abstention(answer):
-        verifier = build_llm(num_ctx=settings.agent_num_ctx,
-                             num_predict=128, format="json")
+        verifier = build_llm(
+            num_ctx=settings.agent_num_ctx,
+            num_predict=128,
+            format="json",
+        )
         report = await verify(answer, evidence, verifier, trace)
         attempts = 0
-        while not report["passed"] and attempts < settings.verify_repair_attempts:
+
+        while (
+            not report["passed"]
+            and attempts < settings.verify_repair_attempts
+        ):
             attempts += 1
-            unsupported = [r["claim"]
-                           for r in report["claims"] if not r["supported"]]
-            answer = await generate(question, evidence, writer, trace, unsupported=unsupported)
+            unsupported = [
+                r["claim"]
+                for r in report["claims"]
+                if not r["supported"]
+            ]
+
+            answer = await generate(
+                question,
+                evidence,
+                writer,
+                trace,
+                unsupported=unsupported,
+            )
+
             if is_abstention(answer):
                 break
+
             report = await verify(answer, evidence, verifier, trace)
+
         report["repair_attempts"] = attempts
+
         if not report["passed"] and not is_abstention(answer):
             report["rejected_answer"] = answer
             answer = NO_ANSWER
+
         trace.verification = report
 
     return answer, list(evidence.docs.values()), trace.finish()
+
+
+def _err(exc: Exception) -> str:
+    return f"{type(exc).__name__}: {exc}"
+
